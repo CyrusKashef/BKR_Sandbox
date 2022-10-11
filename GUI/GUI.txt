@@ -1,0 +1,347 @@
+General
+    - Select Original ROM Button
+    - Select Destination Button
+    - Seed Entry
+    - Load Configuration
+    - Save Configuration
+    - Create Patch
+    - Apply Patch
+    - Open Overview Video
+    - Open ReadMe
+    - Submit Settings
+Models
+    * BK MODEL
+        - Generate Model Preview
+        - Pick Preset
+            - Random Colors
+            - Random Preset
+            - List Of Presets
+        - Delete Preset
+        - Save Preset
+        - Adjust Individual Colors:
+            - Banjo Fur
+            - Banjo Skin
+            - Banjo Eyes
+            - Banjo Eyelids
+            - Banjo Shorts
+            - Banjo Necklace
+            - Kazooie Primary
+            - Kazooie Secondary
+            - Kazooie Eyes
+            - Kazooie Eyelids
+            - Kazooie Feet
+            - Kazooie Beak
+            - Backpack
+            - Wading Boots
+            - Turbo Talon Trainers
+    * OTHER AESTHETICS
+        - Talking Sprites:
+            > Normal Sprites
+            > Shuffle
+            > Randomize
+        - Skyboxes:
+            > Normal Skyboxes
+            > Shuffle
+            > Randomize
+        - Honeycomb Sprites:
+            > Normal Sprites
+            > Shuffle
+            > Randomize
+        - Pause Font:
+            > Normal Pause Font
+            > Randomize
+        - Timer:
+            > Normal Timer
+            > Swap
+            > Randomize?
+        - Level Color:
+            > Normal Colors
+            > Gray Scale
+    * CUSTOM SWAPS
+        - Ants
+        - Babe
+        - Beta Bees
+        - Bugs
+        - Bulls
+        - Crabs
+        - Crocodiles
+        - Easter Hunt
+        - Flies
+        - Frogs
+        - Ghosts
+        - Long Fish
+        - Minjos
+        - Round Stuff
+        - Short Fish
+        - Sisters
+        - Throws
+        - Tooie Beehive
+        - Walrus
+Sounds
+    - SFX
+        - Individual SFX Selection
+        - Select All SFXs Button
+        - Deselect All SFXs Button
+    - SHORT
+        - Individual Sound Selection
+        - Select All Sounds Button
+        - Deselect All Sounds Button
+    - FANFARES
+        - Individual Fanfare Selection
+        - Select All Fanfare Button
+        - Deselect All Fanfare Button
+    - MUSIC
+        - Individual Music Selection
+        - Select All Music Button
+        - Deselect All Music Button
+Enemies
+    - SELECTION
+        - Randomize Type:
+            > No Randomization
+            > Randomize By Category (Ground/Wall/Flying)
+            > Chaos Randomization (Mixes All Categories)
+        - Enemy
+            > Base Game (Leave Alone)
+            > Add To 'Randomize List'
+            > Add To 'Remove By Randomize'
+            > Both
+        - Include Jiggy Producing Enemies?
+        - Enemy Selection
+        - Select All Non-Softlock Enemies
+        - Deselect All Enemies
+    - PROPERTIES
+        - Collision & Death Conditions:
+            > No Collision Changes
+            > Shuffle Conditions
+        - Sizes:
+            > Random Setting
+            > Random Setting Per World
+            > Random Setting Per Area
+            > Default Sizes
+            > Scale Factor
+            > Uniform Size Range
+            > Generally Small
+            > Generally Large
+            > Everything Small
+            > Everything Large
+        - Colors:
+            > Default Colors
+            > Collision & Death Hint Colors
+            > Random Hue Shift
+    - MISCELLANEOUS
+        - Remove Big Clucker Cutscene
+        - Give Enemies Boundaries
+Collectables/Progression
+    * ALTERNATE WIN CONDITION
+        > No Alternate Win Condition
+        > Jiggy Count
+        > Note Count
+        > Token Count
+        > Empty Honeycomb Count
+        > Note Count
+        > Stop N Swap Collected
+    * JIGGIES
+        - Options:
+            > No Selected Option
+            > Shuffle
+            > Pre-Selected XYZ
+            > Remove All Floating Jiggies
+        - Lair Picture Requirements
+            > Base Game
+            > Door Of Grunty Only
+            > Random Requirements
+        - Include Abnormalities?
+        - Include Potentially Glitched?
+    * TOKENS
+        - Shuffle/Pre-Selected XYZ?
+        - Mumbo Spell Requirements
+            > Base Game
+            > Free Transformations
+            > World Order Scaled
+            > Random Costs
+        - Include Potentially Glitched?
+    * EMPTY HONEYCOMBS
+        - Shuffle/Pre-Selected XYZ?
+        - Starting Health Count
+        - Health Increase Requirements
+        - Include Potentially Glitched?
+    * JINJOS
+        - Shuffle/Pre-Selected XYZ?
+        - Random Colors?
+        - Random Sizes?
+    * EXTRA LIVES
+        - Infinite Lives? (Duplicate Setting)
+        - Starting Life Count
+    * NOTES
+        - Options:
+            > Shuffle By World
+            > Randomize (Max 1,000)
+                > Produce Exact Notes
+                > Produce Extra Notes
+            > Pre-Selected XYZ
+        - Note Door Requirements
+            > Scaled Note Doors
+            > 810 Note Door Only
+    * CAPACITIES
+        - Starting Blue Egg Count
+        - Unlimited Blue Eggs
+        - Before Cheato Blue Egg Capacity
+        - After Cheato Blue Egg Capacity
+        - Starting Red Feather Count
+        - Unlimited Red Feathers
+        - Before Cheato Red Feather Capacity
+        - After Cheato Red Feather Capacity
+        - Starting Gold Feather Count
+        - Unlimited Gold Feathers
+        - Before Cheato Gold Feather Capacity
+        - After Cheato Gold Feather Capacity
+    * MOVES
+        - Shuffle/Pre-Selected XYZ?
+        - Starting Moves:
+            Note: Guaranteed Camera
+            (SM Only)
+            - High Jump/Feathery Flap/Flip Flap
+            - Claw Swipe/Roll/Rat-A-Tap Rap
+            (Can Be Anywhere)
+            - Climb         - Swim          - Beak Barge    - Talon Trot
+            - Beak Buster   - Egg Firing    - Flight        - Shock Spring Jump
+            - Wonderwing    - Beak Bomb     - Stilt Stride (Wading Boots)
+            - Turbo Talon Trot (Running Shoes)    - Open Note Doors
+        - Shock Jump Pad:
+            > Base Game
+            > Deactivate All By Default
+        - Flight Pad:
+            > Base Game
+            > Deactivate All By Default
+    * STOP N SWAP
+        - Enable SNS Collectables?
+            - Include SNS In Shuffling/Randomization?
+Warps
+    * GENERAL:
+        - Options:
+            > No Warp Shuffling
+            > Separate Within World & Entrance Warps
+            > Global Warps
+    * Within World Warps:
+        - Options:
+            > Default Within World Warps
+            > Decoupled Shuffling
+            > Coupled Shuffling
+    * World Entrances:
+        - Entrances:
+            > Default Order
+            > Shuffle
+        - Exits:
+            > Exit From Level
+            > Exit From Entrance
+        - Match Witch Switch With Level?
+    * Cauldrons
+        - Automatically Active?
+        - Randomize Locations/Warp To?
+World Specific
+    * Spiral Mountain
+        - Remove Bottles At Top Of Mountain?
+    * Gruntilda's Lair
+        - Brentilda Hints
+            > No Hints
+            > Vague Hints
+            > Detailed Hints
+        - Furnace Fun
+            > No Selected Option
+            > Skip Furnace Fun
+            > Randomize
+                - Furnace Fun Tiles
+                    * Blank Tile
+                    * BK Tile
+                    * Music Tile
+                    * Eye Tile
+                    * Timer Tile
+                    * Grunty Tile
+                    * Death Tile
+                    * Joker Tile
+                - Items On Board
+                    > No Selected Option
+                    > Remove All Items
+                    > Randomize Tiles With Items
+        - Remove Detransformations?
+        - Automatically Raise Water Level 1?
+    * Mumbo's Mountain
+        - Include Flowers In Shuffling/Randomization?
+        - Chimpy's Orange
+            > No Selected Option
+            > Include In Shuffling/Randomization
+            > Always Have Chimpy's Orange
+    * Treasure Trove Cove
+        - Super Slipper Sand
+        - Random Treasure Hunt Order
+        - Sandcastle
+            > No Selected Option
+            > Easy Tiles
+            > Randomize Tiles
+        - Blubber's Gold
+            > No Selected Option
+            > Include In Shuffling/Randomization
+            > Always Have Blubber's Gold
+    * Clanker's Cavern
+        - Shuffle Clanker Ring Order (Hard)
+    * Bubblegloop Swamp
+        - Shuffle Croctus Order
+        - Bigger, Badder, Mr Vile
+        - Only Round 3 Mr Vile
+        - Only Round 3 Tiptup Choir
+    * Freezeezy Peak
+        - Presents
+            > No Selected Option
+            > Include Shuffling/Randomization
+            > Always Have Presents
+    * Gobi's Valley
+        - Shuffle Matching Puzzle
+        - Shuffle Ancient Ones Order
+        - Shuffle King Sandybutt Jinxy Order
+    * Mad Monster Mansion
+        - Randomize Motzand's Song
+        - Tumblar's Board
+            > No Selected Option
+            > Easy Tiles
+            > Randomize Tiles
+        - Flower Pots
+            > No Selected Option
+            > Include Shuffling/Randomization
+    * Rusty Bucket Bay
+        - Randomize Whistle Buttons Combinations
+        - Engine Room:
+            > No Selected Option
+            > Flooded Room
+    * Click Clock Wood
+        - Open Seasons?
+        - Shuffle By:
+            > Seasons
+            > Within World
+        - Caterpillars
+            > No Selected Option
+            > Include Shuffling/Randomization
+            > Always Have Caterpillars
+        - Acorns
+            > No Selected Option
+            > Include Shuffling/Randomization
+            > Always Have Acorns
+    * Final Battle
+        - Final Battle Difficulty
+            > What Floor?
+            > Mini Me
+            > Monster House
+QUALITY OF LIFE
+    - Exit From Lair?
+    - Infinite Lives? (Duplicate Setting)
+    - Skippable Cutscenes?
+    - Speedrunner Text?
+    - Remove Jiggy/Note Door Fanfare?
+    - Cheat Sheets?
+    - XBOX Saving/Note Saving
+    - Constant Jiggy/Note Display
+    - Pause Menu Move Tracker
+DEVELOPER
+    - STARTING AREA
+        > List Of Starting Areas
+    - Remove Extra Files
+    - Upload Custom Assets

@@ -1,0 +1,16 @@
+Select Type
+    > ASM
+    > Asset Table
+Select Pointer
+    > For ASM, the assmebly files
+    > For Asset Table, the asset files
+Process Type:
+    > Replace (Check For Compressed/Decompressed)
+    > Remove
+    > Extract (Always Decompressed)
+If Replace, Select Replacement File
+Table Of Replacements
+    > Type
+    > Pointer
+    > Replacement File
+    > Button To Remove Replacement

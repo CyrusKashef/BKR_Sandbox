@@ -1,0 +1,110 @@
+FONT_DICT = {
+    "<Squiggly_Font>": "ýl",
+    "<Shaky_Font>": "ýh",
+}
+
+SPRITE_DICT = {
+    # Special?
+    0x01: "Mr Vile Waiting For User Input A/B",
+    0x02: "Check For Health Refill & Tutorial Waiting For User Input A/B",
+    0x03: "Boggy & Third Cheat Waiting For User Input A/B",
+    0x04: "Typically End Of Top/Bottom Section",
+    0x06: "Typically Transition To Top/Bottom Screen",
+    0x07: "Unknown (Pause Period?)",
+    0x08: "Picks For Brentilda Hints/Picked Up Present Sprite/Cheato Cheat",
+    0x09: "Grabs Note Count/Jiggy Count",
+    # Sprites
+    0x80: "Banjo",
+    0x81: "Kazooie", # Verify?
+    0x82: "Kazooie", # Verify?
+    0x83: "Bottles",
+    0x84: "Mumbo",
+    0x85: "Chimpy",
+    0x86: "Conga", # Verify?
+    0x87: "Blubber",
+    0x88: "Nipper",
+    0x89: "Clanker",
+    0x8A: "Mutie Snippet",
+    0x8B: "Mr Vile",
+    0x8C: "Choir Member",
+    0x8D: "Tanktup",
+    0x8E: "Yellow Flibbit",
+    0x8F: "Trunker",
+    0x90: "Rubee",
+    0x91: "Gobi",
+    0x92: "Grabba",
+    0x93: "Napper",
+    0x94: "Yellow Jinjo",
+    0x95: "Green Jinjo",
+    0x96: "Blue Jinjo",
+    0x97: "Pink Jinjo",
+    0x98: "Orange Jinjo",
+    0x99: "Note",
+    0x9A: "Mumbo Token",
+    0x9A: "Orange",
+    0x9B: "Blue Egg",
+    0x9C: "Red Feather",
+    0x9D: "Gold Feather",
+    0x9E: "Conga",
+    0x9F: "Blubber's Gold",
+    0xA0: "Beehive", # Verify?
+    0xA1: "Empty Honeycomb",
+    0xA2: "Extra Life",
+    0xA3: "Jiggy",
+    0xA4: "Beehive",
+    0xA5: "Wading Boots",
+    0xA6: "Turbo Trainers",
+    0xA7: "BGS Piranha",
+    0xA8: "Ticker",
+    0xA9: "Ju-Ju",
+    0xAA: "Yum-Yum",
+    0xAB: "Little Lockup",
+    0xAC: "Leaky",
+    0xAD: "Gloop",
+    0xAE: "Tiptup",
+    0xAF: "Snacker",
+    0xB0: "Jinxy",
+    0xB1: "GV Sand Eel",
+    0xB2: "Snorkel",
+    0xB3: "Ancient Ones",
+    0xB4: "Croctus",
+    0xB5: "Gruntilda", # Verify?
+    0xB6: "Tooty", # FF Cutscene Before Staff Credits?
+    0xB7: "Boggy",
+    0xB8: "Wozza",
+    0xB9: "Motzand",
+    0xBA: "Tumblar",
+    0xBB: "Mum-Mum",
+    0xBC: "Present", # Dunno Which Color
+    0xBD: "Caterpillar",
+    0xBE: "FP Ice Water",
+    0xBF: "Twinklie",
+    0xC0: "Twinklie Muncher",
+    0xC1: "Gnawty",
+    0xC2: "Boss Boom Box",
+    0xC3: "Zubba",
+    0xC4: "Nabnut",
+    0xC5: "Boggy's Kids",
+    0xC6: "Baby Eyrie",
+    0xC7: "Baby Eyrie",
+    0xC8: "Baby Eyrie",
+    0xC9: "Adult Eyrie",
+    0xCA: "Cauldron",
+    0xCB: "Brentilda",
+    0xCC: "Tooty",
+    0xCD: "Black Snippet",
+    0xCE: "Loggo",
+    0xCF: "Cheato",
+    0xD0: "Present", # Dunno Which Color
+    0xD1: "Present", # Dunno Which Color
+    0xD2: "Klungo",
+    0xD3: "Sexy Grunty",
+    0xD4: "Ugly Tooty",
+    0xD5: "Banjo", # FF Cutscene After Staff Credits?
+    0xD6: "Kazooie", # FF Cutscene After Staff Credits?
+    0xD7: "Tooty", # FF Staff Credits?
+    0xD8: "Dingpot",
+    0xD9: "Mr Vile", # Says You Cheated
+    0xDA: "Gruntilda", # Finale Credits?
+    0xDB: "Lockup",
+}

@@ -1,0 +1,60 @@
+{
+    "Grunty_Skin": {
+        "Color_Ratio": "3C963C",
+        "Ignore_Gray": false
+    },
+    "Grunty_Dress_Main": {
+        "Color_Ratio": "FFFF00",
+        "Ignore_Gray": false,
+        "Brightness": 3
+    },
+    "Grunty_Dress_Pants": {
+        "Color_Ratio": "3C963C",
+        "Ignore_Gray": false
+    },
+    "Grunty_Dress_Sleeve": {
+        "Color_Ratio": "3C963C",
+        "Ignore_Gray": false
+    },
+    "Grunty_Dress_Inside": {
+        "Color_Ratio": "3C963C",
+        "Ignore_Gray": false
+    },
+    "Grunty_Hat": {
+        "Color_Ratio": "FFFF00",
+        "Ignore_Gray": false,
+        "Brightness": 3
+    },
+    "Grunty_Hair": {
+        "Color_Ratio": "3C963C",
+        "Ignore_Gray": false
+    },
+    "Grunty_Shoes": {
+        "Color_Ratio": "3C963C",
+        "Ignore_Gray": false
+    },
+    "Grunty_Broomstick_Front": {
+        "Color_Ratio": "3C963C",
+        "Ignore_Gray": false
+    },
+    "Grunty_Broomstick_Back": {
+        "Color_Ratio": "3C963C",
+        "Ignore_Gray": false
+    },
+    "Grunty_Scarf_&_Socks": {
+        "Color_Ratio": "FF4040",
+        "Ignore_Gray": false
+    },
+    "Grunty_Eyes": {
+        "Color_Ratio": "571700",
+        "Ignore_Gray": true
+    },
+    "Grunty_Teeth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Grunty_Mouth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

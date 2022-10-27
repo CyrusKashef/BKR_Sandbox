@@ -21,9 +21,9 @@ from Automated.Assembly.Gruntildas_Lair.Gruntildas_Lair_Data import GRUNTILDAS_L
 from Automated.Assembly.Final_Battle.Final_Battle_Code import FINAL_BATTLE_CODE_CLASS
 from Automated.Assembly.Cutscenes.Cutscenes_Code import CUTSCENES_CODE_CLASS
 
-from Automated.Assembly.Core_2.Music_Dict import LOOPING_LEVEL_MUSIC_DICT
-from Automated.Assembly.Core_2.Marker_Dict import ENEMY_MARKER_DICT
-from Automated.Assembly.Spiral_Mountain.Move_Dict import MOVE_DICT
+from Data_Files.Music_Dict import LOOPING_LEVEL_MUSIC_DICT
+from Data_Files.Marker_Dict import ENEMY_MARKER_DICT
+from Data_Files.Move_Dict import MOVE_DICT
 
 class ASSEMBLY_CLASS():
     def __init__(self, file_dir):

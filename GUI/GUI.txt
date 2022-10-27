@@ -294,6 +294,9 @@ World Specific
             > No Selected Option
             > Include Shuffling/Randomization
             > Always Have Presents
+        - Boggy Race
+            > Walrus Race Before BK Race
+            > No Race Order
     * Gobi's Valley
         - Shuffle Matching Puzzle
         - Shuffle Ancient Ones Order

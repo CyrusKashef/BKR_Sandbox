@@ -4,11 +4,11 @@ from mmap import mmap
 sys.path.append(".")
 from Automated.Generic_File import GENERIC_FILE_CLASS
 
-from Automated.Asset_Table_Pointer_Dict import ASSET_TABLE_POINTER_DICT
-from Automated.Extract_And_Insert.Bootloader_Assembly_Dict import BOOTLOADER_ASSEMBLY_DICT
+from Data_Files.Asset_Table_Pointer_Dict import ASSET_TABLE_POINTER_DICT
+from Data_Files.Bootloader_Assembly_Dict import BOOTLOADER_ASSEMBLY_DICT
 
 class BK_ROM_CLASS(GENERIC_FILE_CLASS):
-    def __init__(self, file_dir, bk_rom_name):
+    def __init__(self, file_dir, bk_rom_path):
         ### CONSTANTS ###
         self._ASSET_TABLE_OFFSET = 0x10CD0
         self._EXTRACTED_FILES_DIR = "Extracted_Files/"
@@ -29,7 +29,7 @@ class BK_ROM_CLASS(GENERIC_FILE_CLASS):
         }
 
         ### VARIABLES ###
-        with open(f"{file_dir}{bk_rom_name}.z64", "rb+") as bin_file:
+        with open(bk_rom_path, "rb+") as bin_file:
             self._mmap = mmap(bin_file.fileno(), 0)
         self._file_dir = file_dir
         self._changes_made_during_session = []

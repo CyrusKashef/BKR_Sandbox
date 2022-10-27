@@ -1,16 +1,22 @@
 import sys
 from shutil import copy
 from os import listdir
-from random import seed, randint, choice
+from random import seed, randint, choice, shuffle
 
-from Generic_File import GENERIC_FILE_CLASS
+if __name__ == '__main__':
+    from Generic_File import GENERIC_FILE_CLASS
+else:
+    from .Generic_File import GENERIC_FILE_CLASS
 
 sys.path.append(".")
 from Automated.Extract_And_Insert.BK_ROM import BK_ROM_CLASS
 from Automated.Extract_And_Insert.Decompress import DECOMPRESS_CLASS
 from Automated.Extract_And_Insert.Compress import COMPRESS_CLASS
 from Automated.Clean_Up.Clean_Up import CLEAN_UP_CLASS
-from Automated.Assembly.Assembly_Class import ASSEMBLY_CLASS
+if __name__ == '__main__':
+    from Assembly.Assembly_Class import ASSEMBLY_CLASS
+else:
+    from .Assembly.Assembly_Class import ASSEMBLY_CLASS
 
 from Automated.Game_Assets.Models.Generic_Model import GENERIC_MODEL_CLASS
 from Automated.Game_Assets.Models.Specific_Models.Important_Characters.BK_Model import BK_MODEL_CLASS
@@ -19,12 +25,14 @@ from Automated.Game_Assets.Models.Specific_Models.Levels.Treasure_Trove_Cove.TTC
 from Automated.Game_Assets.Models.Specific_Models.Levels.Treasure_Trove_Cove.TTC_B_Model import TTC_B_MODEL_CLASS
 from Automated.Game_Assets.Models.Specific_Models.Levels.Gruntildas_Lair.Furance_Fun import FURNACE_FUN_MODEL_CLASS
 
-from Automated.Asset_Table_Pointer_Dict import ASSET_TABLE_POINTER_DICT
-from Automated.Assembly.Asset_Dict import ASSET_DICT
-from Automated.Skybox_And_Cloud_Dict import SKYBOX_AND_CLOUD_DICT
+from Automated.Game_Assets.Sounds.BK_Sound import BK_SOUND_CLASS
+
+from Data_Files.Asset_Table_Pointer_Dict import ASSET_TABLE_POINTER_DICT
+from Data_Files.Asset_Id_Dict import ASSET_ID_DICT
+from Data_Files.Skybox_And_Cloud_Dict import SKYBOX_AND_CLOUD_DICT
 
 class AUTOMATED_CLASS():
-    def __init__(self, file_dir, original_rom_name, new_rom_name="Banjo-Kazooie-NEW"):
+    def __init__(self, file_dir, original_rom_path, new_rom_path):
         ### CONSTANTS ###
         self._EXTRACTED_FILES_DIR = "Extracted_Files/"
         self._COMPRESSED_BIN_EXTENSION = "-Compressed.bin"
@@ -35,16 +43,15 @@ class AUTOMATED_CLASS():
 
         ### VARIABLES ###
         self._file_dir = file_dir
-        self._new_rom_name = new_rom_name
-        self._make_copy_of_ROM(original_rom_name, new_rom_name)
-        self._bk_rom_obj = BK_ROM_CLASS(self._file_dir, self._new_rom_name)
+        self._make_copy_of_ROM(original_rom_path, new_rom_path)
+        self._bk_rom_obj = BK_ROM_CLASS(file_dir, new_rom_path)
         self._assembly_obj = None
         self._clean_up_obj = None
         self._seed = None
     
-    def _make_copy_of_ROM(self, original_rom_name, new_rom_name):
+    def _make_copy_of_ROM(self, original_rom_path, new_rom_path):
         print("Make Copy Of ROM")
-        copy(self._file_dir + original_rom_name + ".z64", self._file_dir + new_rom_name + ".z64")
+        copy(original_rom_path, new_rom_path)
 
     ########################
     ### RANDOM FUNCTIONS ###
@@ -62,6 +69,11 @@ class AUTOMATED_CLASS():
         if(self._seed):
             seed(a=(self._seed + add_val))
         return choice(list)
+    
+    def _rand_shuffle(self, list, add_val=0):
+        if(self._seed):
+            seed(a=(self._seed + add_val))
+        return shuffle(list)
 
     ### EXTRACT & DECOMPRESS ###
 
@@ -161,8 +173,8 @@ class AUTOMATED_CLASS():
             bk_model_obj = BK_MODEL_CLASS(self._file_dir + self._EXTRACTED_FILES_DIR, "7908-Decompressed")
             bk_model_obj._color_shift_based_on_json(self._file_dir + self._SPECIFIC_MODEL_DIR + self._BK_MODEL_PRESET_DIR, adjusted_selection)
             self._assembly_obj._replace_bk_model_with_asset(0x34E)
-        elif(preset_selection in ASSET_DICT):
-            asset = ASSET_DICT[preset_selection]
+        elif(preset_selection in ASSET_ID_DICT):
+            asset = ASSET_ID_DICT[preset_selection]
             self._assembly_obj._replace_bk_model_with_asset(asset)
         else:
             print("SOMETHING IS HAPPENING")
@@ -380,6 +392,27 @@ class AUTOMATED_CLASS():
         if(os.path.exists(self._file_dir + self._EXTRACTED_FILES_DIR + "10758-Decompressed.bin")):
             os.remove(self._file_dir + self._EXTRACTED_FILES_DIR + "10758-Decompressed.bin")
         copy(f"{self._file_dir}Custom_Files/{custom_file_name}.bin", f"{self._file_dir}{self._EXTRACTED_FILES_DIR}10758-Raw.bin")
+    
+    def _randomize_music_instruments(self):
+        file_name = str(hex(0x10758))[2:].upper() + "-Decompressed"
+        print(f"File Name: {file_name}")
+        music_obj = BK_SOUND_CLASS(self._file_dir + self._EXTRACTED_FILES_DIR, file_name)
+        music_obj._get_tracks_offsets()
+        instrument_list = []
+        for track_num in range(0x1, 0x10):
+            # new_instrument = self._rand_choice(list(ALLOWED_INSTRUMENTS), 0x10758 + track_num)
+            instrument_val = music_obj._get_instrument(track_num)
+            instrument_list.append(instrument_val)
+        self._rand_shuffle(instrument_list, 0x10758)
+        for track_num in range(0x1, 0x10):
+            music_obj._replace_instrument(track_num, instrument_list[track_num - 1])
+
+    ###################
+    ### BANJO TOOIE ###
+    ###################
+
+    def _bt_to_bk_sound(self, tooie_pointer, kazooie_pointer):
+        pass
 
     ################
     ### CLEAN UP ###
@@ -404,75 +437,76 @@ if __name__ == '__main__':
 
     print("Extraction & Decompression Start")
     FILE_DIR = "C:/Users/Cyrus/Documents/VS_Code/BK_Randomizer/BK_Randomizer_v3/"
-    automated_obj = AUTOMATED_CLASS(FILE_DIR, "Banjo-Kazooie", "Banjo-Kazooie-NEW")
+    automated_obj = AUTOMATED_CLASS(FILE_DIR, f"{FILE_DIR}Banjo-Kazooie.z64", f"{FILE_DIR}Banjo-Kazooie-NEW.z64")
     use_seed = randint(0, 1000000)
     print(f"Seed: {use_seed}")
     automated_obj._set_seed(897442)
-    # automated_obj._extract_and_decompress_asset_category("Object Model Files")
-    # automated_obj._extract_and_decompress_asset_category("Level Model Files")
-    # automated_obj._extract_and_decompress_asset_category("Sprite/Texture Files")
+    automated_obj._extract_and_decompress_asset_category("Object Model Files")
+    automated_obj._extract_and_decompress_asset_category("Level Model Files")
+    automated_obj._extract_and_decompress_asset_category("Sprite/Texture Files")
     automated_obj._extract_and_decompress_asset_category("Music Files")
-    # automated_obj._extract_and_decompress_all_asm()
+    automated_obj._extract_and_decompress_all_asm()
     automated_obj._clean_up("Compressed")
     print("Extraction & Decompression Complete")
     
     print("DEV Options Start")
-    # automated_obj._skippable_cutscenes()
-    # automated_obj._boot_to_game_select()
-    # automated_obj._replace_note_doors("Note", 0)
-    # automated_obj._replace_jigsaw_puzzles("Jiggy", 0)
-    # automated_obj._modify_transformation_costs("Token", 0)
-    # automated_obj._exit_to_witchs_lair()
-    # automated_obj._super_banjo()
-    # automated_obj._faster_transformations()
-    # automated_obj._default_totals_screen()
+    automated_obj._skippable_cutscenes()
+    automated_obj._boot_to_game_select()
+    automated_obj._replace_note_doors("Note", 0)
+    automated_obj._replace_jigsaw_puzzles("Jiggy", 0)
+    automated_obj._modify_transformation_costs("Token", 0)
+    automated_obj._exit_to_witchs_lair()
+    automated_obj._super_banjo()
+    automated_obj._faster_transformations()
+    automated_obj._default_totals_screen()
 
     print("Testing Options Start")
-    # automated_obj._starting_lives("Infinite")
-    # automated_obj._starting_health(2)
-    # automated_obj._empty_honeycombs_for_extra_health(3)
-    # automated_obj._starting_inventory_counts(69)
-    # automated_obj._randomize_collisions()
-    # automated_obj._replace_bk_model_with_asset("Wishywashy")
-    # automated_obj._replace_bk_model_with_asset("Conga")
+    automated_obj._starting_lives("Infinite")
+    automated_obj._starting_health(2)
+    automated_obj._empty_honeycombs_for_extra_health(3)
+    automated_obj._starting_inventory_counts(69)
+    automated_obj._randomize_collisions()
+    automated_obj._replace_bk_model("Wishywashy")
+    # automated_obj._replace_bk_model("Conga")
     # automated_obj._replace_bk_model("Mario & Luigi")
-    # OBJECT_SKIP_POINTERS.append(0x7908)
+    OBJECT_SKIP_POINTERS.append(0x7908)
     # automated_obj._replace_ttc_model("Rusty Bucket Bay")
     # automated_obj._replace_mm_model("Treasure Trove Cove")
-    # automated_obj._increased_draw_distance("7990")
-    # LEVEL_SKIP_POINTERS.append(0x101F0)
-    # LEVEL_SKIP_POINTERS.append(0x101F8)
-    #
+    automated_obj._increased_draw_distance("7990")
+    LEVEL_SKIP_POINTERS.append(0x101F0)
+    LEVEL_SKIP_POINTERS.append(0x101F8)
+    
     # automated_obj._grayscale_category("Object Model Files")
     # automated_obj._grayscale_category("Level Model Files")
     # automated_obj._grayscale_category("Sprite/Texture Files")
-    #
-    # automated_obj._random_color_category("Object Model Files", skip_pointer=OBJECT_SKIP_POINTERS)
-    # automated_obj._random_color_category("Level Model Files", skip_pointer=LEVEL_SKIP_POINTERS, additional_scaling=0.85)
-    # automated_obj._random_color_category("Sprite/Texture Files")
-    # automated_obj._randomize_skybox_and_clouds()
-    # automated_obj._remove_hut_notes()
-    # automated_obj._enemy_note_drop()
-    # automated_obj._fallproof()
-    # automated_obj._jiggy_win_condition(1)
-    # automated_obj._note_count_win_condition(3)
-    # automated_obj._furnace_fun_finale()
-    # automated_obj._overwrite_asset_file(0x10758, "KQ_ZDD_Main_Cave-Riposte")
+    
+    automated_obj._random_color_category("Object Model Files", skip_pointer=OBJECT_SKIP_POINTERS)
+    automated_obj._random_color_category("Level Model Files", skip_pointer=LEVEL_SKIP_POINTERS, additional_scaling=0.85)
+    automated_obj._random_color_category("Sprite/Texture Files")
+    automated_obj._randomize_skybox_and_clouds()
+    automated_obj._remove_hut_notes()
+    automated_obj._enemy_note_drop()
+    automated_obj._fallproof()
+    automated_obj._jiggy_win_condition(1)
+    automated_obj._note_count_win_condition(3)
+    automated_obj._furnace_fun_finale()
+    automated_obj._randomize_music_instruments()
+    automated_obj._overwrite_asset_file(0x10758, "KQ_ZDD_Main_Cave-Riposte")
     automated_obj._insert_asset_file(0x10758, "KQ_ZDD_Main_Cave-Riposte")
     print("Options Complete")
 
     print("Adjusting Core Checksums Start")
-    # automated_obj._remove_known_anti_tampering()
-    # automated_obj._core_checksums()
+    automated_obj._remove_known_anti_tampering()
+    automated_obj._core_checksums()
     print("Adjusting Core Checksums Complete")
 
     print("Compression & Insertion Start")
-    # automated_obj._compress_and_insert_asset_category("Object Model Files")
-    # automated_obj._compress_and_insert_asset_category("Level Model Files", skip_pointer_list=LEVEL_SKIP_POINTERS)
-    # automated_obj._compress_and_insert_asset_category("Sprite/Texture Files")
+    automated_obj._compress_and_insert_asset_category("Object Model Files")
+    automated_obj._compress_and_insert_asset_category("Level Model Files", skip_pointer_list=LEVEL_SKIP_POINTERS)
+    automated_obj._compress_and_insert_asset_category("Sprite/Texture Files")
     automated_obj._compress_and_insert_asset_category("Music Files")
-    # automated_obj._compress_and_insert_all_asm()
-    # automated_obj._clean_up("All")
+    automated_obj._compress_and_insert_all_asm()
+    automated_obj._clean_up("All")
     print("Compression & Insertion Complete")
 
     print("Adjusting CRC Start")

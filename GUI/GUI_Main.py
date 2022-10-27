@@ -1,9 +1,53 @@
 import tkinter as tk
 from tkinter import ttk
 import tkinter.filedialog
-from os import getcwd
+from os import getcwd, listdir
+from random import randint
+import json
+import webbrowser
 
-from Models_Dict import MODELS_DICT
+from Data_Files.Models_Dict import MODELS_DICT
+from Data_Files.Video_Overview_Dict import VIDEO_OVERVIEW_DICT
+from .GUI_Progression import GUI_PROGRESSION_CLASS
+
+############################
+### ADDITIONAL GUI CLASS ###
+############################
+
+def ADDITIONAL_GUI(gif_image, label_message, button_message):
+    def update_gif(ind):
+        '''Updates The Gif Frame'''
+        frame = frames[ind]
+        ind += 1
+        if ind == frame_count:
+            ind = 0
+        bottles_talking_label.configure(image=frame)
+        bottles_talking_label.after(60, update_gif, ind)
+    # SETUP
+    BACKGROUND_COLOR = "#BFBF00"
+    FONT_TYPE = "LITHOGRAPH-BOLD"
+    FONT_SIZE = 12
+    # CREATE WINDOW
+    this_window = tk.Tk()
+    this_window.winfo_toplevel().title("Banjo-Kazooie Randomizer Pop-Up")
+    this_window.config(background=BACKGROUND_COLOR)
+    # TALKING SPRITE
+    frame_count = 10
+    frames = [tk.PhotoImage(master=this_window, file=(f"{getcwd()}/GUI/Sprites/{gif_image}.gif"), format = 'gif -index %i' %(i)) for i in range(frame_count)]
+    bottles_talking_label = tk.Label(this_window, background=BACKGROUND_COLOR)
+    bottles_talking_label.pack(padx=5, pady=2)
+    # LABEL
+    this_label = tk.Label(this_window, text=label_message, background=BACKGROUND_COLOR, font=(FONT_TYPE, FONT_SIZE))
+    this_label.config(anchor='center')
+    this_label.pack(padx=5, pady=2)
+    # BUTTONS
+    close_button = tk.Button(this_window, text=button_message, background=BACKGROUND_COLOR, command=this_window.destroy, font=(FONT_TYPE, FONT_SIZE))
+    close_button.config(anchor='center')
+    close_button.pack(padx=5, pady=2)
+    # END WINDOW
+    this_window.protocol("WM_DELETE_WINDOW", this_window.destroy)
+    this_window.after(0, update_gif, 0)
+    this_window.mainloop()
 
 class GUI_MAIN_CLASS():
     def __init__(self, bk_rando_version):
@@ -11,6 +55,7 @@ class GUI_MAIN_CLASS():
         self._GENERIC_BACKGROUND_COLOR = "#BFBF00"
         self._WHITE_COLOR = "#FFFFFF"
         self._BLACK_COLOR = "#000000"
+        self._GRAY_COLOR = "#808080"
         self._BLUE_COLOR = "#0040AA"
         self._RED_COLOR = "#990000"
         self._GOLD_COLOR = "#BFBF00"
@@ -23,7 +68,8 @@ class GUI_MAIN_CLASS():
         self._bk_rando_version = bk_rando_version
         self._app_window = tk.Tk()
         self._app_window.winfo_toplevel().title(f"Banjo-Kazooie Randomizer v{self._bk_rando_version}")
-        self._cwd = getcwd()
+        self._cwd = getcwd() + "/"
+        self._bk_model_preset_folder = f"{self._cwd}Automated/Game_Assets/Models/Specific_Models/Important_Characters/BK_Model_Presets/"
     
     #################
     ### GUI STYLE ###
@@ -74,10 +120,24 @@ class GUI_MAIN_CLASS():
     ###################
 
     def _select_rom_file(self):
-        pass
+        print("Selecting Original ROM file")
+        filename = tkinter.filedialog.askopenfilename(initialdir=self._cwd, title="Select The BK ROM File", filetype =(("Rom Files","*.z64"),("all files","*.*")) )
+        if(not filename):
+            return
+        self._original_rom_file_entry.set(filename)
+        self._original_rom_file_display.xview_moveto(1)
 
     def _select_randomized_rom_destination(self):
-        pass
+        print("Selecting Original ROM file")
+        new_directory = tkinter.filedialog.askdirectory(initialdir=self._cwd, title="Select Randomized ROM File Location")
+        if(not new_directory):
+            return
+        self._randomized_rom_file_entry.set(new_directory + "/")
+        self._randomized_rom_file_display.xview_moveto(1)
+    
+    def _random_seed_value(self):
+        print("Random Seed Value")
+        self._seed_value.set(str(randint(10000000, 19940303)))
 
     def _generate_randomizer_settings_code(self):
         pass
@@ -111,6 +171,7 @@ class GUI_MAIN_CLASS():
         self._original_rom_file_entry = tk.StringVar(self._rom_frame)
         self._original_rom_file_display = tk.Entry(self._rom_frame, textvariable=self._original_rom_file_entry, state='readonly', width=35, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
         self._original_rom_file_display.grid(row=1, column=3, columnspan=2, padx=10, pady=5)
+        self._original_rom_file_display.xview_moveto(1)
         # FOLDER BUTTON
         self._select_rando_rom_button = tk.Button(self._rom_frame, text='Select Randomized ROM Destination', image=self._folder_image, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, command=self._select_randomized_rom_destination)
         self._select_rando_rom_button.grid(row=2, column=1, padx=5, pady=5, sticky='w')
@@ -121,13 +182,14 @@ class GUI_MAIN_CLASS():
         self._randomized_rom_file_entry = tk.StringVar(self._rom_frame)
         self._randomized_rom_file_display = tk.Entry(self._rom_frame, textvariable=self._randomized_rom_file_entry, state='readonly', width=35, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
         self._randomized_rom_file_display.grid(row=2, column=3, columnspan=2, padx=10, pady=5)
+        self._randomized_rom_file_display.xview_moveto(1)
     
     def _create_seed_frame(self):
         self._seed_frame = tk.LabelFrame(self._general_tab, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._LARGE_FONT_SIZE))
         self._seed_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
         # RANDOM SEED BUTTON
         self._seed_image = tk.PhotoImage(file=f"{self._cwd}/GUI/Sprites/Seed.png")
-        self._random_seed_button = tk.Button(self._seed_frame, text='Random Seed Button', image=self._seed_image, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, command=self._select_rom_file)
+        self._random_seed_button = tk.Button(self._seed_frame, text='Random Seed Button', image=self._seed_image, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, command=self._random_seed_value)
         self._random_seed_button.grid(row=0, column=0, padx=5, pady=5, sticky='w')
         # SEED TEXT
         self._seed_label = tk.Label(self._seed_frame, text="Seed:", foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, anchor="w", justify="left", font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
@@ -199,8 +261,30 @@ class GUI_MAIN_CLASS():
         # TRACE(S)
         self._model_selection_value.trace('w', self._model_select)
     
+    def _update_bk_model_colors(self, *args):
+        file_name = f"{self._bk_model_preset_folder}{(self._bk_model_preset_value.get()).replace(' ', '_')}.json"
+        with open(file_name, "r") as json_file:
+            json_data = json.load(json_file)
+        self._banjo_fur_value.set(json_data["Banjo_Fur"]["Color_Ratio"])
+        self._banjo_skin_value.set(json_data["Banjo_Skin"]["Color_Ratio"])
+        self._banjo_eyes_value.set(json_data["Banjo_Eyes"]["Color_Ratio"])
+        self._banjo_eyelids_value.set(json_data["Banjo_Eyelids"]["Color_Ratio"])
+        self._banjo_shorts_value.set(json_data["Banjo_Shorts"]["Color_Ratio"])
+        self._banjo_nose_value.set(json_data["Banjo_Nose"]["Color_Ratio"])
+        self._kazooie_primary_value.set(json_data["Kazooie_Feathers_Primary"]["Color_Ratio"])
+        self._kazooie_secondary_value.set(json_data["Kazooie_Feathers_Secondary"]["Color_Ratio"])
+        self._kazooie_tuff_value.set(json_data["Kazooie_Head_Feather"]["Color_Ratio"])
+        self._kazooie_eyes_value.set(json_data["Kazooie_Eyes"]["Color_Ratio"])
+        self._kazooie_beak_legs_value.set(json_data["Kazooie_Beak/Legs"]["Color_Ratio"])
+        self._shark_tooth_value.set(json_data["Banjo_Necklace_Tooth"]["Color_Ratio"])
+        self._mouths_value.set(json_data["Mouths"]["Color_Ratio"])
+        self._backpack_value.set(json_data["Backpack"]["Color_Ratio"])
+        self._turbo_talon_trainers_value.set(json_data["Turbo_Talon_Trainers"]["Color_Ratio"])
+        self._wading_boots_value.set(json_data["Wading_Boots"]["Color_Ratio"])
+    
     def _create_bk_color_selection_frame(self):
-        self._bk_model_preset_options = ["Default", "Mario & Luigi"]
+        self._bk_model_preset_options = [file_name.replace(".json", "").replace("_", " ")
+                                         for file_name in listdir(self._bk_model_preset_folder)]
         self._bk_model_preset_value = tk.StringVar(self._player_model_frame)
         self._bk_model_preset_value.set(self._bk_model_preset_options[0])
         self._bk_model_dropdown = ttk.Combobox(self._player_model_frame, textvariable=self._bk_model_preset_value, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._SMALL_FONT_SIZE), width=30)
@@ -281,7 +365,7 @@ class GUI_MAIN_CLASS():
         self._shark_tooth_entry = tk.Entry(self._bk_color_frame, textvariable=self._shark_tooth_value, width=9)
         self._shark_tooth_entry.grid(row=0, column=5, padx=5, pady=5, sticky='w')
         # Mouths
-        self._mouths_text = tk.Label(self._bk_color_frame, text="BK's Mouths", foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._SMALL_FONT_SIZE))
+        self._mouths_text = tk.Label(self._bk_color_frame, text="B&K's Mouths", foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._SMALL_FONT_SIZE))
         self._mouths_text.grid(row=1, column=4, padx=5, pady=5, sticky='w')
         self._mouths_value = tk.StringVar(self._bk_color_frame)
         self._mouths_entry = tk.Entry(self._bk_color_frame, textvariable=self._mouths_value, width=9)
@@ -305,6 +389,8 @@ class GUI_MAIN_CLASS():
         self._wading_boots_entry = tk.Entry(self._bk_color_frame, textvariable=self._wading_boots_value, width=9)
         self._wading_boots_entry.grid(row=4, column=5, padx=5, pady=5, sticky='w')
         self._bk_color_frame.grid(row=2, column=0, columnspan=6, padx=5, pady=5, sticky='w')
+        # TRACE(S)
+        self._bk_model_preset_value.trace('w', self._update_bk_model_colors)
 
     def _create_other_model_selection_frame(self):
         self._other_model_frame = tk.LabelFrame(self._player_model_frame, text="Possible Other Models", foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
@@ -348,6 +434,7 @@ class GUI_MAIN_CLASS():
         self._tab_control.add(self._sounds_tab, text="Sounds")
         self._sounds_tab_control = ttk.Notebook(self._sounds_tab, width=self._app_window.winfo_width())
         self._create_sound_effects_tab()
+        self._create_characters_talking_tab()
         self._create_short_jingle_tab()
         self._create_long_jingle_tab()
         self._create_mini_game_music_tab()
@@ -359,6 +446,12 @@ class GUI_MAIN_CLASS():
         self._sounds_tab_control.add(self._sound_effects_tab, text="Sound Effects")
         self._sound_effects_frame = tk.LabelFrame(self._sound_effects_tab, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._LARGE_FONT_SIZE))
         self._sound_effects_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+    
+    def _create_characters_talking_tab(self):
+        self._characters_talking_tab = ttk.Frame(self._sounds_tab_control)
+        self._sounds_tab_control.add(self._characters_talking_tab, text="Characters Talking")
+        self._characters_talking_frame = tk.LabelFrame(self._characters_talking_tab, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._LARGE_FONT_SIZE))
+        self._characters_talking_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
     
     def _create_short_jingle_tab(self):
         self._short_jingle_tab = ttk.Frame(self._sounds_tab_control)
@@ -599,12 +692,52 @@ class GUI_MAIN_CLASS():
         self._quality_of_life_tab_control.add(self._speedrunner_tab, text="Speedrunner")
         self._speedrunner_frame = tk.LabelFrame(self._speedrunner_tab, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._LARGE_FONT_SIZE))
         self._speedrunner_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Exit To Witch's Lair
+        self._exit_to_witchs_lair_value = tk.IntVar()
+        self._exit_to_witchs_lair_checkbutton = tk.Checkbutton(self._speedrunner_frame, text="Enable Exit To Witch's Lair", variable=self._exit_to_witchs_lair_value, foreground=self._BLACK_COLOR, background=self._GENERIC_BACKGROUND_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
+        self._exit_to_witchs_lair_checkbutton.grid(row=0, column=0, padx=5, pady=5, sticky='w')
+        # Skippable Cutscenes
+        self._skippable_cutscenes_value = tk.IntVar()
+        self._skippable_cutscenes_checkbutton = tk.Checkbutton(self._speedrunner_frame, text="Skippable Cutscenes", variable=self._skippable_cutscenes_value, foreground=self._BLACK_COLOR, background=self._GENERIC_BACKGROUND_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
+        self._skippable_cutscenes_checkbutton.grid(row=1, column=0, padx=5, pady=5, sticky='w')
+        # Speedrunner Text
+        self._speedrunner_text_value = tk.IntVar()
+        self._speedrunner_text_checkbutton = tk.Checkbutton(self._speedrunner_frame, text="Speedrunner Text", variable=self._speedrunner_text_value, foreground=self._RED_COLOR, background=self._GENERIC_BACKGROUND_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
+        self._speedrunner_text_checkbutton.grid(row=2, column=0, padx=5, pady=5, sticky='w')
+        # Remove Jiggy Fanfare
+        self._remove_jiggy_fanfare_value = tk.IntVar()
+        self._remove_jiggy_fanfare_checkbutton = tk.Checkbutton(self._speedrunner_frame, text="Remove Jiggy Jig Fanfare", variable=self._remove_jiggy_fanfare_value, foreground=self._RED_COLOR, background=self._GENERIC_BACKGROUND_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
+        self._remove_jiggy_fanfare_checkbutton.grid(row=3, column=0, padx=5, pady=5, sticky='w')
+        # Remove Note Door Fanfare
+        self._remove_note_door_fanfare_value = tk.IntVar()
+        self._remove_note_door_fanfare_checkbutton = tk.Checkbutton(self._speedrunner_frame, text="Remove Note Door Fanfare", variable=self._remove_note_door_fanfare_value, foreground=self._RED_COLOR, background=self._GENERIC_BACKGROUND_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
+        self._remove_note_door_fanfare_checkbutton.grid(row=4, column=0, padx=5, pady=5, sticky='w')
     
     def _create_quality_of_life_other_tab(self):
         self._quality_of_life_other_tab = ttk.Frame(self._quality_of_life_tab_control)
         self._quality_of_life_tab_control.add(self._quality_of_life_other_tab, text="QoL Other")
         self._quality_of_life_other_frame = tk.LabelFrame(self._quality_of_life_other_tab, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._LARGE_FONT_SIZE))
         self._quality_of_life_other_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Infinite Lives
+        self._infinite_lives_value = tk.IntVar()
+        self._infinite_lives_checkbutton = tk.Checkbutton(self._quality_of_life_other_frame, text="Infinite Lives", variable=self._infinite_lives_value, foreground=self._BLACK_COLOR, background=self._GENERIC_BACKGROUND_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
+        self._infinite_lives_checkbutton.grid(row=0, column=0, padx=5, pady=5, sticky='w')
+        # Constant Jiggy Display
+        self._constant_jiggy_display_value = tk.IntVar()
+        self._constant_jiggy_display_checkbutton = tk.Checkbutton(self._quality_of_life_other_frame, text="Always Display Jiggy Total", variable=self._constant_jiggy_display_value, foreground=self._RED_COLOR, background=self._GENERIC_BACKGROUND_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
+        self._constant_jiggy_display_checkbutton.grid(row=1, column=0, padx=5, pady=5, sticky='w')
+        # Constant Note Display
+        self._constant_note_display_value = tk.IntVar()
+        self._constant_note_display_checkbutton = tk.Checkbutton(self._quality_of_life_other_frame, text="Always Display Note Total", variable=self._constant_note_display_value, foreground=self._RED_COLOR, background=self._GENERIC_BACKGROUND_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
+        self._constant_note_display_checkbutton.grid(row=2, column=0, padx=5, pady=5, sticky='w')
+        # Pause Menu Move Tracker
+        self._pause_menu_move_tracker_value = tk.IntVar()
+        self._pause_menu_move_tracker_checkbutton = tk.Checkbutton(self._quality_of_life_other_frame, text="Move Tracker In Pause Menu", variable=self._pause_menu_move_tracker_value, foreground=self._RED_COLOR, background=self._GENERIC_BACKGROUND_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
+        self._pause_menu_move_tracker_checkbutton.grid(row=3, column=0, padx=5, pady=5, sticky='w')
+        # XBOX Note Saving
+        self._note_saving_value = tk.IntVar()
+        self._note_saving_checkbutton = tk.Checkbutton(self._quality_of_life_other_frame, text="XBOX Note Saving", variable=self._note_saving_value, foreground=self._RED_COLOR, background=self._GENERIC_BACKGROUND_COLOR, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE))
+        self._note_saving_checkbutton.grid(row=4, column=0, padx=5, pady=5, sticky='w')
     
     #####################
     ### DEVELOPER TAB ###
@@ -618,11 +751,129 @@ class GUI_MAIN_CLASS():
         self._create_developer_other_tab()
         self._developer_tab_control.pack(expand=1, fill="both")
     
+    def _create_custom_asset_table(self):
+        self._custom_asset_table = ttk.Treeview(self._custom_asset_frame, selectmode='browse', height=5)
+        self._custom_asset_table.grid(row=0, column=0, rowspan=3, columnspan=4, padx=5, pady=5)
+        self._custom_asset_table["columns"] = ("1", "2", "3", "4")
+        self._custom_asset_table['show']='headings'
+        self._custom_asset_table.column("1", width=90, anchor='c')
+        self._custom_asset_table.column("2", width=200, anchor='c')
+        self._custom_asset_table.column("3", width=90, anchor='c')
+        self._custom_asset_table.column("4", width=200, anchor='c')
+        self._custom_asset_table.heading("1", text="Pointer Address") # Required
+        self._custom_asset_table.heading("2", text="Original Name") # Auto Generated
+        self._custom_asset_table.heading("3", text="Action") # Replace/Remove
+        self._custom_asset_table.heading("4", text="New File") # Optional
+        style = ttk.Style()
+        style.configure("Treeview.Heading",
+            background=self._WHITE_COLOR,
+            foreground=self._BLACK_COLOR,
+            rowheight=25,
+            fieldbackground=self._GOLD_COLOR)
+        style.configure("Treeview",
+            background=self._WHITE_COLOR,
+            foreground=self._BLACK_COLOR,
+            rowheight=25,
+            fieldbackground=self._GENERIC_BACKGROUND_COLOR)
+        style.map("Treeview",
+            foreground=[("selected", self._WHITE_COLOR)],
+            background=[("selected", self._BLUE_COLOR)])
+    
+    def _update_original_asset_display(self, *args):
+        known_pointer_table = {"Test": "Test Level"}
+        if(self._asset_pointer_address_value.get() == ""):
+            self._original_asset_value.set("")
+        elif(self._asset_pointer_address_value.get() in known_pointer_table):
+            self._original_asset_value.set(known_pointer_table[self._asset_pointer_address_entry.get()])
+        else:
+            self._original_asset_value.set("Unknown")
+
+    def _select_new_asset_filename(self):
+        print("Selecting New Asset")
+        filename = tkinter.filedialog.askopenfilename(initialdir=self._cwd, title="Select The New Asset File", filetype =(("Bin Files","*.bin"),("all files","*.*")) )
+        if(not filename):
+            return
+        self._new_asset_filename_entry.set(filename)
+        self._new_asset_filename_display.xview_moveto(1)
+
+    def _entry_boxes(self):
+        # POINTER ADDRESS
+        self._asset_pointer_address_text = tk.Label(self._custom_asset_frame, text="Pointer\nAddress", foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._SMALL_FONT_SIZE))
+        self._asset_pointer_address_text.grid(row=3, column=0, padx=5, pady=5)
+        self._asset_pointer_address_value = tk.StringVar()
+        self._asset_pointer_address_value.set("")
+        self._asset_pointer_address_entry = tk.Entry(self._custom_asset_frame, textvariable=self._asset_pointer_address_value, width=8)
+        self._asset_pointer_address_entry.grid(row=4, column=0, padx=5, pady=5)
+        # ORIGINAL NAME
+        self._original_asset_text = tk.Label(self._custom_asset_frame, text="Original\nFile", foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._SMALL_FONT_SIZE))
+        self._original_asset_text.grid(row=3, column=1, padx=5)
+        self._original_asset_value = tk.StringVar()
+        self._original_asset_value.set("")
+        self._original_asset_display = tk.Entry(self._custom_asset_frame, textvariable=self._original_asset_value, state='readonly', font=("Arial", 12))
+        self._original_asset_display.grid(row=4, column=1, padx=5)
+        # ACTION
+        self._new_asset_action_text = tk.Label(self._custom_asset_frame, text="Action", foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._SMALL_FONT_SIZE))
+        self._new_asset_action_text.grid(row=3, column=2, padx=5)
+        self._new_asset_action_options = ["Replace", "Remove"]
+        self._new_asset_action_value = tk.StringVar(self._custom_asset_frame)
+        self._new_asset_action_value.set(self._new_asset_action_options[0])
+        self._new_asset_action_dropdown = ttk.Combobox(self._custom_asset_frame, textvariable=self._new_asset_action_value, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._SMALL_FONT_SIZE), width=8)
+        self._new_asset_action_dropdown['values'] = self._new_asset_action_options
+        self._new_asset_action_dropdown['state'] = 'readonly'
+        self._new_asset_action_dropdown.grid(row=4, column=2, padx=5)
+        # NEW FILE
+        self._new_asset_filename_text = tk.Label(self._custom_asset_frame, text="New File", foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._SMALL_FONT_SIZE))
+        self._new_asset_filename_text.grid(row=3, column=3, padx=5)
+        self._new_asset_filename_entry = tk.StringVar(self._custom_asset_frame)
+        self._new_asset_filename_display = tk.Entry(self._custom_asset_frame, textvariable=self._new_asset_filename_entry, state='readonly')
+        self._new_asset_filename_display.grid(row=4, column=3, padx=5)
+        self._new_asset_filename_button = tk.Button(self._custom_asset_frame, text='Select\nNew File', command=self._select_new_asset_filename, foreground=self._WHITE_COLOR, background=self._BLUE_COLOR, width=10)
+        self._new_asset_filename_button.grid(row=4, column=4, padx=5)
+        # TRACE(S)
+        self._asset_pointer_address_value.trace('w', self._update_original_asset_display)
+
+    def _remove_row(self):
+        selected_row = self._custom_asset_table.selection()[0]
+        self._custom_asset_table.delete(selected_row)
+    
+    def _create_remove_row_button(self):
+        self._remove_row_button = tk.Button(self._custom_asset_frame, text='Remove Row', command=self._remove_row, foreground=self._WHITE_COLOR, background=self._RED_COLOR, width=10)
+        self._remove_row_button.grid(row=0, column=4, padx=5)
+
+    def _default_remove_assets_rows(self, *arg):
+        DEFAULT_ASSET_REMOVE_LIST = [
+            {"Pointer": "10378", "Original": "Invisible Walls?"},
+            {"Pointer": "10548", "Original": "Test Map 1"},
+            {"Pointer": "10550", "Original": "Test Map 2"},
+        ]
+        for item_count, item, in enumerate(DEFAULT_ASSET_REMOVE_LIST):
+            self._custom_asset_table.insert(parent="", index='end', iid=item_count, values=(item["Pointer"], item["Original"], "Remove", ""))
+
+    def _add_row(self, *arg):
+        table_len = len(self._custom_asset_table.get_children())
+        self._custom_asset_table.insert(parent="", index='end', iid=table_len, values=(self._asset_pointer_address_value.get(),
+                                                                                       self._original_asset_value.get(),
+                                                                                       self._new_asset_action_value.get(),
+                                                                                       self._new_asset_filename_entry.get()))
+        self._asset_pointer_address_value.set("")
+        self._original_asset_value.set("")
+        self._new_asset_action_value.set("Replace")
+        self._new_asset_filename_entry.set("")
+    
+    def _create_add_row_button(self):
+        self._add_row_button = tk.Button(self._custom_asset_frame, text='Add Row', command=self._add_row, foreground=self._WHITE_COLOR, background=self._RED_COLOR, width=10)
+        self._add_row_button.grid(row=2, column=4, padx=5)
+
     def _create_custom_asset_tab(self):
         self._custom_asset_tab = ttk.Frame(self._developer_tab_control)
         self._developer_tab_control.add(self._custom_asset_tab, text="Custom Assets")
         self._custom_asset_frame = tk.LabelFrame(self._custom_asset_tab, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._LARGE_FONT_SIZE))
         self._custom_asset_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        self._create_custom_asset_table()
+        self._default_remove_assets_rows()
+        self._create_remove_row_button()
+        self._create_add_row_button()
+        self._entry_boxes()
     
     def _create_developer_other_tab(self):
         self._developer_other_tab = ttk.Frame(self._developer_tab_control)
@@ -630,25 +881,75 @@ class GUI_MAIN_CLASS():
         self._developer_other_frame = tk.LabelFrame(self._developer_other_tab, foreground=self._BLACK_COLOR, background=self._GOLD_COLOR, font=(self._FONT_TYPE, self._LARGE_FONT_SIZE))
         self._developer_other_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
         # Starting Area
+        # Keep Decompressed Files
+        # Disable Cheat Sheets
     
     ######################
     ### BOTTOM OPTIONS ###
     ######################
 
-    def _load_configuration(self):
-        pass
+    def _load_configuration(self, button_press=True):
+        setting_not_found = []
+        if(button_press):
+            try:
+                config_default_dir = f"{self._cwd}GUI/Configurations/"
+                filename = tkinter.filedialog.askopenfilename(initialdir=config_default_dir, title="Select A JSON Config File", filetypes =(("Json Files","*.json"),("all files","*.*")))
+                with open(filename, "r") as json_file:
+                    json_data = json.load(json_file)
+            except FileNotFoundError as e:
+                print("JSON File Was Not Found Or Operation Was Canceled.\nLeaving The Settings As They Are.")
+                print(e)
+                return
+            except Exception as e:
+                print("Error Occurred During Random Configuration.\nLeaving The Settings As They Are.")
+                print(e)
+                return
+        else:
+            try:
+                filename = f"{self._cwd}GUI/Configurations/Last_Used_Configuration.json"
+                with open(filename, "r") as json_file:
+                    json_data = json.load(json_file)
+            except FileNotFoundError:
+                ADDITIONAL_GUI("Bottles_Speaking", "If you want a video guide, click Brentilda's icon.\nI will apply the recommended first playthrough settings!", "Close")
+                print("Last Used Configuration File Not Found. Implementing The Default Settings!")
+                return
+            except Exception:
+                print("Error Occurred During Random Configuration. Leaving Settings As They Are.")
+                return
+        # GENERAL
+        if(json_data["Original_ROM_File"] != ""):
+            self._original_rom_file_entry.set(json_data["Original_ROM_File"])
+        if(json_data["New_ROM_File"] != ""):
+            self._randomized_rom_file_entry.set(json_data["New_ROM_File"])
 
-    def _save_current_configuration(self):
-        pass
+    def _save_current_configuration(self, button_press=True):
+        current_config = {
+            "Original_ROM_File": self._original_rom_file_entry.get(),
+            "New_ROM_File": self._randomized_rom_file_entry.get(),
+        }
+        if(button_press):
+            try:
+                json_file = tkinter.filedialog.asksaveasfile(filetypes=(("Json Files","*.json"),("all files","*.*")), defaultextension=json)
+                json.dump(current_config, json_file, indent=4)
+            except Exception as e:
+                print("Save Configuration Button Error")
+                print(e)
+        else:
+            config_file = f"{self._cwd}GUI/Configurations/Last_Used_Configuration.json"
+            with open(config_file, "w+") as json_file: 
+                json.dump(current_config, json_file, indent=4)
 
     def _open_file(self, temp):
+        # Opens A File
         pass
 
     def _open_overview_video(self):
-        pass
+        webbrowser.open(VIDEO_OVERVIEW_DICT[self._tab_control.index(self._tab_control.select())])
 
     def _submit(self):
-        pass
+        self._save_current_configuration(button_press=False)
+        progression_app = GUI_PROGRESSION_CLASS(self)
+        progression_app._main()
 
     def _create_bottom_options(self):
         self._config_and_submit = tk.LabelFrame(self._app_window)
@@ -693,6 +994,7 @@ class GUI_MAIN_CLASS():
         self._create_developer_tab()
         self._tab_control.pack(expand=1, fill="both")
         self._create_bottom_options()
+        self._load_configuration(button_press=False)
         self._app_window.protocol("WM_DELETE_WINDOW", self._app_window.destroy)
         self._app_window.mainloop()
 

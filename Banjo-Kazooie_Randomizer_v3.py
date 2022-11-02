@@ -8,7 +8,7 @@ from GUI.GUI_Main import GUI_MAIN_CLASS
 ### VARIABLES ###
 #################
 
-BK_RANDO_VERSION = "3.0.0 - October 27th, 2022"
+BK_RANDO_VERSION = "3.0.0 - November 2nd, 2022"
 
 ############
 ### MAIN ###

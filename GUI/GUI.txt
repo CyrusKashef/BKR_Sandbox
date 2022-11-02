@@ -138,7 +138,6 @@ Collectables/Progression
         > Note Count
         > Token Count
         > Empty Honeycomb Count
-        > Note Count
         > Stop N Swap Collected
     * JIGGIES
         - Options:

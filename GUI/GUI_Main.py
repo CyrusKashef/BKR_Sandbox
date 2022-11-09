@@ -8,6 +8,8 @@ import webbrowser
 
 from Data_Files.Models_Dict import MODELS_DICT
 from Data_Files.Video_Overview_Dict import VIDEO_OVERVIEW_DICT
+from Data_Files.Enemies_Dict import GROUND_ENEMIES_DICT, FLYING_ENEMIES_DICT, WALL_ENEMIES_DICT, OTHER_ENEMIES_DICT
+from Data_Files.Area_Id_Dict import AREA_ID_DICT
 from .GUI_Style import STYLE_DICT
 from .GUI_Progression import GUI_PROGRESSION_CLASS
 
@@ -88,6 +90,7 @@ class GUI_MAIN_CLASS():
                         "configure": {
                             "tabmargins": [2, 5, 2, 0],
                             "background": STYLE_DICT[theme_name]["Background_Color"],
+                            "takefocus": False,
                             },
                         },
                     "TNotebook.Tab": {
@@ -98,6 +101,7 @@ class GUI_MAIN_CLASS():
                             "anchor": 'CENTER',
                             "font": ("Arial bold", 10),
                             "focuscolor": STYLE_DICT[theme_name]["Selected_Tab_Color"],
+                            "takefocus": False,
                             },
                         "map": {
                             "foreground": [("selected", STYLE_DICT[theme_name]["Not_Selected_Tab_Font_Color"])],
@@ -698,12 +702,83 @@ class GUI_MAIN_CLASS():
         self._create_enemy_other_tab()
         self._enemies_tab_control.pack(expand=1, fill="both")
     
+    def _create_enemies_general_frame(self):
+        self._enemies_general_frame = ttk.Frame(self._enemy_selection_frame)
+        self._enemies_general_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Randomize Enemies?
+        self._randomize_enemies_text = ttk.Label(self._enemies_general_frame, text="Randomize Enemies?", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._randomize_enemies_text.grid(row=0, column=0, padx=5, pady=2, sticky='w')
+        self._randomize_enemies_options = ["Do Not Randomize Enemies", "Randomize Enemies By Category", "Completely Randomize Enemies"]
+        self._randomize_enemies_value = tk.StringVar(self._enemies_general_frame)
+        self._randomize_enemies_value.set(self._randomize_enemies_options[0])
+        self._randomize_enemies_dropdown = ttk.Combobox(self._enemies_general_frame, textvariable=self._randomize_enemies_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=25)
+        self._randomize_enemies_dropdown['values'] = self._randomize_enemies_options
+        self._randomize_enemies_dropdown['state'] = 'readonly'
+        self._randomize_enemies_dropdown.grid(row=0, column=1, padx=5)
+        # Do We Want To Include Item Spawning Enemies?
+        self._item_spawning_enemies_value = tk.IntVar()
+        self._item_spawning_enemies_checkbutton = ttk.Checkbutton(self._enemies_general_frame, text="Include Item Spawning Enemies? (May Cause Unobtainable Items)", variable=self._item_spawning_enemies_value)
+        self._item_spawning_enemies_checkbutton.grid(row=1, column=0, columnspan=3, padx=10, pady=5, sticky='w')
+    
+    def _create_ground_enemies_selection_frame(self):
+        self._ground_enemies_selection_frame = ttk.Frame(self._enemy_selection_frame)
+        self._ground_enemies_selection_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # ENEMY CATEGORY
+        self._ground_enemy_text = ttk.Label(self._ground_enemies_selection_frame, text="Ground Enemies", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._ground_enemy_text.grid(row=0, column=0, columnspan=2, padx=5, pady=1, sticky='w')
+        # ENEMY SELECTION
+        for enemy_count, enemy_name in enumerate(sorted(GROUND_ENEMIES_DICT)):
+            self._enemy_checkbox_dict[enemy_name] = tk.IntVar()
+            enemy_checkbutton = ttk.Checkbutton(self._ground_enemies_selection_frame, text=enemy_name, variable=self._enemy_checkbox_dict[enemy_name])
+            enemy_checkbutton.grid(row=(enemy_count // 5) + 1, column=(enemy_count % 5), padx=8, pady=1, sticky='w')
+    
+    def _create_flying_enemies_selection_frame(self):
+        self._flying_enemies_selection_frame = ttk.Frame(self._enemy_selection_frame)
+        self._flying_enemies_selection_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # ENEMY CATEGORY
+        self._flying_enemy_text = ttk.Label(self._flying_enemies_selection_frame, text="Flying Enemies", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._flying_enemy_text.grid(row=0, column=0, columnspan=2, padx=5, pady=1, sticky='w')
+        # ENEMY SELECTION
+        for enemy_count, enemy_name in enumerate(sorted(FLYING_ENEMIES_DICT)):
+            self._enemy_checkbox_dict[enemy_name] = tk.IntVar()
+            enemy_checkbutton = ttk.Checkbutton(self._flying_enemies_selection_frame, text=enemy_name, variable=self._enemy_checkbox_dict[enemy_name])
+            enemy_checkbutton.grid(row=(enemy_count // 5) + 1, column=(enemy_count % 5), padx=8, pady=1, sticky='w')
+    
+    def _create_wall_enemies_selection_frame(self):
+        self._wall_enemies_selection_frame = ttk.Frame(self._enemy_selection_frame)
+        self._wall_enemies_selection_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # ENEMY CATEGORY
+        self._wall_enemy_text = ttk.Label(self._wall_enemies_selection_frame, text="Wall Enemies", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._wall_enemy_text.grid(row=0, column=0, columnspan=2, padx=5, pady=1, sticky='w')
+        # ENEMY SELECTION
+        for enemy_count, enemy_name in enumerate(sorted(WALL_ENEMIES_DICT)):
+            self._enemy_checkbox_dict[enemy_name] = tk.IntVar()
+            enemy_checkbutton = ttk.Checkbutton(self._wall_enemies_selection_frame, text=enemy_name, variable=self._enemy_checkbox_dict[enemy_name])
+            enemy_checkbutton.grid(row=(enemy_count // 5) + 1, column=(enemy_count % 5), padx=8, pady=1, sticky='w')
+    
+    def _create_other_enemies_selection_frame(self):
+        self._other_enemies_selection_frame = ttk.Frame(self._enemy_selection_frame)
+        self._other_enemies_selection_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # ENEMY CATEGORY
+        self._other_enemy_text = ttk.Label(self._other_enemies_selection_frame, text="Other Enemies", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._other_enemy_text.grid(row=0, column=0, columnspan=2, padx=5, pady=1, sticky='w')
+        # ENEMY SELECTION
+        for enemy_count, enemy_name in enumerate(sorted(OTHER_ENEMIES_DICT)):
+            self._enemy_checkbox_dict[enemy_name] = tk.IntVar()
+            enemy_checkbutton = ttk.Checkbutton(self._other_enemies_selection_frame, text=enemy_name, variable=self._enemy_checkbox_dict[enemy_name])
+            enemy_checkbutton.grid(row=(enemy_count // 5) + 1, column=(enemy_count % 5), padx=8, pady=1, sticky='w')
+
     def _create_enemy_selection_tab(self):
         self._enemy_selection_tab = ttk.Frame(self._enemies_tab_control)
         self._enemies_tab_control.add(self._enemy_selection_tab, text="Selection")
         self._enemy_selection_frame = ttk.Frame(self._enemy_selection_tab)
         self._enemy_selection_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
-        # LIST ENEMIES
+        self._enemy_checkbox_dict = {}
+        self._create_enemies_general_frame()
+        self._create_ground_enemies_selection_frame()
+        self._create_flying_enemies_selection_frame()
+        self._create_wall_enemies_selection_frame()
+        self._create_other_enemies_selection_frame()
     
     def _create_enemy_vulnerability_tab(self):
         self._enemy_vulnerability_tab = ttk.Frame(self._enemies_tab_control)
@@ -711,13 +786,69 @@ class GUI_MAIN_CLASS():
         self._enemy_vulnerability_frame = ttk.Frame(self._enemy_vulnerability_tab)
         self._enemy_vulnerability_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
         # VULNERABILITY OPTIONS
+        self._enemy_vulnerability_text = ttk.Label(self._enemy_vulnerability_frame, text="Randomize Enemies Vulnerabilities?", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._enemy_vulnerability_text.grid(row=0, column=0, padx=5, pady=2, sticky='w')
+        self._enemy_vulnerability_options = ["Random Vulernability Option", "Base Game Vulnerabilities",
+                                             "Vulnerable To Everything", "One Vulnerability Per Enemy"]
+        self._enemy_vulnerability_value = tk.StringVar(self._enemy_vulnerability_frame)
+        self._enemy_vulnerability_value.set(self._enemy_vulnerability_options[0])
+        self._enemy_vulnerability_dropdown = ttk.Combobox(self._enemy_vulnerability_frame, textvariable=self._enemy_vulnerability_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=25)
+        self._enemy_vulnerability_dropdown['values'] = self._enemy_vulnerability_options
+        self._enemy_vulnerability_dropdown['state'] = 'readonly'
+        self._enemy_vulnerability_dropdown.grid(row=0, column=1, padx=5)
         # HINTS FOR VULNERABILITIES?
+        self._enemy_vulnerability_hints_value = tk.IntVar()
+        self._enemy_vulnerability_hints_checkbutton = ttk.Checkbutton(self._enemy_vulnerability_frame, text="Enemy Vulnerability Color Hints", variable=self._enemy_vulnerability_hints_value)
+        self._enemy_vulnerability_hints_checkbutton.grid(row=1, column=0, padx=10, pady=5, sticky='w')
+        # HINT LEGEND
+        self._claw_swipe_legend_text = ttk.Label(self._enemy_vulnerability_frame, text="Claw Swipe = Orange", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._claw_swipe_legend_text.grid(row=2, column=0, padx=5, pady=2, sticky='w')
+        self._roll_attack_legend_text = ttk.Label(self._enemy_vulnerability_frame, text="Roll Attack = Brown", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._roll_attack_legend_text.grid(row=3, column=0, padx=5, pady=2, sticky='w')
+        self._jump_on_them_legend_text = ttk.Label(self._enemy_vulnerability_frame, text="Jump On Them = Green", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._jump_on_them_legend_text.grid(row=4, column=0, padx=5, pady=2, sticky='w')
+        self._rat_a_tap_rap_legend_text = ttk.Label(self._enemy_vulnerability_frame, text="Rat-A-Tap Rap = Red", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._rat_a_tap_rap_legend_text.grid(row=5, column=0, padx=5, pady=2, sticky='w')
+        self._beak_barge_legend_text = ttk.Label(self._enemy_vulnerability_frame, text="Beak Barge = Magenta", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._beak_barge_legend_text.grid(row=6, column=0, padx=5, pady=2, sticky='w')
+        self._beak_buster_legend_text = ttk.Label(self._enemy_vulnerability_frame, text="Beak Buster = Purple", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._beak_buster_legend_text.grid(row=7, column=0, padx=5, pady=2, sticky='w')
+        self._beak_bomb_legend_text = ttk.Label(self._enemy_vulnerability_frame, text="Beak Bomb = Gray", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._beak_bomb_legend_text.grid(row=8, column=0, padx=5, pady=2, sticky='w')
+        self._egg_firing_legend_text = ttk.Label(self._enemy_vulnerability_frame, text="Egg Firing = Cyan", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._egg_firing_legend_text.grid(row=9, column=0, padx=5, pady=2, sticky='w')
+        self._wonderwing_legend_text = ttk.Label(self._enemy_vulnerability_frame, text="Wonderwing = Yellow", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._wonderwing_legend_text.grid(row=10, column=0, padx=5, pady=2, sticky='w')
     
     def _create_enemy_other_tab(self):
         self._enemy_other_tab = ttk.Frame(self._enemies_tab_control)
         self._enemies_tab_control.add(self._enemy_other_tab, text="Enemies Other")
         self._enemy_other_frame = ttk.Frame(self._enemy_other_tab)
         self._enemy_other_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Randomize Enemy Sizes?
+        self._randomize_enemy_sizes_text = ttk.Label(self._enemy_other_frame, text="Randomize Enemies Sizes?", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._randomize_enemy_sizes_text.grid(row=0, column=0, padx=5, pady=2, sticky='w')
+        self._randomize_enemy_sizes_options = ["Random Size Setting", "Random Size Setting Per World", "Random Size Setting Per Subarea",
+                                               "Base Game Enemy Sizes", "Scale Factor", "Uniform Size Range",
+                                               "Generally Small", "Generally Large", "Everything Small", "Everything Large"]
+        self._randomize_enemy_sizes_value = tk.StringVar(self._enemy_other_frame)
+        self._randomize_enemy_sizes_value.set(self._randomize_enemy_sizes_options[0])
+        self._randomize_enemy_sizes_dropdown = ttk.Combobox(self._enemy_other_frame, textvariable=self._randomize_enemy_sizes_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=25)
+        self._randomize_enemy_sizes_dropdown['values'] = self._randomize_enemy_sizes_options
+        self._randomize_enemy_sizes_dropdown['state'] = 'readonly'
+        self._randomize_enemy_sizes_dropdown.grid(row=0, column=1, padx=5)
+        # Adjust Enemy Boundaries
+        self._adjust_enemy_boundaries_value = tk.IntVar()
+        self._adjust_enemy_boundaries_checkbutton = ttk.Checkbutton(self._enemy_other_frame, text="Adjust Enemy Boundaries", variable=self._adjust_enemy_boundaries_value)
+        self._adjust_enemy_boundaries_checkbutton.grid(row=1, column=0, padx=10, pady=5, sticky='w')
+        # Remove Clucker Cutscene
+        self._remove_clucker_cutscene_value = tk.IntVar()
+        self._remove_clucker_cutscene_checkbutton = ttk.Checkbutton(self._enemy_other_frame, text="Remove Clucker Cutscene", variable=self._remove_clucker_cutscene_value)
+        self._remove_clucker_cutscene_checkbutton.grid(row=2, column=0, padx=10, pady=5, sticky='w')
+        # Snacker Anywhere
+        self._snacker_anywhere_value = tk.IntVar()
+        self._snacker_anywhere_checkbutton = ttk.Checkbutton(self._enemy_other_frame, text="Snacker Infests All Waters", variable=self._snacker_anywhere_value)
+        self._snacker_anywhere_checkbutton.grid(row=3, column=0, padx=10, pady=5, sticky='w')
     
     #######################
     ### PROGRESSION TAB ###
@@ -929,10 +1060,12 @@ class GUI_MAIN_CLASS():
         self._shuffle_type_text.grid(row=0, column=1, columnspan=2, padx=5, pady=5)
         self._shuffle_group_text = ttk.Label(self._collectables_frame, text="Shuffle Group:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._shuffle_group_text.grid(row=0, column=3, padx=5, pady=5)
+        self._shuffle_by_text = ttk.Label(self._collectables_frame, text="Shuffle By:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._shuffle_by_text.grid(row=0, column=4, padx=5, pady=5)
         # Jiggies
         self._jiggy_shuffle_text = ttk.Label(self._collectables_frame, text="Jiggies:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._jiggy_shuffle_text.grid(row=1, column=0, padx=5, pady=3, sticky='w')
-        self._jiggy_shuffle_options = ["Default Locations", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "Only Spawned Jiggies"]
+        self._jiggy_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "Only Spawned Jiggies"]
         self._jiggy_shuffle_value = tk.StringVar(self._collectables_frame)
         self._jiggy_shuffle_value.set(self._jiggy_shuffle_options[0])
         self._jiggy_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._jiggy_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
@@ -943,10 +1076,17 @@ class GUI_MAIN_CLASS():
         self._jiggy_shuffle_group_value.set("A")
         self._jiggy_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._jiggy_shuffle_group_value, width=8)
         self._jiggy_shuffle_group_entry.grid(row=1, column=3, padx=5)
+        self._jiggy_shuffle_by_options = ["World", "Game"]
+        self._jiggy_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._jiggy_shuffle_by_value.set(self._jiggy_shuffle_by_options[0])
+        self._jiggy_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._jiggy_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._jiggy_shuffle_by_dropdown['values'] = self._jiggy_shuffle_by_options
+        self._jiggy_shuffle_by_dropdown['state'] = 'readonly'
+        self._jiggy_shuffle_by_dropdown.grid(row=1, column=4, padx=5)
         # Tokens
         self._token_shuffle_text = ttk.Label(self._collectables_frame, text="Mumbo Tokens:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._token_shuffle_text.grid(row=2, column=0, padx=5, pady=3, sticky='w')
-        self._token_shuffle_options = ["Default Locations", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Mumbo Tokens"]
+        self._token_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Mumbo Tokens"]
         self._token_shuffle_value = tk.StringVar(self._collectables_frame)
         self._token_shuffle_value.set(self._token_shuffle_options[0])
         self._token_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._token_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
@@ -957,10 +1097,17 @@ class GUI_MAIN_CLASS():
         self._token_shuffle_group_value.set("A")
         self._token_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._token_shuffle_group_value, width=8)
         self._token_shuffle_group_entry.grid(row=2, column=3, padx=5)
+        self._token_shuffle_by_options = ["World", "Game"]
+        self._token_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._token_shuffle_by_value.set(self._token_shuffle_by_options[0])
+        self._token_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._token_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._token_shuffle_by_dropdown['values'] = self._token_shuffle_by_options
+        self._token_shuffle_by_dropdown['state'] = 'readonly'
+        self._token_shuffle_by_dropdown.grid(row=2, column=4, padx=5)
         # Honeycombs
         self._honeycomb_shuffle_text = ttk.Label(self._collectables_frame, text="Empty Honeycombs:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._honeycomb_shuffle_text.grid(row=3, column=0, padx=5, pady=3, sticky='w')
-        self._honeycomb_shuffle_options = ["Default Locations", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "Only Spawned Empty Honeycombs"]
+        self._honeycomb_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "Only Spawned Empty Honeycombs"]
         self._honeycomb_shuffle_value = tk.StringVar(self._collectables_frame)
         self._honeycomb_shuffle_value.set(self._honeycomb_shuffle_options[0])
         self._honeycomb_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._honeycomb_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
@@ -971,10 +1118,17 @@ class GUI_MAIN_CLASS():
         self._honeycomb_shuffle_group_value.set("A")
         self._honeycomb_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._honeycomb_shuffle_group_value, width=8)
         self._honeycomb_shuffle_group_entry.grid(row=3, column=3, padx=5)
+        self._honeycomb_shuffle_by_options = ["World", "Game"]
+        self._honeycomb_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._honeycomb_shuffle_by_value.set(self._honeycomb_shuffle_by_options[0])
+        self._honeycomb_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._honeycomb_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._honeycomb_shuffle_by_dropdown['values'] = self._honeycomb_shuffle_by_options
+        self._honeycomb_shuffle_by_dropdown['state'] = 'readonly'
+        self._honeycomb_shuffle_by_dropdown.grid(row=3, column=4, padx=5)
         # Jinjos
         self._jinjo_shuffle_text = ttk.Label(self._collectables_frame, text="Jinjos:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._jinjo_shuffle_text.grid(row=4, column=0, padx=5, pady=3, sticky='w')
-        self._jinjo_shuffle_options = ["Default Locations", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Jinjos"]
+        self._jinjo_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Jinjos"]
         self._jinjo_shuffle_value = tk.StringVar(self._collectables_frame)
         self._jinjo_shuffle_value.set(self._jinjo_shuffle_options[0])
         self._jinjo_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._jinjo_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
@@ -985,10 +1139,17 @@ class GUI_MAIN_CLASS():
         self._jinjo_shuffle_group_value.set("A")
         self._jinjo_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._jinjo_shuffle_group_value, width=8)
         self._jinjo_shuffle_group_entry.grid(row=4, column=3, padx=5)
+        self._jinjo_shuffle_by_options = ["World", "Game"]
+        self._jinjo_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._jinjo_shuffle_by_value.set(self._jinjo_shuffle_by_options[0])
+        self._jinjo_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._jinjo_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._jinjo_shuffle_by_dropdown['values'] = self._jinjo_shuffle_by_options
+        self._jinjo_shuffle_by_dropdown['state'] = 'readonly'
+        self._jinjo_shuffle_by_dropdown.grid(row=4, column=4, padx=5)
         # Extra Lives
         self._extra_life_shuffle_text = ttk.Label(self._collectables_frame, text="Extra Lives:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._extra_life_shuffle_text.grid(row=5, column=0, padx=5, pady=3, sticky='w')
-        self._extra_life_shuffle_options = ["Default Locations", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "Only Spawned Extra Lives"]
+        self._extra_life_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "Only Spawned Extra Lives"]
         self._extra_life_shuffle_value = tk.StringVar(self._collectables_frame)
         self._extra_life_shuffle_value.set(self._extra_life_shuffle_options[0])
         self._extra_life_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._extra_life_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
@@ -999,24 +1160,38 @@ class GUI_MAIN_CLASS():
         self._extra_lives_shuffle_group_value.set("A")
         self._extra_lives_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._extra_lives_shuffle_group_value, width=8)
         self._extra_lives_shuffle_group_entry.grid(row=5, column=3, padx=5)
+        self._extra_lives_shuffle_by_options = ["World", "Game"]
+        self._extra_lives_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._extra_lives_shuffle_by_value.set(self._extra_lives_shuffle_by_options[0])
+        self._extra_lives_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._extra_lives_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._extra_lives_shuffle_by_dropdown['values'] = self._extra_lives_shuffle_by_options
+        self._extra_lives_shuffle_by_dropdown['state'] = 'readonly'
+        self._extra_lives_shuffle_by_dropdown.grid(row=5, column=4, padx=5)
         # FF Honeycombs
         self._ff_honeycombs_shuffle_text = ttk.Label(self._collectables_frame, text="FF Honeycombs:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._ff_honeycombs_shuffle_text.grid(row=6, column=0, padx=5, pady=3, sticky='w')
-        self._ff_honeycombs_shuffle_options = ["Default Locations", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "Only Spawned Extra Lives"]
+        self._ff_honeycombs_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "Only Spawned Extra Lives"]
         self._ff_honeycombs_shuffle_value = tk.StringVar(self._collectables_frame)
         self._ff_honeycombs_shuffle_value.set(self._ff_honeycombs_shuffle_options[0])
         self._ff_honeycombs_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._ff_honeycombs_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
         self._ff_honeycombs_shuffle_dropdown['values'] = self._ff_honeycombs_shuffle_options
         self._ff_honeycombs_shuffle_dropdown['state'] = 'readonly'
         self._ff_honeycombs_shuffle_dropdown.grid(row=6, column=1, columnspan=2, padx=5)
-        self._extra_lives_shuffle_group_value = tk.StringVar()
-        self._extra_lives_shuffle_group_value.set("A")
-        self._extra_lives_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._extra_lives_shuffle_group_value, width=8)
-        self._extra_lives_shuffle_group_entry.grid(row=6, column=3, padx=5)
+        self._ff_honeycombs_shuffle_group_value = tk.StringVar()
+        self._ff_honeycombs_shuffle_group_value.set("A")
+        self._ff_honeycombs_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._ff_honeycombs_shuffle_group_value, width=8)
+        self._ff_honeycombs_shuffle_group_entry.grid(row=6, column=3, padx=5)
+        self._ff_honeycombs_shuffle_by_options = ["World", "Game"]
+        self._ff_honeycombs_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._ff_honeycombs_shuffle_by_value.set(self._ff_honeycombs_shuffle_by_options[0])
+        self._ff_honeycombs_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._ff_honeycombs_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._ff_honeycombs_shuffle_by_dropdown['values'] = self._ff_honeycombs_shuffle_by_options
+        self._ff_honeycombs_shuffle_by_dropdown['state'] = 'readonly'
+        self._ff_honeycombs_shuffle_by_dropdown.grid(row=6, column=4, padx=5)
         # Notes
         self._note_shuffle_text = ttk.Label(self._collectables_frame, text="Notes:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._note_shuffle_text.grid(row=7, column=0, padx=5, pady=3, sticky='w')
-        self._note_shuffle_options = ["Default Locations", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Notes"]
+        self._note_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Notes"]
         self._note_shuffle_value = tk.StringVar(self._collectables_frame)
         self._note_shuffle_value.set(self._note_shuffle_options[0])
         self._note_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._note_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
@@ -1027,10 +1202,17 @@ class GUI_MAIN_CLASS():
         self._note_shuffle_group_value.set("B")
         self._note_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._note_shuffle_group_value, width=8)
         self._note_shuffle_group_entry.grid(row=7, column=3, padx=5)
+        self._note_shuffle_by_options = ["World", "Game"]
+        self._note_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._note_shuffle_by_value.set(self._note_shuffle_by_options[0])
+        self._note_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._note_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._note_shuffle_by_dropdown['values'] = self._note_shuffle_by_options
+        self._note_shuffle_by_dropdown['state'] = 'readonly'
+        self._note_shuffle_by_dropdown.grid(row=7, column=4, padx=5)
         # Blue Eggs
         self._blue_eggs_shuffle_text = ttk.Label(self._collectables_frame, text="Blue Eggs:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._blue_eggs_shuffle_text.grid(row=8, column=0, padx=5, pady=3, sticky='w')
-        self._blue_eggs_shuffle_options = ["Default Locations", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Blue Eggs"]
+        self._blue_eggs_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Blue Eggs"]
         self._blue_eggs_shuffle_value = tk.StringVar(self._collectables_frame)
         self._blue_eggs_shuffle_value.set(self._blue_eggs_shuffle_options[0])
         self._blue_eggs_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._blue_eggs_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
@@ -1041,10 +1223,17 @@ class GUI_MAIN_CLASS():
         self._blue_eggs_shuffle_group_value.set("B")
         self._blue_eggs_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._blue_eggs_shuffle_group_value, width=8)
         self._blue_eggs_shuffle_group_entry.grid(row=8, column=3, padx=5)
+        self._blue_eggs_shuffle_by_options = ["World", "Game"]
+        self._blue_eggs_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._blue_eggs_shuffle_by_value.set(self._blue_eggs_shuffle_by_options[0])
+        self._blue_eggs_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._blue_eggs_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._blue_eggs_shuffle_by_dropdown['values'] = self._blue_eggs_shuffle_by_options
+        self._blue_eggs_shuffle_by_dropdown['state'] = 'readonly'
+        self._blue_eggs_shuffle_by_dropdown.grid(row=8, column=4, padx=5)
         # Red Feathers
         self._red_feathers_shuffle_text = ttk.Label(self._collectables_frame, text="Red Feathers:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._red_feathers_shuffle_text.grid(row=9, column=0, padx=5, pady=3, sticky='w')
-        self._red_feathers_shuffle_options = ["Default Locations", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Red Feathers"]
+        self._red_feathers_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Red Feathers"]
         self._red_feathers_shuffle_value = tk.StringVar(self._collectables_frame)
         self._red_feathers_shuffle_value.set(self._red_feathers_shuffle_options[0])
         self._red_feathers_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._red_feathers_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
@@ -1055,10 +1244,17 @@ class GUI_MAIN_CLASS():
         self._red_feathers_shuffle_group_value.set("B")
         self._red_feathers_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._red_feathers_shuffle_group_value, width=8)
         self._red_feathers_shuffle_group_entry.grid(row=9, column=3, padx=5)
+        self._red_feathers_shuffle_by_options = ["World", "Game"]
+        self._red_feathers_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._red_feathers_shuffle_by_value.set(self._red_feathers_shuffle_by_options[0])
+        self._red_feathers_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._red_feathers_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._red_feathers_shuffle_by_dropdown['values'] = self._red_feathers_shuffle_by_options
+        self._red_feathers_shuffle_by_dropdown['state'] = 'readonly'
+        self._red_feathers_shuffle_by_dropdown.grid(row=9, column=4, padx=5)
         # Gold Feathers
         self._gold_feathers_shuffle_text = ttk.Label(self._collectables_frame, text="Gold Feathers:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
         self._gold_feathers_shuffle_text.grid(row=10, column=0, padx=5, pady=3, sticky='w')
-        self._gold_feathers_shuffle_options = ["Default Locations", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Gold Feathers"]
+        self._gold_feathers_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations", "No Gold Feathers"]
         self._gold_feathers_shuffle_value = tk.StringVar(self._collectables_frame)
         self._gold_feathers_shuffle_value.set(self._gold_feathers_shuffle_options[0])
         self._gold_feathers_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._gold_feathers_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
@@ -1069,14 +1265,42 @@ class GUI_MAIN_CLASS():
         self._gold_feathers_shuffle_group_value.set("B")
         self._gold_feathers_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._gold_feathers_shuffle_group_value, width=8)
         self._gold_feathers_shuffle_group_entry.grid(row=10, column=3, padx=5)
+        self._gold_feathers_shuffle_by_options = ["World", "Game"]
+        self._gold_feathers_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._gold_feathers_shuffle_by_value.set(self._gold_feathers_shuffle_by_options[0])
+        self._gold_feathers_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._gold_feathers_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._gold_feathers_shuffle_by_dropdown['values'] = self._gold_feathers_shuffle_by_options
+        self._gold_feathers_shuffle_by_dropdown['state'] = 'readonly'
+        self._gold_feathers_shuffle_by_dropdown.grid(row=10, column=4, padx=5)
+        # Misc Items
+        self._misc_items_shuffle_text = ttk.Label(self._collectables_frame, text="Misc Items:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._misc_items_shuffle_text.grid(row=11, column=0, padx=5, pady=3, sticky='w')
+        self._misc_items_shuffle_options = ["Default Locations (Don't Shuffle)", "Add To Shuffle Pool", "Pseudo Random XYZ Locations"]
+        self._misc_items_shuffle_value = tk.StringVar(self._collectables_frame)
+        self._misc_items_shuffle_value.set(self._misc_items_shuffle_options[0])
+        self._misc_items_shuffle_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._misc_items_shuffle_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
+        self._misc_items_shuffle_dropdown['values'] = self._misc_items_shuffle_options
+        self._misc_items_shuffle_dropdown['state'] = 'readonly'
+        self._misc_items_shuffle_dropdown.grid(row=11, column=1, columnspan=2, padx=5)
+        self._misc_items_shuffle_group_value = tk.StringVar()
+        self._misc_items_shuffle_group_value.set("B")
+        self._misc_items_shuffle_group_entry = tk.Entry(self._collectables_frame, textvariable=self._misc_items_shuffle_group_value, width=8)
+        self._misc_items_shuffle_group_entry.grid(row=11, column=3, padx=5)
+        self._misc_items_shuffle_by_options = ["World", "Game"]
+        self._misc_items_shuffle_by_value = tk.StringVar(self._collectables_frame)
+        self._misc_items_shuffle_by_value.set(self._misc_items_shuffle_by_options[0])
+        self._misc_items_shuffle_by_dropdown = ttk.Combobox(self._collectables_frame, textvariable=self._misc_items_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=8)
+        self._misc_items_shuffle_by_dropdown['values'] = self._misc_items_shuffle_by_options
+        self._misc_items_shuffle_by_dropdown['state'] = 'readonly'
+        self._misc_items_shuffle_by_dropdown.grid(row=11, column=4, padx=5)
         # Abnormalities
         self._collectable_abnormalities_value = tk.IntVar()
         self._collectable_abnormalities_checkbutton = ttk.Checkbutton(self._collectables_frame, text="Include Abnormal Collectables", variable=self._collectable_abnormalities_value)
-        self._collectable_abnormalities_checkbutton.grid(row=11, column=0, columnspan=2, padx=10, pady=5, sticky='w')
+        self._collectable_abnormalities_checkbutton.grid(row=12, column=0, columnspan=2, padx=10, pady=5, sticky='w')
         # Softlock
         self._collectable_softlock_value = tk.IntVar()
         self._collectable_softlock_checkbutton = ttk.Checkbutton(self._collectables_frame, text="Include Softlock Collectables", variable=self._collectable_softlock_value)
-        self._collectable_softlock_checkbutton.grid(row=11, column=2, columnspan=2, padx=10, pady=5, sticky='w')
+        self._collectable_softlock_checkbutton.grid(row=12, column=2, columnspan=2, padx=10, pady=5, sticky='w')
     
     def _create_cheato_capacities_frame(self):
         self._cheato_capacities_frame = ttk.Frame(self._capacities_frame)
@@ -1224,10 +1448,10 @@ class GUI_MAIN_CLASS():
         # Move Locations
         self._move_location_text = ttk.Label(self._moves_frame, text="Move Locations:", anchor="center", justify="center")
         self._move_location_text.grid(row=0, column=0, padx=5, pady=5, sticky='w')
-        self._move_location_options = ["Default Locations", "Base Game Location Shuffle", "Psuedo Random Within World Locations", "Psuedo Random Within Game Locations"]
+        self._move_location_options = ["Default Locations", "Base Game Location Shuffle", "Psuedo Random Worlds Locations (No Lair)", "Psuedo Random Locations (Includes Lair)"]
         self._move_location_value = tk.StringVar(self._moves_frame)
         self._move_location_value.set(self._move_location_options[0])
-        self._move_location_dropdown = ttk.Combobox(self._moves_frame, textvariable=self._move_location_value, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE), width=25)
+        self._move_location_dropdown = ttk.Combobox(self._moves_frame, textvariable=self._move_location_value, font=(self._FONT_TYPE, self._MEDIUM_FONT_SIZE), width=35)
         self._move_location_dropdown['values'] = self._move_location_options
         self._move_location_dropdown['state'] = 'readonly'
         self._move_location_dropdown.grid(row=0, column=1, columnspan=2, padx=5)
@@ -1463,17 +1687,69 @@ class GUI_MAIN_CLASS():
     ### WARPS TAB ###
     #################
 
+    def _create_within_world_warps_frame(self):
+        self._within_world_warps_frame = ttk.Frame(self._warps_tab)
+        self._within_world_warps_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Shuffle?
+        self._within_world_warps_text = ttk.Label(self._within_world_warps_frame, text="Within World Warps:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._within_world_warps_text.grid(row=0, column=0, padx=5, pady=5)
+        self._within_world_warps_options = ["No Shuffle", "Coupled Shuffling", "Decoupled Shuffling"]
+        self._within_world_warps_value = tk.StringVar(self._within_world_warps_frame)
+        self._within_world_warps_value.set(self._within_world_warps_options[0])
+        self._within_world_warps_dropdown = ttk.Combobox(self._within_world_warps_frame, textvariable=self._within_world_warps_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
+        self._within_world_warps_dropdown['values'] = self._within_world_warps_options
+        self._within_world_warps_dropdown['state'] = 'readonly'
+        self._within_world_warps_dropdown.grid(row=0, column=1, padx=5)
+        # Enter/Exit Warp Pad
+        self._enter_exit_warp_pad_text = ttk.Label(self._within_world_warps_frame, text="Enter/Exit Warp Pad:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._enter_exit_warp_pad_text.grid(row=1, column=0, padx=5, pady=5)
+        self._enter_exit_warp_pad_options = ["Default Location", "Psuedo Random Location"]
+        self._enter_exit_warp_pad_value = tk.StringVar(self._within_world_warps_frame)
+        self._enter_exit_warp_pad_value.set(self._enter_exit_warp_pad_options[0])
+        self._enter_exit_warp_pad_dropdown = ttk.Combobox(self._within_world_warps_frame, textvariable=self._enter_exit_warp_pad_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
+        self._enter_exit_warp_pad_dropdown['values'] = self._enter_exit_warp_pad_options
+        self._enter_exit_warp_pad_dropdown['state'] = 'readonly'
+        self._enter_exit_warp_pad_dropdown.grid(row=1, column=1, padx=5)
+
+    def _create_world_entrances_warps_frame(self):
+        self._world_entrance_warps_frame = ttk.Frame(self._warps_tab)
+        self._world_entrance_warps_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Shuffle?
+        self._world_entrance_warps_text = ttk.Label(self._world_entrance_warps_frame, text="World Entrance Warps:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._world_entrance_warps_text.grid(row=0, column=0, padx=5, pady=5)
+        self._world_entrance_warps_options = ["No Shuffle", "Coupled Shuffling", "Decoupled Shuffling"]
+        self._world_entrance_warps_value = tk.StringVar(self._world_entrance_warps_frame)
+        self._world_entrance_warps_value.set(self._world_entrance_warps_options[0])
+        self._world_entrance_warps_dropdown = ttk.Combobox(self._world_entrance_warps_frame, textvariable=self._world_entrance_warps_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
+        self._world_entrance_warps_dropdown['values'] = self._world_entrance_warps_options
+        self._world_entrance_warps_dropdown['state'] = 'readonly'
+        self._world_entrance_warps_dropdown.grid(row=0, column=1, padx=5)
+
+    def _create_cauldron_warps_frame(self):
+        self._cauldron_warps_frame = ttk.Frame(self._warps_tab)
+        self._cauldron_warps_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Shuffle?
+        self._cauldron_warps_text = ttk.Label(self._cauldron_warps_frame, text="Cauldrons:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._cauldron_warps_text.grid(row=0, column=0, padx=5, pady=5)
+        self._cauldron_warps_options = ["No Shuffle", "Quality Of Life Locations", "Psuedo Random Locations"]
+        self._cauldron_warps_value = tk.StringVar(self._cauldron_warps_frame)
+        self._cauldron_warps_value.set(self._cauldron_warps_options[0])
+        self._cauldron_warps_dropdown = ttk.Combobox(self._cauldron_warps_frame, textvariable=self._cauldron_warps_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
+        self._cauldron_warps_dropdown['values'] = self._cauldron_warps_options
+        self._cauldron_warps_dropdown['state'] = 'readonly'
+        self._cauldron_warps_dropdown.grid(row=0, column=1, padx=5)
+        # CHEAT YOU WONT BE SAD NOW YOU CAN USE THE FLY PAD
+        self._auto_active_cauldron_warps_value = tk.IntVar()
+        self._auto_active_cauldron_warps_checkbutton = ttk.Checkbutton(self._cauldron_warps_frame, text="Automatically Activate All Cauldrons", variable=self._auto_active_cauldron_warps_value)
+        self._auto_active_cauldron_warps_checkbutton.grid(row=1, column=0, columnspan=2, padx=5, pady=3, sticky='w')
+
     def _create_warps_tab(self):
         self._warps_tab = ttk.Frame(self._tab_control)
         self._tab_control.add(self._warps_tab, text="Warps")
-        self._warps_frame = ttk.Frame(self._warps_tab)
-        self._warps_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
-        # self._warps_tab_control = ttk.Notebook(self._warps_tab, width=self._app_window.winfo_width())
-        # self._warps_tab_control.pack(expand=1, fill="both")
-        # General Shuffling Options
-        # Within World Warps
-        # World Entrances
-        # Cauldrons
+        self._warps_tab_control = ttk.Notebook(self._warps_tab, width=self._app_window.winfo_width())
+        self._create_within_world_warps_frame()
+        self._create_world_entrances_warps_frame()
+        self._create_cauldron_warps_frame()
     
     ##########################
     ### WORLD SPECIFIC TAB ###
@@ -1502,72 +1778,213 @@ class GUI_MAIN_CLASS():
         self._world_specific_tab_control.add(self._spiral_mountain_tab, text="SM")
         self._spiral_mountain_frame = ttk.Frame(self._spiral_mountain_tab)
         self._spiral_mountain_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Remove Bottles At Top Of Mountain?
+        self._remove_mountain_bottles_value = tk.IntVar()
+        self._remove_mountain_bottles_checkbutton = ttk.Checkbutton(self._spiral_mountain_frame, text="Remove Bottles At Top Of Mountain?", variable=self._remove_mountain_bottles_value)
+        self._remove_mountain_bottles_checkbutton.grid(row=0, column=0, padx=5, pady=3, sticky='w')
     
     def _create_gruntildas_lair_tab(self):
         self._gruntildas_lair_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._gruntildas_lair_tab, text="GL")
         self._gruntildas_lair_frame = ttk.Frame(self._gruntildas_lair_tab)
         self._gruntildas_lair_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Furnace Fun
+        self._furnace_fun_text = ttk.Label(self._gruntildas_lair_frame, text="Furnace Fun:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._furnace_fun_text.grid(row=0, column=0, padx=5, pady=5, sticky='w')
+        self._furnace_fun_options = ["Base Game Furnace Fun", "Skip Furnace Fun", "Randomize Furnace Fun Board Tiles"]
+        self._furnace_fun_value = tk.StringVar(self._gruntildas_lair_frame)
+        self._furnace_fun_value.set(self._furnace_fun_options[0])
+        self._furnace_fun_dropdown = ttk.Combobox(self._gruntildas_lair_frame, textvariable=self._furnace_fun_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
+        self._furnace_fun_dropdown['values'] = self._furnace_fun_options
+        self._furnace_fun_dropdown['state'] = 'readonly'
+        self._furnace_fun_dropdown.grid(row=0, column=1, padx=5)
+        # Furnace Fun Tiles
+        self._allowed_furnace_fun_tiles_text = ttk.Label(self._gruntildas_lair_frame, text="Allowed Furnace Fun Tiles:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._allowed_furnace_fun_tiles_text.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky='w')
+        self._blank_tile_value = tk.IntVar()
+        self._blank_tile_checkbutton = ttk.Checkbutton(self._gruntildas_lair_frame, text="Blank Tile", variable=self._blank_tile_value)
+        self._blank_tile_checkbutton.grid(row=2, column=0, padx=5, pady=3, sticky='w')
+        self._bk_tile_value = tk.IntVar()
+        self._bk_tile_checkbutton = ttk.Checkbutton(self._gruntildas_lair_frame, text="BK Tile", variable=self._bk_tile_value)
+        self._bk_tile_checkbutton.grid(row=3, column=0, padx=5, pady=3, sticky='w')
+        self._music_tile_value = tk.IntVar()
+        self._music_tile_checkbutton = ttk.Checkbutton(self._gruntildas_lair_frame, text="Music Tile", variable=self._music_tile_value)
+        self._music_tile_checkbutton.grid(row=4, column=0, padx=5, pady=3, sticky='w')
+        self._eye_tile_value = tk.IntVar()
+        self._eye_tile_checkbutton = ttk.Checkbutton(self._gruntildas_lair_frame, text="Eye Tile", variable=self._eye_tile_value)
+        self._eye_tile_checkbutton.grid(row=5, column=0, padx=5, pady=3, sticky='w')
+        self._timer_tile_value = tk.IntVar()
+        self._timer_tile_checkbutton = ttk.Checkbutton(self._gruntildas_lair_frame, text="Timer Tile", variable=self._timer_tile_value)
+        self._timer_tile_checkbutton.grid(row=6, column=0, padx=5, pady=3, sticky='w')
+        self._grunty_tile_value = tk.IntVar()
+        self._grunty_tile_checkbutton = ttk.Checkbutton(self._gruntildas_lair_frame, text="Grunty Tile", variable=self._grunty_tile_value)
+        self._grunty_tile_checkbutton.grid(row=7, column=0, padx=5, pady=3, sticky='w')
+        self._death_tile_value = tk.IntVar()
+        self._death_tile_checkbutton = ttk.Checkbutton(self._gruntildas_lair_frame, text="Death Tile", variable=self._death_tile_value)
+        self._death_tile_checkbutton.grid(row=8, column=0, padx=5, pady=3, sticky='w')
+        self._joker_tile_value = tk.IntVar()
+        self._joker_tile_checkbutton = ttk.Checkbutton(self._gruntildas_lair_frame, text="Joker Tile", variable=self._joker_tile_value)
+        self._joker_tile_checkbutton.grid(row=9, column=0, padx=5, pady=3, sticky='w')
     
     def _create_mumbos_mountain_tab(self):
         self._mumbos_mountain_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._mumbos_mountain_tab, text="MM")
         self._mumbos_mountain_frame = ttk.Frame(self._mumbos_mountain_tab)
         self._mumbos_mountain_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Flowers
+        self._mm_flowers_value = tk.IntVar()
+        self._mm_flowers_checkbutton = ttk.Checkbutton(self._mumbos_mountain_frame, text="Include Flowers In Shuffling", variable=self._mm_flowers_value)
+        self._mm_flowers_checkbutton.grid(row=0, column=0, padx=5, pady=3, sticky='w')
     
     def _create_treasure_trove_cove_tab(self):
         self._treasure_trove_cove_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._treasure_trove_cove_tab, text="TTC")
         self._treasure_trove_cove_frame = ttk.Frame(self._treasure_trove_cove_tab)
         self._treasure_trove_cove_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Boggy's Presents
+        self._ttc_blubbers_gold_value = tk.IntVar()
+        self._ttc_blubbers_gold_checkbutton = ttk.Checkbutton(self._treasure_trove_cove_frame, text="Include Blubber's Gold In Shuffling", variable=self._ttc_blubbers_gold_value)
+        self._ttc_blubbers_gold_checkbutton.grid(row=0, column=0, padx=5, pady=3, sticky='w')
+        # Super Slippery Sand
+        self._ttc_super_slippery_sand_value = tk.IntVar()
+        self._ttc_super_slippery_sand_checkbutton = ttk.Checkbutton(self._treasure_trove_cove_frame, text="Super Slippery Sand", variable=self._ttc_super_slippery_sand_value)
+        self._ttc_super_slippery_sand_checkbutton.grid(row=1, column=0, columnspan=2, padx=5, pady=3, sticky='w')
+        # Sandcastle Tiles
+        self._ttc_sandcastle_tiles_value = tk.IntVar()
+        self._ttc_sandcastle_tiles_checkbutton = ttk.Checkbutton(self._treasure_trove_cove_frame, text="Shuffle Sandcastle Tiles", variable=self._ttc_sandcastle_tiles_value)
+        self._ttc_sandcastle_tiles_checkbutton.grid(row=2, column=0, columnspan=2, padx=5, pady=3, sticky='w')
     
     def _create_clankers_cavern_tab(self):
         self._clankers_cavern_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._clankers_cavern_tab, text="CC")
         self._clankers_cavern_frame = ttk.Frame(self._clankers_cavern_tab)
         self._clankers_cavern_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Sandcastle Tiles
+        self._cc_rings_value = tk.IntVar()
+        self._cc_rings_checkbutton = ttk.Checkbutton(self._clankers_cavern_frame, text="Shuffle Clanker's Rings (Warning: Might Need Pause Buffering)", variable=self._cc_rings_value)
+        self._cc_rings_checkbutton.grid(row=0, column=0, padx=5, pady=3, sticky='w')
     
     def _create_bubblegloop_swamp_tab(self):
         self._bubblegloop_swamp_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._bubblegloop_swamp_tab, text="BGS")
         self._bubblegloop_swamp_frame = ttk.Frame(self._bubblegloop_swamp_tab)
         self._bubblegloop_swamp_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Croctus
+        self._bgs_croctus_value = tk.IntVar()
+        self._bgs_croctus_checkbutton = ttk.Checkbutton(self._bubblegloop_swamp_frame, text="Shuffle Croctus", variable=self._bgs_croctus_value)
+        self._bgs_croctus_checkbutton.grid(row=0, column=0, padx=5, pady=3, sticky='w')
+        # Bigger Badder Mr Vile
+        self._bgs_bigger_vile_value = tk.IntVar()
+        self._bgs_bigger_vile_checkbutton = ttk.Checkbutton(self._bubblegloop_swamp_frame, text="Bigger, Badder Mr. Vile", variable=self._bgs_bigger_vile_value)
+        self._bgs_bigger_vile_checkbutton.grid(row=1, column=0, padx=5, pady=3, sticky='w')
     
     def _create_freezeezy_peak_tab(self):
         self._freezeezy_peak_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._freezeezy_peak_tab, text="FP")
         self._freezeezy_peak_frame = ttk.Frame(self._freezeezy_peak_tab)
         self._freezeezy_peak_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Boggy's Presents
+        self._fp_presents_value = tk.IntVar()
+        self._fp_presents_checkbutton = ttk.Checkbutton(self._freezeezy_peak_frame, text="Include Boggy's Presents In Shuffling", variable=self._fp_presents_value)
+        self._fp_presents_checkbutton.grid(row=0, column=0, padx=5, pady=3, sticky='w')
+        # Boggy's Race
+        self._fp_boggy_race_value = tk.IntVar()
+        self._fp_boggy_race_checkbutton = ttk.Checkbutton(self._freezeezy_peak_frame, text="BK Boggy Race Before Walrus Boggy Race", variable=self._fp_boggy_race_value)
+        self._fp_boggy_race_checkbutton.grid(row=1, column=0, padx=5, pady=3, sticky='w')
     
     def _create_gobis_valley_tab(self):
         self._gobis_valley_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._gobis_valley_tab, text="GV")
         self._gobis_valley_frame = ttk.Frame(self._gobis_valley_tab)
         self._gobis_valley_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Matching Puzzle
+        self._gv_matching_puzzle_value = tk.IntVar()
+        self._gv_matching_puzzle_checkbutton = ttk.Checkbutton(self._gobis_valley_frame, text="Shuffle Matching Puzzle", variable=self._gv_matching_puzzle_value)
+        self._gv_matching_puzzle_checkbutton.grid(row=0, column=0, padx=5, pady=3, sticky='w')
+        # Ancient Ones
+        self._gv_ancient_ones_value = tk.IntVar()
+        self._gv_ancient_ones_checkbutton = ttk.Checkbutton(self._gobis_valley_frame, text="Shuffle Ancient Ones", variable=self._gv_ancient_ones_value)
+        self._gv_ancient_ones_checkbutton.grid(row=1, column=0, padx=5, pady=3, sticky='w')
+        # King Sandybutt Jinxy Order
+        self._gv_king_sandybutt_jinxy_order_value = tk.IntVar()
+        self._gv_king_sandybutt_jinxy_order_checkbutton = ttk.Checkbutton(self._gobis_valley_frame, text="Shuffle King Sandybutt Jinxy Heads", variable=self._gv_king_sandybutt_jinxy_order_value)
+        self._gv_king_sandybutt_jinxy_order_checkbutton.grid(row=2, column=0, padx=5, pady=3, sticky='w')
     
     def _create_mad_monster_mansion_tab(self):
         self._mad_monster_mansion_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._mad_monster_mansion_tab, text="MMM")
         self._mad_monster_mansion_frame = ttk.Frame(self._mad_monster_mansion_tab)
         self._mad_monster_mansion_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Flower Pots
+        self._mmm_flower_pots_value = tk.IntVar()
+        self._mmm_flower_pots_checkbutton = ttk.Checkbutton(self._mad_monster_mansion_frame, text="Include Flower Pots In Shuffling", variable=self._mmm_flower_pots_value)
+        self._mmm_flower_pots_checkbutton.grid(row=0, column=0, padx=5, pady=3, sticky='w')
+        # Motzand's Song
+        self._mmm_motzands_song_value = tk.IntVar()
+        self._mmm_motzands_song_checkbutton = ttk.Checkbutton(self._mad_monster_mansion_frame, text="Shuffle Motzand's Song", variable=self._mmm_motzands_song_value)
+        self._mmm_motzands_song_checkbutton.grid(row=1, column=0, padx=5, pady=3, sticky='w')
+        # Tumblar's Board
+        self._mmm_tumblars_board_value = tk.IntVar()
+        self._mmm_tumblars_board_checkbutton = ttk.Checkbutton(self._mad_monster_mansion_frame, text="Shuffle Tumblar's Board", variable=self._mmm_tumblars_board_value)
+        self._mmm_tumblars_board_checkbutton.grid(row=2, column=0, padx=5, pady=3, sticky='w')
     
     def _create_rusty_bucket_bay_tab(self):
         self._rusty_bucket_bay_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._rusty_bucket_bay_tab, text="RBB")
         self._rusty_bucket_bay_frame = ttk.Frame(self._rusty_bucket_bay_tab)
         self._rusty_bucket_bay_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Whistle Buttons
+        self._rbb_whistle_buttons_value = tk.IntVar()
+        self._rbb_whistle_buttons_checkbutton = ttk.Checkbutton(self._rusty_bucket_bay_frame, text="Randomize Whistle Code", variable=self._rbb_whistle_buttons_value)
+        self._rbb_whistle_buttons_checkbutton.grid(row=0, column=0, padx=5, pady=3, sticky='w')
+        # Flood Engine Room
+        self._rbb_flood_engine_room_value = tk.IntVar()
+        self._rbb_flood_engine_room_checkbutton = ttk.Checkbutton(self._rusty_bucket_bay_frame, text="Flood Engine Room", variable=self._rbb_flood_engine_room_value)
+        self._rbb_flood_engine_room_checkbutton.grid(row=1, column=0, padx=5, pady=3, sticky='w')
     
     def _create_click_clock_wood_tab(self):
         self._click_clock_wood_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._click_clock_wood_tab, text="CCW")
         self._click_clock_wood_frame = ttk.Frame(self._click_clock_wood_tab)
         self._click_clock_wood_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Shuffle By
+        self._ccw_shuffle_by_text = ttk.Label(self._click_clock_wood_frame, text="Shuffle By:", anchor="center", justify="center", font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE))
+        self._ccw_shuffle_by_text.grid(row=0, column=0, padx=5, pady=5, sticky='w')
+        self._ccw_shuffle_by_options = ["Shuffle Items Within Each Season", "Shuffle Items Between All Seasons"]
+        self._ccw_shuffle_by_value = tk.StringVar(self._click_clock_wood_frame)
+        self._ccw_shuffle_by_value.set(self._ccw_shuffle_by_options[0])
+        self._ccw_shuffle_by_dropdown = ttk.Combobox(self._click_clock_wood_frame, textvariable=self._ccw_shuffle_by_value, font=(self._FONT_TYPE, self._SMALL_MEDIUM_FONT_SIZE), width=28)
+        self._ccw_shuffle_by_dropdown['values'] = self._ccw_shuffle_by_options
+        self._ccw_shuffle_by_dropdown['state'] = 'readonly'
+        self._ccw_shuffle_by_dropdown.grid(row=0, column=1, padx=5)
+        # Open Seasons
+        self._ccw_open_seasons_value = tk.IntVar()
+        self._ccw_open_seasons_checkbutton = ttk.Checkbutton(self._click_clock_wood_frame, text="Open Seasons", variable=self._ccw_open_seasons_value)
+        self._ccw_open_seasons_checkbutton.grid(row=1, column=0, columnspan=2, padx=5, pady=3, sticky='w')
+        # Include Caterpillars
+        self._ccw_caterpillars_value = tk.IntVar()
+        self._ccw_caterpillars_checkbutton = ttk.Checkbutton(self._click_clock_wood_frame, text="Include Caterpillars In Shuffling", variable=self._ccw_caterpillars_value)
+        self._ccw_caterpillars_checkbutton.grid(row=2, column=0, columnspan=2, padx=5, pady=3, sticky='w')
     
     def _create_final_battle_tab(self):
         self._final_battle_tab = ttk.Frame(self._world_specific_tab_control)
         self._world_specific_tab_control.add(self._final_battle_tab, text="Final Battle")
         self._final_battle_frame = ttk.Frame(self._final_battle_tab)
         self._final_battle_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # Final Battle Difficulty
+        self._fb_difficulty_var = tk.IntVar()
+        self._fb_difficulty_scale = tk.Scale(self._final_battle_frame, from_=0, to=3, orient=tkinter.HORIZONTAL, variable=self._fb_difficulty_var)
+        self._fb_difficulty_scale.grid(row=0, column=0, padx=5, pady=5, sticky='n')
+        # Final Battle Options
+        self._fb_what_floor_value = tk.IntVar()
+        self._fb_what_floor_checkbutton = ttk.Checkbutton(self._final_battle_frame, text="What Floor?", variable=self._fb_what_floor_value)
+        self._fb_what_floor_checkbutton.grid(row=1, column=0, padx=5, pady=3, sticky='w')
+        self._mini_me_value = tk.IntVar()
+        self._mini_me_checkbutton = ttk.Checkbutton(self._final_battle_frame, text="Mini Me", variable=self._mini_me_value)
+        self._mini_me_checkbutton.grid(row=2, column=0, padx=5, pady=3, sticky='w')
+        self._monster_house_value = tk.IntVar()
+        self._monster_house_checkbutton = ttk.Checkbutton(self._final_battle_frame, text="Monster House", variable=self._monster_house_value)
+        self._monster_house_checkbutton.grid(row=3, column=0, padx=5, pady=3, sticky='w')
     
     ###########################
     ### QUALITY OF LIFE TAB ###
@@ -1827,9 +2244,23 @@ class GUI_MAIN_CLASS():
         self._developer_other_frame = ttk.Frame(self._developer_other_tab)
         self._developer_other_frame.pack(expand=tk.TRUE, fill=tk.BOTH)
         # Starting Area
+        self._starting_area_text = ttk.Label(self._developer_other_frame, text="Starting Area", anchor="center", justify="center")
+        self._starting_area_text.grid(row=0, column=0, padx=5)
+        self._starting_area_options = [area_name for area_name in AREA_ID_DICT]
+        self._starting_area_value = tk.StringVar(self._developer_other_frame)
+        self._starting_area_value.set(self._starting_area_options[0])
+        self._starting_area_dropdown = ttk.Combobox(self._developer_other_frame, textvariable=self._starting_area_value, font=(self._FONT_TYPE, self._SMALL_FONT_SIZE), width=30)
+        self._starting_area_dropdown['values'] = self._starting_area_options
+        self._starting_area_dropdown['state'] = 'readonly'
+        self._starting_area_dropdown.grid(row=0, column=1, padx=5)
         # Keep Decompressed Files
+        self._keep_decompressed_files_value = tk.IntVar()
+        self._keep_decompressed_files_checkbutton = ttk.Checkbutton(self._quality_of_life_other_frame, text="Keep Decompressed Files", variable=self._keep_decompressed_files_value)
+        self._keep_decompressed_files_checkbutton.grid(row=1, column=0, padx=5, pady=5, sticky='w')
         # Disable Cheat Sheets
-        # TRACE(S)
+        self._disable_cheat_sheets_value = tk.IntVar()
+        self._disable_cheat_sheets_checkbutton = ttk.Checkbutton(self._quality_of_life_other_frame, text="Disable Generating Cheat Sheets", variable=self._keep_decompressed_files_value)
+        self._disable_cheat_sheets_checkbutton.grid(row=2, column=0, padx=5, pady=5, sticky='w')
     
     ######################
     ### BOTTOM OPTIONS ###

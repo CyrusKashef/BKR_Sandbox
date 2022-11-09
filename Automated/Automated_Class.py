@@ -1,5 +1,6 @@
 import sys
 from shutil import copy
+import os
 from os import listdir
 from random import seed, randint, choice, shuffle
 
@@ -125,8 +126,8 @@ class AUTOMATED_CLASS():
             # self._bk_rom_obj._write_asm_address(asm_section, curr_address) # This should work, but it doesn't :(
             old_code_index_start = self._asm_pointer_address_dict[asm_section_name]["Code"]
             if(curr_address > old_code_index_start):
-                print("Last File Was Too Big")
-                raise SystemError("Last File Was Too Big")
+                print(f"Last File Was Too Big: {asm_section_name}")
+                raise SystemError(f"Last File Was Too Big: {asm_section_name}")
             code_compress_obj = COMPRESS_CLASS(self._file_dir, old_code_index_start)
             code_compress_obj._compress_main(padding=None, padding_interval=1)
             old_data_index_start = self._asm_pointer_address_dict[asm_section_name]["Data"]
@@ -334,9 +335,9 @@ class AUTOMATED_CLASS():
     
     def _super_banjo(self):
         self._assembly_class_creation()
-        self._assembly_obj._scale_bk_talon_trot_speed(2)
-        self._assembly_obj._scale_banjos_swim_speed(2)
-        self._assembly_obj._scale_banjos_walk_speed(2)
+        self._assembly_obj._scale_bk_talon_trot_speed(1.5)
+        self._assembly_obj._scale_banjos_swim_speed(1.5)
+        self._assembly_obj._scale_banjos_walk_speed(1.5)
     
     def _faster_transformations(self):
         self._assembly_class_creation()
@@ -380,7 +381,7 @@ class AUTOMATED_CLASS():
         for index_count in range(index_end - index_start - len(custom_file._mmap)):
             self._bk_rom_obj._mmap[index_start + len(custom_file._mmap) + index_count] = 0xAA
         
-    def _insert_asset_file(self, pointer, custom_file_name):
+    def _insert_compressed_asset_file(self, pointer, custom_file_name):
         self._ASSET_TABLE_OFFSET = 0x10CD0
         index_start = self._bk_rom_obj._read_byte_list_to_int(pointer, 4) + self._ASSET_TABLE_OFFSET
         index_end = self._bk_rom_obj._read_byte_list_to_int(pointer + 0x8, 4) + self._ASSET_TABLE_OFFSET
@@ -388,10 +389,17 @@ class AUTOMATED_CLASS():
         if(index_end - index_start < len(custom_file._mmap)):
             print("The file you're trying to insert is too big.")
             raise SystemError("The file you're trying to insert is too big.")
-        import os
-        if(os.path.exists(self._file_dir + self._EXTRACTED_FILES_DIR + "10758-Decompressed.bin")):
-            os.remove(self._file_dir + self._EXTRACTED_FILES_DIR + "10758-Decompressed.bin")
-        copy(f"{self._file_dir}Custom_Files/{custom_file_name}.bin", f"{self._file_dir}{self._EXTRACTED_FILES_DIR}10758-Raw.bin")
+        file_name = str(hex(pointer))[2:].upper()
+        if(os.path.exists(self._file_dir + self._EXTRACTED_FILES_DIR + f"{file_name}-Decompressed.bin")):
+            os.remove(self._file_dir + self._EXTRACTED_FILES_DIR + f"{file_name}-Decompressed.bin")
+        copy(f"{self._file_dir}Custom_Files/{custom_file_name}.bin", f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{file_name}-Raw.bin")
+    
+    def _insert_decompressed_asset_file(self, pointer, custom_file_name):
+        self._ASSET_TABLE_OFFSET = 0x10CD0
+        file_name = str(hex(pointer))[2:].upper()
+        if(os.path.exists(self._file_dir + self._EXTRACTED_FILES_DIR + f"{file_name}-Decompressed.bin")):
+            os.remove(self._file_dir + self._EXTRACTED_FILES_DIR + f"{file_name}-Decompressed.bin")
+        copy(f"{self._file_dir}Custom_Files/{custom_file_name}.bin", f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{file_name}-Decompressed.bin")
     
     def _randomize_music_instruments(self):
         file_name = str(hex(0x10758))[2:].upper() + "-Decompressed"
@@ -406,6 +414,18 @@ class AUTOMATED_CLASS():
         self._rand_shuffle(instrument_list, 0x10758)
         for track_num in range(0x1, 0x10):
             music_obj._replace_instrument(track_num, instrument_list[track_num - 1])
+    
+    def _snacker_everywhere(self):
+        self._assembly_class_creation()
+        self._assembly_obj._snacker_everywhere()
+    
+    def _mm_fix_honeycomb_flags(self):
+        self._assembly_class_creation()
+        self._assembly_obj._mm_fix_honeycomb_flags()
+    
+    def _mmm_anyones_empty_honeycomb(self):
+        self._assembly_class_creation()
+        self._assembly_obj._mmm_anyones_empty_honeycomb()
 
     ###################
     ### BANJO TOOIE ###
@@ -432,7 +452,7 @@ class AUTOMATED_CLASS():
 
 if __name__ == '__main__':
     print("START")
-    OBJECT_SKIP_POINTERS = []
+    OBJECT_SKIP_POINTERS = [0x8460, 0x8858]
     LEVEL_SKIP_POINTERS = [0x10378, 0x10548, 0x10550]
 
     print("Extraction & Decompression Start")
@@ -442,16 +462,16 @@ if __name__ == '__main__':
     print(f"Seed: {use_seed}")
     automated_obj._set_seed(897442)
     automated_obj._extract_and_decompress_asset_category("Object Model Files")
-    automated_obj._extract_and_decompress_asset_category("Level Model Files")
-    automated_obj._extract_and_decompress_asset_category("Sprite/Texture Files")
-    automated_obj._extract_and_decompress_asset_category("Music Files")
+    # automated_obj._extract_and_decompress_asset_category("Level Model Files")
+    # automated_obj._extract_and_decompress_asset_category("Sprite/Texture Files")
+    # automated_obj._extract_and_decompress_asset_category("Music Files")
     automated_obj._extract_and_decompress_all_asm()
     automated_obj._clean_up("Compressed")
     print("Extraction & Decompression Complete")
     
     print("DEV Options Start")
     automated_obj._skippable_cutscenes()
-    automated_obj._boot_to_game_select()
+    # automated_obj._boot_to_game_select()
     automated_obj._replace_note_doors("Note", 0)
     automated_obj._replace_jigsaw_puzzles("Jiggy", 0)
     automated_obj._modify_transformation_costs("Token", 0)
@@ -461,38 +481,43 @@ if __name__ == '__main__':
     automated_obj._default_totals_screen()
 
     print("Testing Options Start")
-    automated_obj._starting_lives("Infinite")
-    automated_obj._starting_health(2)
-    automated_obj._empty_honeycombs_for_extra_health(3)
-    automated_obj._starting_inventory_counts(69)
-    automated_obj._randomize_collisions()
-    automated_obj._replace_bk_model("Wishywashy")
+    # automated_obj._starting_lives("Infinite")
+    automated_obj._starting_lives(6)
+    # automated_obj._mm_fix_honeycomb_flags()
+    # automated_obj._mmm_anyones_empty_honeycomb()
+    # automated_obj._snacker_everywhere()
+    # automated_obj._starting_health(2)
+    # automated_obj._empty_honeycombs_for_extra_health(3)
+    # automated_obj._starting_inventory_counts(69)
+    # automated_obj._randomize_collisions()
+    # automated_obj._replace_bk_model("Wishywashy")
     # automated_obj._replace_bk_model("Conga")
     # automated_obj._replace_bk_model("Mario & Luigi")
-    OBJECT_SKIP_POINTERS.append(0x7908)
+    # OBJECT_SKIP_POINTERS.append(0x7908)
     # automated_obj._replace_ttc_model("Rusty Bucket Bay")
     # automated_obj._replace_mm_model("Treasure Trove Cove")
-    automated_obj._increased_draw_distance("7990")
-    LEVEL_SKIP_POINTERS.append(0x101F0)
-    LEVEL_SKIP_POINTERS.append(0x101F8)
+    # automated_obj._increased_draw_distance("7990")
+    # LEVEL_SKIP_POINTERS.append(0x101F0)
+    # LEVEL_SKIP_POINTERS.append(0x101F8)
     
     # automated_obj._grayscale_category("Object Model Files")
     # automated_obj._grayscale_category("Level Model Files")
     # automated_obj._grayscale_category("Sprite/Texture Files")
     
-    automated_obj._random_color_category("Object Model Files", skip_pointer=OBJECT_SKIP_POINTERS)
-    automated_obj._random_color_category("Level Model Files", skip_pointer=LEVEL_SKIP_POINTERS, additional_scaling=0.85)
-    automated_obj._random_color_category("Sprite/Texture Files")
-    automated_obj._randomize_skybox_and_clouds()
-    automated_obj._remove_hut_notes()
-    automated_obj._enemy_note_drop()
-    automated_obj._fallproof()
-    automated_obj._jiggy_win_condition(1)
-    automated_obj._note_count_win_condition(3)
-    automated_obj._furnace_fun_finale()
-    automated_obj._randomize_music_instruments()
-    automated_obj._overwrite_asset_file(0x10758, "KQ_ZDD_Main_Cave-Riposte")
-    automated_obj._insert_asset_file(0x10758, "KQ_ZDD_Main_Cave-Riposte")
+    # automated_obj._random_color_category("Object Model Files", skip_pointer=OBJECT_SKIP_POINTERS)
+    # automated_obj._random_color_category("Level Model Files", skip_pointer=LEVEL_SKIP_POINTERS, additional_scaling=0.85)
+    # automated_obj._random_color_category("Sprite/Texture Files")
+    # automated_obj._randomize_skybox_and_clouds()
+    # automated_obj._remove_hut_notes()
+    # automated_obj._enemy_note_drop()
+    # automated_obj._fallproof()
+    # automated_obj._jiggy_win_condition(1)
+    # automated_obj._note_count_win_condition(3)
+    # automated_obj._furnace_fun_finale()
+    # automated_obj._randomize_music_instruments()
+    # automated_obj._overwrite_asset_file(0x10758, "KQ_ZDD_Main_Cave-Riposte")
+    # automated_obj._insert_compressed_asset_file(0x10758, "KQ_ZDD_Main_Cave-Riposte")
+    automated_obj._insert_decompressed_asset_file(0x8900, "BK_Rando_Logo_01")
     print("Options Complete")
 
     print("Adjusting Core Checksums Start")
@@ -501,10 +526,10 @@ if __name__ == '__main__':
     print("Adjusting Core Checksums Complete")
 
     print("Compression & Insertion Start")
-    automated_obj._compress_and_insert_asset_category("Object Model Files")
-    automated_obj._compress_and_insert_asset_category("Level Model Files", skip_pointer_list=LEVEL_SKIP_POINTERS)
-    automated_obj._compress_and_insert_asset_category("Sprite/Texture Files")
-    automated_obj._compress_and_insert_asset_category("Music Files")
+    automated_obj._compress_and_insert_asset_category("Object Model Files", skip_pointer_list=OBJECT_SKIP_POINTERS)
+    # automated_obj._compress_and_insert_asset_category("Level Model Files", skip_pointer_list=LEVEL_SKIP_POINTERS)
+    # automated_obj._compress_and_insert_asset_category("Sprite/Texture Files")
+    # automated_obj._compress_and_insert_asset_category("Music Files")
     automated_obj._compress_and_insert_all_asm()
     automated_obj._clean_up("All")
     print("Compression & Insertion Complete")

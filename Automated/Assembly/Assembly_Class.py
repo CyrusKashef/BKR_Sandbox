@@ -396,3 +396,13 @@ class ASSEMBLY_CLASS():
         for parameter in parameter_list:
             level_models_dict[first_level_count][parameter] = level_models_dict[second_level_count][parameter]
         self._core_2_data._set_all_level_models(level_models_dict)
+    
+    def _snacker_everywhere(self):
+        self._core_2_code._snacker_remove_ttc_boundaries()
+        self._core_2_code._snacker_all_maps()
+
+    def _mm_fix_honeycomb_flags(self):
+        self._core_2_code._mm_fix_honeycomb_flags()
+    
+    def _mmm_anyones_empty_honeycomb(self):
+        self._core_2_code._mmm_anyones_empty_honeycomb()

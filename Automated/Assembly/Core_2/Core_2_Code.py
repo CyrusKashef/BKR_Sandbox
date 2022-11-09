@@ -265,3 +265,36 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
 
     def _new_game_start_area(self, area_id):
         self._write_byte(0x986FA, area_id)
+    
+    ##########################
+    ### SNACKER EVERYWHERE ###
+    ##########################
+
+    def _snacker_remove_ttc_boundaries(self):
+        # Boundaries Are Basically Zero
+        self._write_bytes(0x34FC, 4, 0x3C014416)
+        self._write_bytes(0x3508, 4, 0x3C060000)
+        self._write_bytes(0x3548, 4, 0x3C060000)
+
+    def _snacker_all_maps(self):
+        # Remove Case Statements
+        self._write_bytes(0x3950, 4, 0x00000000)
+        self._write_bytes(0x3954, 4, 0x00000000)
+        self._write_bytes(0x3958, 4, 0x00000000)
+        self._write_bytes(0x395C, 4, 0x00000000)
+        self._write_bytes(0x3960, 4, 0x00000000)
+        self._write_bytes(0x3964, 4, 0x00000000)
+        self._write_bytes(0x3968, 4, 0x00000000)
+        self._write_bytes(0x396C, 4, 0x00000000)
+    
+    ########################
+    ### EMPTY HONEYCOMBS ###
+    ########################
+    
+    def _mm_fix_honeycomb_flags(self):
+        # Point To Non-Existing Map
+        self._write_bytes(0x42CC0, 4, 0x240100A0)
+
+    def _mmm_anyones_empty_honeycomb(self):
+        # Remove The Branch For Pumpkin
+        self._write_bytes(0x581C, 4, 0x14410000)

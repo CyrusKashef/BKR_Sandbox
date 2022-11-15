@@ -28,7 +28,7 @@ import subprocess
 from os.path import exists
 from os import unlink
 from shutil import copy
-import zlib
+import gzip
 
 ######################
 ### COMPRESS CLASS ###
@@ -64,23 +64,24 @@ class COMPRESS_CLASS():
         try:
             with open(src, "rb") as f:
                 dec    = f.read()
+
+                ## Align in-game postinflate buffer to 16
+                while len(dec) % 0x10:
+                    dec += '\x00'
+
                 declen = len(dec)
 
             ## Deflate
-            cmp = zlib.compressobj(wbits=-15).compress(dec)
-
-            ## Align in-game postinflate buffer to 16
-            if declen % 0x10:
-                declen += 0x10 - (declen % 0x10)
+            cmp = gzip.compress(data=dec, compresslevel=9, mtime=None)[10:-8]
 
             ## Build final deflated file
             output = self._BK_COMPRESSED_FILE_HEADER + declen.to_bytes(4, "big") + cmp
-            ## Align to 8 with standard padding
+            ## Align
             if len(output) % alignment:
                 output += padding * (alignment - (len(output) % alignment))
 
             ## Commit output
-            with open(dst, "wb") as f:
+            with open(dst, "wb+") as f:
                 f.write(output)
 
             ## Remove source file, as standard gzip

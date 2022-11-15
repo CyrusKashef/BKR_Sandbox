@@ -32,12 +32,12 @@ CASUAL_SPAWNED_REQUIREMENTS_DICT = {
     BGS_CENTRAL_SWITCH_JIGGY: [BGS_MAIN, BEAK_BUSTER, TALON_TROT],
     BGS_MAZE_SWITCH_JIGGY: [BGS_MAIN, BEAK_BUSTER, (STILT_STRIDE, EIGHT_HEALTH, [WONDERWING, EIGHT_HEALTH])], # CHECK THIS
     BGS_YELLOW_FLIBBIT_JIGGY: [BGS_MAIN, (CLAW_SWIPE, ROLL_ATTACK, RAT_A_TAP_RAP, BEAK_BARGE, BEAK_BUSTER, EGG_FIRING)],
-    BGS_HUTS_JIGGY: [BGS_MAIN, BEAK_BUSTER, SHOCK_SPRING_JUMP],
+    BGS_HUTS_JIGGY: [BGS_MAIN, BEAK_BUSTER, HIGH_JUMP, SHOCK_SPRING_JUMP],
     BGS_TANKTUP_JIGGY: [BGS_MAIN, BEAK_BUSTER],
     BGS_TIPTUP_JIGGY: [BGS_TANKTUP, BEAK_BUSTER],
     BGS_MR_VILE_JIGGY: [BGS_MR_VILE, CROCODILE_BK],
-    BGS_CROCTUS_JIGGY: [BGS_MAIN, EGG_FIRING, BEAK_BUSTER, SHOCK_SPRING_JUMP],
-    BGS_EGG_JIGGY: [BEAK_BUSTER, RAT_A_TAP_RAP, BEAK_BARGE, (SHOCK_SPRING_JUMP, [CLIMB, TALON_TROT])],
+    BGS_CROCTUS_JIGGY: [BGS_MAIN, EGG_FIRING, BEAK_BUSTER, HIGH_JUMP, SHOCK_SPRING_JUMP],
+    BGS_EGG_JIGGY: [BEAK_BUSTER, RAT_A_TAP_RAP, BEAK_BARGE, ([HIGH_JUMP, SHOCK_SPRING_JUMP], [CLIMB, TALON_TROT])],
     # FP
     FP_JINJOS_JIGGY: [FP_BLUE_JINJO, FP_PINK_JINJO, FP_YELLOW_JINJO, FP_GREEN_JINJO, FP_ORANGE_JINJO],
     FP_SIR_SLUSH_JIGGY: [FP_MAIN, FLIGHT, BEAK_BOMB],
@@ -59,7 +59,7 @@ CASUAL_SPAWNED_REQUIREMENTS_DICT = {
     GV_CACTUS_HONEYCOMB: [GV_MAIN, (TALON_TROT, TURBO_TALON_TROT), BEAK_BUSTER, FLIGHT],
     # MMM
     MMM_JINJOS_JIGGY: [MMM_BLUE_JINJO, MMM_PINK_JINJO, MMM_YELLOW_JINJO, MMM_GREEN_JINJO, MMM_ORANGE_JINJO],
-    MMM_MOTZAND_JIGGY: [MMM_CHURCH, FLAP_FLIP, SHOCK_SPRING_JUMP, BEAK_BUSTER],
+    MMM_MOTZAND_JIGGY: [MMM_CHURCH, FLAP_FLIP, HIGH_JUMP, SHOCK_SPRING_JUMP, BEAK_BUSTER],
     MMM_FLOWER_POTS: [MMM_MAIN, EGG_FIRING], # DEPENDS
     # RBB
     RBB_JINJOS_JIGGY: [RBB_BLUE_JINJO, RBB_PINK_JINJO, RBB_YELLOW_JINJO, RBB_GREEN_JINJO, RBB_ORANGE_JINJO],
@@ -67,7 +67,7 @@ CASUAL_SPAWNED_REQUIREMENTS_DICT = {
     # CCW
     CCW_JINJOS_JIGGY: [CCW_BLUE_JINJO, CCW_PINK_JINJO, CCW_YELLOW_JINJO, CCW_GREEN_JINJO, CCW_ORANGE_JINJO],
     CCW_GNAWTY_JIGGY: [CCW_SUMMER_MAIN, (CCW_AUTUMN_MAIN, CCW_WINTER_MAIN), DIVE, (EGG_FIRING, BEAK_BARGE, BEAK_BUSTER, WONDERWING)],
-    CCW_EYRIE_JIGGY: [CCW_SPRING_MAIN, CCW_SUMMER_MAIN, CCW_AUTUMN_MAIN, CCW_WINTER_MAIN, SHOCK_SPRING_JUMP, BEAK_BUSTER, {CATERPILLAR: 15}],
+    CCW_EYRIE_JIGGY: [CCW_SPRING_MAIN, CCW_SUMMER_MAIN, CCW_AUTUMN_MAIN, CCW_WINTER_MAIN, HIGH_JUMP, SHOCK_SPRING_JUMP, BEAK_BUSTER, {CATERPILLAR: 15}],
     CCW_NABNUT_JIGGY: [CCW_AUTUMN_MAIN, {ACORN: 15}], # DEPENDS
     CCW_PLANT_JIGGY: [CCW_SPRING_MAIN, CCW_SUMMER_MAIN, CCW_AUTUMN_MAIN, EGG_FIRING, BEAK_BUSTER],
     # GL
@@ -221,6 +221,178 @@ CASUAL_LOCATION_REQUIREMENTS_DICT = {
     # MMM
     # RBB
     # CCW
+    # GL
+}
+
+PSUEDO_RANDOM_LOCATION_REQUIREMENTS_DICT = {
+    # SM
+    SM_MAIN: {
+        (-2975, 1291, -1821): [], # Tree 1
+        (-344, 835, -2224): [], # Tree 2
+        (966, 750, 1807): [], # Tree 3
+        (3, 49, 4847): [], # Stump 1
+        (1018, 99, 4770): [], # Stump 2
+        (1181, 49, 3994): [], # Stump 3
+        (-2, -50, 3977): [], # Stump 4
+        (-779, 49, 3581): [], # Stump 5
+        (-3429, 575, -1015): [], # Under Stone Bridge
+        (-5765, 50, -1681): [], # In Pond
+    },
+    SM_BANJOS_HOUSE: {
+        (61, 6, -66): [], # Rug
+    },
+    # MM
+    MM_MAIN: {
+        (5147, 788, 2874): [], # Tree 1
+        (3459, 755, 2636): [], # Tree 2
+        (5818, 2354, -3218): [], # Behind Skull
+        (5274, 2756, -2905): [], # Other Mumbos Eye
+        (5595, 3089, -2972): [], # Atop Mumbos Skull
+    },
+    MM_TICKERS_TOWER: {
+        (-10, 0, -26): [], # Floor 1
+        (-10, 817, -26): [], # Floor 2
+        (-10, 1507, -26): [], # Floor 3
+    },
+    MM_MUMBOS_SKULL: {
+        (0, 600, 0): [], # Ceiling
+    },
+    # TTC
+    TTC_MAIN: {
+        (4118, -14, -7566): [], # Underwater Gap
+    },
+    TTC_BLUBBERS: {},
+    TTC_NIPPERS: {},
+    TTC_SANDCATLE: {},
+    TTC_SHARKFOOD_ISLAND: {},
+    # CC
+    CC_MAIN: {
+        (-9586, 4045, 1480): [], # Underneath Entrance
+        (6768, 2145, 3500): [], # Middle Of Long Pipe
+        (14177, 3231, -21): [], # Mutie Snippets Under Pipe
+    },
+    CC_BELLY_MOUTH: {},
+    CC_BLOWHOLE: {},
+    CC_GOLD_FEATHER: {},
+    # BGS
+    BGS_MAIN: {
+        (-6592, 1717, -5498): [], # Atop Mumbos Skull
+        (-8885, 0, -6143): [], # Corner Under Maze Switch
+        (-3360, 0, -2192): [], # Corner Near Path To Maze
+        (-6569, 1360, -5214): [], # Mumbos Eye 1
+        (-6301, 1360, -5462): [], # Mumbos Eye 1
+        (4702, 601, -3587): [], # Hut 1
+        (4895, 1101, -4381): [], # Hut 2
+        (5202, 1901, -5092): [], # Hut 3
+        (6084, 2401, -4983): [], # Hut 4
+        (-7552, 1599, -3445): [], # Atop Maze
+    },
+    BGS_MR_VILE: {},
+    BGS_TANKTUP: {},
+    BGS_MUMBOS_SKULL: {},
+    # FP
+    FP_MUMBOS_SKULL: {
+        (6853, 1050, -3316): [], # Mumbos Eye 1
+        (7049, 1050, -2958): [], # Mumbos Eye 2
+        (4834, 449, -929): [], # Behind House
+    },
+    FP_IGLOO: {},
+    FP_MUMBOS_SKULL: {
+        (0, 600, 0): [], # Ceiling
+    },
+    FP_TREE: {},
+    FP_WOZZAS: {
+        (-3194, -365, -215): [], # Middle Of Tunnel
+        (-1617, -361, -340): [], # Behind Green Crystal
+    },
+    # GV
+    GV_MAIN: {
+        (-5965, 1980, 5941): [], # Jinxy Butt
+    },
+    GV_MATCHING_PUZZLE: {},
+    GV_KING_SANDYBUTT: {},
+    GV_WATER_PYRAMID: {
+        (5, 2200, -7): [], # Top Entrance
+    },
+    GV_RUPEE: {},
+    GV_JINXY: {},
+    GV_SNS: {},
+    # MMM
+    MMM_MAIN: {
+        (5699, 400, -3349): [], # Above Well
+        (-650, 460, -4798): [], # Mumbos Eye 1
+        (-454, 460, -4598): [], # Mumbos Eye 2
+        (-437, 745, -4822): [], # Atop Mumbos
+        (-1304, 0, -1042): [], # Atop Mumbos
+        (685, 1099, 1259): [], # Mansion Floor 2 #1
+        (1350, 1099, 1265): [], # Mansion Floor 2 #2
+        (681, 1099, -751): [], # Mansion Floor 2 #3
+        (-1203, 174, -1425): [], # Tall Grass Corner 1
+        (3053, 174, -2991): [], # Tall Grass Corner 2
+        (3060, 174, -1993): [], # Tall Grass Corner 3
+        (3096, 174, -1704): [], # Tall Grass Corner 4
+        (3529, 29, 2506): [], # Corner 1
+        (3529, 29, 2506): [], # Corner 2
+        (1681, 29, 3742): [], # Corner 3
+        (323, 29, 3764): [], # Corner 4
+        (-1236, 29, 2678): [], # Corner 5
+        (-175, 174, 439): [], # Mansion Corner 1
+        (-183, 174, 35): [], # Mansion Corner 2
+        (-2911, 449, 1320): [], # Atop Maze
+    },
+    MMM_INSIDE_LOGGO: {
+        (531, 136, -478): [], # Loggo Corner 1
+    },
+    MMM_CHURCH: {
+        (2243, 0, 4462): [], # Corner 1
+        (-2304, 0, 4493): [], # Corner 2
+        (-1639, 288, 2080): [], # Chair 1
+        (-1624, 288, 498): [], # Chair 2
+        (1624, 288, 2067): [], # Chair 3
+        (1619, 288, 507): [], # Chair 4
+        (1876, 200, -3450): [], # Side Of Organ 1
+        (-1874, 200, -3450): [], # Side Of Organ 2
+    },
+    MMM_BASEMENT: {
+        (-466, 31, -195): [], # Barrel 1
+        (474, 31, 480): [], # Barrel 2
+        (-513, 0, -784): [], # Corner 1
+        (520, 0, -771): [], # Corner 2
+    },
+    MMM_TUMBLAR: {},
+    MMM_WELL: {
+        (5, 2000, 10): [], # Rope
+    },
+    MMM_DINING_ROOM: {
+        (1465, 0, 2282): [], # Corner 1
+        (-1465, 0, 2282): [], # Corner 2
+        (1468, 0, -2466): [], # Corner 3
+        (-1468, 0, -2466): [], # Corner 4
+        (0, 200, 0): [], # Under Dining Table
+    },
+    MMM_FLOOR_1_ROOM_2_BLUE_EGGS: {
+        (424, 0, 339): [], # Corner
+    },
+    MMM_FLOOR_3_ROOM_1_NOTES: {
+        (408, 0, 319): [], # Corner
+    },
+    MMM_FLOOR_1_ROOM_1_RED_FEATHERS: {
+        (-426, 0, 380): [], # Corner 1
+        (-426, 0, -375): [], # Corner 1
+    },
+    MMM_SECRET_ROOM: {
+        (0, 0, -600): [], # Between Windows
+    },
+    MMM_FLOOR_2_ROOM_2_LOGGO: {},
+    MMM_FLOOR_3_ROOM_2_BEDROOM: {},
+    MMM_FLOOR_2_ROOM_1_HONEYCOMB: {},
+    MMM_INSIDE_GUTTER: {},
+    MMM_MUMBOS_SKULL: {
+        (0, 600, 0): [], # Ceiling
+    },
+    # RBB
+    # CCW
+    # GL
 }
 
 #############################

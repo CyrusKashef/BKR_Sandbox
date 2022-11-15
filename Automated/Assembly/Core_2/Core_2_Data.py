@@ -522,6 +522,32 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     def _set_all_level_models(self, replacement_dict):
         for level_count, start_index in enumerate(range(0x7650, 0x8250, 0x18)):
             self._set_level_models(start_index, replacement_dict[level_count])
+    
+    ################
+    ### SECTIONS ###
+    ################
+
+    def _get_gc_section_info(self, section_num):
+        # 0x8280 GC Section Min
+        # 0x8680 GC Section Max
+        curr_index = 0x8280 + 0x8 * section_num
+        curr_map = self._read_bytes(curr_index, 2)
+        curr_level = self._read_bytes(curr_index + 0x2, 2)
+        curr_dev_string_offset = self._read_bytes(curr_index + 0x4, 4)
+        return curr_map, curr_level, curr_dev_string_offset
+
+    def _get_all_gc_section_info(self):
+        for section_num in range(0x1, 0x9B):
+            curr_map, curr_level, curr_dev_string_offset = self._get_gc_section_info(section_num)
+    
+    def _set_gc_section_info(self, section_num, map_id_list=None, new_level_id=None, new_dev_string_offset=None):
+        curr_index = 0x8280 + 0x8 * section_num
+        curr_map = self._read_bytes(curr_index, 2)
+        if((map_id_list == None) or (curr_map in map_id_list)):
+            if(new_level_id != None):
+                self._write_bytes(curr_index + 0x2, 2, new_level_id)
+            if(new_dev_string_offset != None):
+                self._write_bytes(curr_index + 0x4, 4, new_dev_string_offset)
 
 if __name__ == '__main__':
     FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test/Rando3_Test/"

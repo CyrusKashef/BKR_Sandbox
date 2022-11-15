@@ -27,6 +27,7 @@ from mmap import mmap
 import subprocess
 from os.path import exists
 from shutil import copy
+import gzip
 
 ######################
 ### COMPRESS CLASS ###
@@ -56,44 +57,38 @@ class COMPRESS_CLASS():
     def _check_if_raw_file_exists(self):
         return exists(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._RAW_BIN_EXTENSION}")
 
-    def _get_decompressed_data_len(self):
-        with open(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._DECOMPRESSED_BIN_EXTENSION}", "rb") as f:
-            data = f.read()
-            self._decompressed_data_len = str(hex(len(data)))[2:].upper()
-            while(len(self._decompressed_data_len) < 8):
-                self._decompressed_data_len = "0" + self._decompressed_data_len
-
-    def _compress_file(self):
-        cmd = (f"\"{self._file_dir}{self._GZIP}\" -c " +
-               f"\"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._DECOMPRESSED_BIN_EXTENSION}\" > " +
-               f"\"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._TEMPORARY_BIN}\"")
-        subprocess.Popen(cmd, universal_newlines=True, shell=True).communicate()
-    
-    def _post_compression_adjustments(self, padding=b"\xAA", padding_interval=8):
-        with open(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._TEMPORARY_BIN}", "rb+") as t:
-            mm = mmap(t.fileno(), 0)
-            file_name_end_index = mm.find(self._DOT_BIN_BINARY) + 5
-            with open(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._COMPRESSED_BIN_EXTENSION}", "wb+") as f:
-                f.write(self._BK_COMPRESSED_FILE_HEADER)
-                f.write(bytes.fromhex(self._decompressed_data_len))
-                f.write(mm[file_name_end_index : len(mm) - self._FOOTER_LEN])
-                file_len = len(mm) - file_name_end_index - 2
-                if(padding):
-                    while(file_len % padding_interval != 0):
-                        f.write(padding)
-                        file_len += 1
-
     def _copy_raw(self):
         copy(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._RAW_BIN_EXTENSION}",
             f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._COMPRESSED_BIN_EXTENSION}")
 
+    def _new_compress_file(self, padding=b"\xAA", padding_interval=8):
+        # Thank You, Wedarobi! <3
+        src = f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._DECOMPRESSED_BIN_EXTENSION}"
+        dst = f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._COMPRESSED_BIN_EXTENSION}"
+        # Read decompressed file and record length
+        with open(src, "rb") as f:
+            dec = f.read()
+            declen = len(dec)
+
+            ## Align in-game postinflate buffer to 16
+            while len(dec) % 0x10:
+                dec += b'\x00'
+        ## Deflate
+        cmp = gzip.compress(data=dec, compresslevel=9, mtime=None)[10:-8]
+        ## Build final deflated file
+        output = self._BK_COMPRESSED_FILE_HEADER + declen.to_bytes(4, "big") + cmp
+        ## Align
+        if(len(output) % padding_interval):
+            output += padding * (padding_interval - (len(output) % padding_interval))
+        ## Commit output
+        with open(dst, "wb+") as f:
+            f.write(output)
+    
     def _compress_main(self, padding=b"\xAA", padding_interval=8):
-        if(self._check_if_decompressed_file_exists()):
-            self._get_decompressed_data_len()
-            self._compress_file()
-            self._post_compression_adjustments(padding, padding_interval)
+        if self._check_if_decompressed_file_exists():
+            self._new_compress_file(padding, padding_interval)
             return True
-        elif(self._check_if_raw_file_exists()):
+        elif self._check_if_raw_file_exists():
             self._copy_raw()
             return True
         return False

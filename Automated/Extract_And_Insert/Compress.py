@@ -26,7 +26,9 @@ Need To Add These Before Inserting Into ROM:
 from mmap import mmap
 import subprocess
 from os.path import exists
+from os import unlink
 from shutil import copy
+import zlib
 
 ######################
 ### COMPRESS CLASS ###
@@ -38,7 +40,7 @@ class COMPRESS_CLASS():
         self._BK_COMPRESSED_FILE_HEADER = b"\x11\x72"
         self._DOT_BIN_BINARY = b'\x2E\x62\x69\x6E\x00'
         self._FOOTER_LEN = 8
-        self._GZIP = "Tools/GZIP/GZIP.EXE"
+        # self._GZIP = "Tools/GZIP/GZIP.EXE"
         self._EXTRACTED_FILES_DIR = "Extracted_Files/"
         self._COMPRESSED_BIN_EXTENSION = "-Compressed.bin"
         self._DECOMPRESSED_BIN_EXTENSION = "-Decompressed.bin"
@@ -48,7 +50,6 @@ class COMPRESS_CLASS():
         ### VARIABLES ###
         self._file_dir = file_dir
         self._pointer_str = str(hex(pointer))[2:].upper()
-        self._decompressed_data_len = None
     
     def _check_if_decompressed_file_exists(self):
         return exists(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._DECOMPRESSED_BIN_EXTENSION}")
@@ -56,47 +57,56 @@ class COMPRESS_CLASS():
     def _check_if_raw_file_exists(self):
         return exists(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._RAW_BIN_EXTENSION}")
 
-    def _get_decompressed_data_len(self):
-        with open(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._DECOMPRESSED_BIN_EXTENSION}", "rb") as f:
-            data = f.read()
-            self._decompressed_data_len = str(hex(len(data)))[2:].upper()
-            while(len(self._decompressed_data_len) < 8):
-                self._decompressed_data_len = "0" + self._decompressed_data_len
+    def _compress_file(self, padding=b"\xAA", alignment=8):
+        src = f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._DECOMPRESSED_BIN_EXTENSION}"
+        dst = f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._COMPRESSED_BIN_EXTENSION}"
 
-    def _compress_file(self):
-        cmd = (f"\"{self._file_dir}{self._GZIP}\" -c " +
-               f"\"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._DECOMPRESSED_BIN_EXTENSION}\" > " +
-               f"\"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._TEMPORARY_BIN}\"")
-        subprocess.Popen(cmd, universal_newlines=True, shell=True).communicate()
-    
-    def _post_compression_adjustments(self, padding=b"\xAA", padding_interval=8):
-        with open(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._TEMPORARY_BIN}", "rb+") as t:
-            mm = mmap(t.fileno(), 0)
-            file_name_end_index = mm.find(self._DOT_BIN_BINARY) + 5
-            with open(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._COMPRESSED_BIN_EXTENSION}", "wb+") as f:
-                f.write(self._BK_COMPRESSED_FILE_HEADER)
-                f.write(bytes.fromhex(self._decompressed_data_len))
-                f.write(mm[file_name_end_index : len(mm) - self._FOOTER_LEN])
-                file_len = len(mm) - file_name_end_index - 2
-                if(padding):
-                    while(file_len % padding_interval != 0):
-                        f.write(padding)
-                        file_len += 1
+        try:
+            with open(src, "rb") as f:
+                dec    = f.read()
+                declen = len(dec)
+
+            ## Deflate
+            cmp = zlib.compressobj(wbits=-15).compress(dec)
+
+            ## Align in-game postinflate buffer to 16
+            if declen % 0x10:
+                declen += 0x10 - (declen % 0x10)
+
+            ## Build final deflated file
+            output = self._BK_COMPRESSED_FILE_HEADER + declen.to_bytes(4, "big") + cmp
+            ## Align to 8 with standard padding
+            if len(output) % alignment:
+                output += padding * (alignment - (len(output) % alignment))
+
+            ## Commit output
+            with open(dst, "wb") as f:
+                f.write(output)
+
+            ## Remove source file, as standard gzip
+            if exists(src):
+                unlink(src)
+
+        except Exception as e:
+            ## Failed somehow, remove output file if exists
+            if exists(dst):
+                unlink(dst)
 
     def _copy_raw(self):
         copy(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._RAW_BIN_EXTENSION}",
             f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{self._pointer_str}{self._COMPRESSED_BIN_EXTENSION}")
 
-    def _compress_main(self, padding=b"\xAA", padding_interval=8):
-        if(self._check_if_decompressed_file_exists()):
-            self._get_decompressed_data_len()
-            self._compress_file()
-            self._post_compression_adjustments(padding, padding_interval)
+    def _compress_main(self, padding=b"\xAA", alignment=8):
+        if self._check_if_decompressed_file_exists():
+            self._compress_file(padding, alignment)
             return True
-        elif(self._check_if_raw_file_exists()):
+
+        elif self._check_if_raw_file_exists():
             self._copy_raw()
             return True
+
         return False
+
 
 if __name__ == '__main__':
     pass

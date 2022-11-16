@@ -68,11 +68,10 @@ class COMPRESS_CLASS():
         # Read decompressed file and record length
         with open(src, "rb") as f:
             dec = f.read()
-            declen = len(dec)
-
             ## Align in-game postinflate buffer to 16
             while len(dec) % 0x10:
                 dec += b'\x00'
+            declen = len(dec)
         ## Deflate
         cmp = gzip.compress(data=dec, compresslevel=9, mtime=None)[10:-8]
         ## Build final deflated file

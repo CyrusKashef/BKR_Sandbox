@@ -8,13 +8,17 @@ class SPIRAL_MOUNTAIN_CODE_CLASS(GENERIC_FILE_CLASS):
         super().__init__(file_dir, file_name)
     
     def _disable_anti_tamper(self):
-        # Thank You, Wedarobi! <3
+        '''
+        Disables the anti-tampering functions for Spiral Mountain
+        Thank You, Wedarobi! <3
+        '''
         self._write_bytes(0x1D4, 2, 0x1000)
         self._write_bytes(0x1EC, 2, 0x1000)
         self._write_bytes(0x204, 2, 0x1000)
         self._write_bytes(0x3FA4, 4, 0x00000000)
 
     def _bottles_skip_tutorial_moves(self, move_value_list):
+        '''When you press B on Intro Bottles, these are the moves you learn'''
         self._write_byte(0x2ACF, move_value_list[0])
         self._write_byte(0x2AD7, move_value_list[1])
         self._write_byte(0x2ADF, move_value_list[2])
@@ -27,6 +31,7 @@ class SPIRAL_MOUNTAIN_CODE_CLASS(GENERIC_FILE_CLASS):
         self._write_byte(0x2B0F, move_value_list[8])
     
     def _check_moves_as_used(self, move_value_list):
+        '''Removes the ding noise when using a move for the first time'''
         self._write_byte(0x2A67, 0x3) # Camera Control
         self._write_bytes(0x2A6C, 3, 0x240400)
         self._write_byte(0x2A6F, move_value_list[0])
@@ -38,3 +43,10 @@ class SPIRAL_MOUNTAIN_CODE_CLASS(GENERIC_FILE_CLASS):
         self._write_byte(0x2A9F, move_value_list[6])
         self._write_byte(0x2AA7, move_value_list[7])
         self._write_byte(0x2AAF, move_value_list[8])
+    
+    def _remove_tutorial_option(self):
+        '''Removes the option to press A and accept the tutorial'''
+        self._write_bytes(0x3E0C, 4, 0x00000000)
+        self._write_bytes(0x3E10, 4, 0x00000000)
+        self._write_bytes(0x3E14, 4, 0x00000000)
+        self._write_bytes(0x3E18, 4, 0x00000000)

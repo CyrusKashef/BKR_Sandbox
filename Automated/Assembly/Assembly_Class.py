@@ -14,6 +14,7 @@ from Automated.Assembly.Bubblegloop_Swamp.Bubblegloop_Swamp_Code import BUBBLEGL
 from Automated.Assembly.Freezeezy_Peak.Freezeezy_Peak_Code import FREEZEEZY_PEAK_CODE_CLASS
 from Automated.Assembly.Gobis_Valley.Gobis_Valley_Code import GOBIS_VALLEY_CODE_CLASS
 from Automated.Assembly.Mad_Monster_Mansion.Mad_Monster_Mansion_Code import MAD_MONSTER_MANSION_CODE_CLASS
+from Automated.Assembly.Mad_Monster_Mansion.Mad_Monster_Mansion_Data import MAD_MONSTER_MANSION_DATA_CLASS
 from Automated.Assembly.Rusty_Bucket_Bay.Rusty_Bucket_Bay_Code import RUSTY_BUCKET_BAY_CODE_CLASS
 from Automated.Assembly.Click_Clock_Wood.Click_Clock_Wood_Code import CLICK_CLOCK_WOOD_CODE_CLASS
 from Automated.Assembly.Gruntildas_Lair.Gruntildas_Lair_Code import GRUNTILDAS_LAIR_CODE_CLASS
@@ -24,6 +25,7 @@ from Automated.Assembly.Cutscenes.Cutscenes_Code import CUTSCENES_CODE_CLASS
 from Data_Files.Music_Dict import LOOPING_LEVEL_MUSIC_DICT
 from Data_Files.Marker_Dict import ENEMY_MARKER_DICT
 from Data_Files.Move_Dict import MOVE_DICT
+from Data_Files.Static_Markers_Dict import BANJO_SOULIE_MARKERS
 
 class ASSEMBLY_CLASS():
     def __init__(self, file_dir):
@@ -62,7 +64,7 @@ class ASSEMBLY_CLASS():
         self._gobis_valley_code = GOBIS_VALLEY_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FA9150{self._DECOMPRESSED_EXTENSION}")
         self._gobis_valley_data = None
         self._mad_monster_mansion_code = MAD_MONSTER_MANSION_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FA5F50{self._DECOMPRESSED_EXTENSION}")
-        self._mad_monster_mansion_data = None
+        self._mad_monster_mansion_data = MAD_MONSTER_MANSION_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FA8CE6{self._DECOMPRESSED_EXTENSION}")
         self._rusty_bucket_bay_code = RUSTY_BUCKET_BAY_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FB9A30{self._DECOMPRESSED_EXTENSION}")
         self._rusty_bucket_bay_data = None
         self._click_clock_wood_code = CLICK_CLOCK_WOOD_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FD6190{self._DECOMPRESSED_EXTENSION}")
@@ -219,6 +221,10 @@ class ASSEMBLY_CLASS():
             new_music3 = self._rand_choice(LOOPING_LEVEL_MUSIC_DICT, add_val=(self._MUSIC_START_INDEX + music_start_index + 0x6))
             self._core_2_data._set_music(map_count, new_music1=new_music1, new_music2=new_music2, new_music3=new_music3)
     
+    def _set_all_music(self, new_music1, new_music2, new_music3):
+        for map_count in range(0x83):
+            self._core_2_data._set_music(map_count, new_music1, new_music2, new_music3)
+    
     def _starting_max_health(self, start_val):
         self._core_2_code._starting_max_health(start_val)
     
@@ -261,6 +267,17 @@ class ASSEMBLY_CLASS():
             self._core_2_data._set_collision_parameter(index_start + 0x2, effect_to_bk, next_state, sound_effect,
                                                        bk_damage, hit_count, num_of_honeycombs)
     
+    def _soulie_collision_markers(self):
+        for index_start in BANJO_SOULIE_MARKERS:
+            for collision_index in BANJO_SOULIE_MARKERS[index_start]:
+                self._core_2_data._set_collision_parameter(index_start + collision_index,
+                                                           BANJO_SOULIE_MARKERS[index_start][collision_index][0],
+                                                           BANJO_SOULIE_MARKERS[index_start][collision_index][1],
+                                                           BANJO_SOULIE_MARKERS[index_start][collision_index][2],
+                                                           BANJO_SOULIE_MARKERS[index_start][collision_index][3],
+                                                           BANJO_SOULIE_MARKERS[index_start][collision_index][4],
+                                                           BANJO_SOULIE_MARKERS[index_start][collision_index][5])
+    
     def _remove_hut_notes(self):
         self._core_2_data._set_actor_list(start_index=0x2ED0, actor_id=0x52, unkC=0x21, unk14=0x42C80000,
                                           unk18=0x42480000, unk1C=0x43FA0000, unk20=0x437A0000,
@@ -269,17 +286,17 @@ class ASSEMBLY_CLASS():
                                           unk18=0x42480000, unk1C=0x43FA0000, unk20=0x437A0000,
                                           unk24=0x42C80000, unk28=0x42480000)
     
-    def _enemy_note_drops(self):
-        self._core_2_data._set_actor_list(start_index=0x3348, actor_id=0x51, count=3, unk10=0x3E800000,
+    def _enemy_note_drops(self, note_count1, note_count2, note_count3):
+        self._core_2_data._set_actor_list(start_index=0x3348, actor_id=0x51, count=note_count1, unk10=0x3E800000,
                                           unk14=0x42FA0000, unk18=0x41C80000, unk1C=0x44354000,
                                           unk20=0x42FA0000, unk24=0x42FA0000, unk28=0x41C80000)
-        self._core_2_data._set_actor_list(start_index=0x337C, actor_id=0x51, count=6, unk10=0x3E800000,
+        self._core_2_data._set_actor_list(start_index=0x337C, actor_id=0x51, count=note_count2, unk10=0x3E800000,
                                           unk14=0x42FA0000, unk18=0x41C80000, unk1C=0x44354000,
                                           unk20=0x42FA0000, unk24=0x42FA0000, unk28=0x41C80000)
-        self._core_2_data._set_actor_list(start_index=0x33B0, actor_id=0x51, count=9, unk10=0x3E800000,
+        self._core_2_data._set_actor_list(start_index=0x33B0, actor_id=0x51, count=note_count3, unk10=0x3E800000,
                                           unk14=0x42FA0000, unk18=0x41C80000, unk1C=0x44354000,
                                           unk20=0x42FA0000, unk24=0x42FA0000, unk28=0x41C80000)
-    
+
     def _exit_to_witchs_lair(self):
         self._core_2_code._exit_to_witchs_lair()
         self._core_2_data._adjust_menu_for_witchs_lair()
@@ -299,6 +316,9 @@ class ASSEMBLY_CLASS():
             print(f"Unknown Collectable Type: {collectable_type}")
             raise SystemError(f"Unknown Collectable Type: {collectable_type}")
     
+    def _set_note_door_values(self, note_door_value_list):
+        self._gruntildas_lair_data._modify_note_door_values(note_door_value_list)
+    
     def _replace_jigsaw_puzzles(self, collectable_type, new_max):
         scaling = new_max / self._COLLECTIBLE_MAX_DICT["Jiggy"]
         jigsaw_puzzle_list = self._gruntildas_lair_data._read_jigsaw_puzzle_costs()
@@ -306,6 +326,9 @@ class ASSEMBLY_CLASS():
         for note_val in jigsaw_puzzle_list:
             replacement_list.append(int(note_val * scaling))
         self._gruntildas_lair_data._modify_jigsaw_puzzle_costs(replacement_list)
+
+    def _set_jigsaw_puzzle_costs(self, jigsaw_puzzle_cost_list):
+        self._gruntildas_lair_data._modify_jigsaw_puzzle_costs(jigsaw_puzzle_cost_list)
     
     def _replace_transformation_costs(self, collectable_type, new_max):
         scaling = new_max / self._COLLECTIBLE_MAX_DICT["Token"]
@@ -314,6 +337,9 @@ class ASSEMBLY_CLASS():
         for note_val in transformation_cost_list:
             replacement_list.append(int(note_val * scaling))
         self._core_2_code._modify_transformation_costs(replacement_list)
+    
+    def _set_transformation_costs(self, transformation_cost_list):
+        self._core_2_code._modify_transformation_costs(transformation_cost_list)
     
     def _fallproof(self):
         self._core_2_code._fallproof()
@@ -406,3 +432,6 @@ class ASSEMBLY_CLASS():
     
     def _mmm_anyones_empty_honeycomb(self):
         self._core_2_code._mmm_anyones_empty_honeycomb()
+
+    def _remove_tutorial_option(self):
+        self._spiral_mountain_code._remove_tutorial_option()

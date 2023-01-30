@@ -8,5 +8,8 @@ class CLANKERS_CAVERN_CODE_CLASS(GENERIC_FILE_CLASS):
         super().__init__(file_dir, file_name)
     
     def _disable_anti_tamper(self):
-        # Thank You, Wedarobi! <3
+        '''
+        Disables the anti-tampering functions for Clanker's Cavern
+        Thank You, Wedarobi! <3
+        '''
         self._write_bytes(0x1984, 2, 0x1000)

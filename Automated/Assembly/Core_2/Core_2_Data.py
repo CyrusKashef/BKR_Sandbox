@@ -17,6 +17,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     ################
 
     def _calculate_checksum(self):
+        '''Runs through algorithm to calculate the new checksum (Might not work?)'''
         crc1 = 0
         crc2 = 0xFFFFFFFF
         for val in self._mmap:
@@ -26,6 +27,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return crc2
 
     def _set_checksum(self, crc):
+        '''Sets the checksum located in Core 2's Data'''
         self._write_bytes(0xF264, 4, crc)
 
     ####################
@@ -33,6 +35,10 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     ####################
 
     def _set_jigsaw_puzzle_requirements(self, puzzle_requirement_dict):
+        '''
+        Modifies the number of Jiggies required for each world's jigsaw puzzle
+        Also adjusts the bit requirement used to save the number of Jiggies if the player leaves the lair
+        '''
         total_bit_requirement = 0
         curr_index = 0x1B48
         curr_offset = 0x5D
@@ -50,6 +56,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
             raise SystemError("Not Enough Bits For Jigsaw Puzzle Requirements")
     
     def _set_note_door_requirements(self, notes_requirement_dict):
+        '''Modifies the number of Notes required for each note door'''
         curr_index = 0x7CC
         for note_door_count in notes_requirement_dict:
             self._write_bytes(curr_index, 2, notes_requirement_dict[note_door_count])
@@ -76,6 +83,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # Map Intervals: 0x28
 
     def _set_skybox_and_clouds(self, map_count, new_skybox=None, new_cloud1=None, new_cloud2=None):
+        '''Sets a new skybox and new clouds for each area that allows skyboxes/clouds'''
         map_start_index = self._SKYBOX_CLOUD_START_INDEX + map_count * 0x28
         self._write_bytes(map_start_index + 0x04, 2, new_skybox)
         cloud1 = self._read_byte_list_to_int(map_start_index + 0x10, 2)
@@ -95,16 +103,17 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # Music Intervals: 0x08
 
     def _set_music(self, map_count, new_music1=None, new_music2=None, new_music3=None):
+        '''Sets new music for each area with music'''
         music_start_index = self._MUSIC_START_INDEX + map_count * 0x8
         music1 = self._read_byte_list_to_int(music_start_index + 0x2, 2)
-        if(new_music1 and (music1 < 0x100) and (music1 > 0)):
-            self._write_bytes(music_start_index + 0x2, 2, music1)
+        if((new_music1 != None) and (music1 < 0x100) and (music1 > 0)):
+            self._write_bytes(music_start_index + 0x2, 2, new_music1)
         music2 = self._read_byte_list_to_int(music_start_index + 0x4, 2)
-        if(new_music2 and (music2 < 0x100) and (music2 > 1)):
-            self._write_bytes(music_start_index + 0x4, 2, music2)
+        if((new_music2 != None) and (music2 < 0x100) and (music2 > 1)):
+            self._write_bytes(music_start_index + 0x4, 2, new_music2)
         music3 = self._read_byte_list_to_int(music_start_index + 0x6, 2)
-        if(new_music3 and (music3 < 0x100) and (music3 > 1)):
-            self._write_bytes(music_start_index + 0x6, 2, music3)
+        if((new_music3 != None) and (music3 < 0x100) and (music3 > 1)):
+            self._write_bytes(music_start_index + 0x6, 2, new_music3)
     
     #########################
     ### MARKER COLLISIONS ###
@@ -153,11 +162,13 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
 
     def _create_collision_parameter_value(self, effect_to_bk, next_state, sound_effect,
                                                 bk_damage, hit_count, num_of_honeycombs):
+        '''Creates a two byte collision value from a series of bit parameters'''
         int_val = ((effect_to_bk << 12) + (next_state << 10) + (sound_effect << 7) +
                    (bk_damage << 5) + (hit_count << 2) + num_of_honeycombs)
         return int_val
     
     def _get_bitwise_collision_parameter_values(self, index_start):
+        '''Returns a series of bit parameters from a two byte collision value'''
         int_val = self._read_byte_list_to_int(index_start, 2)
         effect_to_bk = (int_val >> 12) & 0b1111
         next_state = (int_val >> 10) & 0b11
@@ -169,6 +180,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     
     def _set_collision_parameter(self, index_start, effect_to_bk, next_state, sound_effect,
                                        bk_damage, hit_count, num_of_honeycombs):
+        '''Sets a new collision value using a series of bit parameters'''
         int_val = self._create_collision_parameter_value(effect_to_bk, next_state, sound_effect,
                                                bk_damage, hit_count, num_of_honeycombs)
         self._write_bytes(index_start, 2, int_val)
@@ -176,6 +188,8 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     #######################
     ### ACTOR STRUCTURE ###
     #######################
+    # In some parts of the game, when an object breaks/dies, something is left behind.
+    # Example: MM Hut notes
     # Start Index: 0x2ED0
     # 0x00: unk0
     # 0x02: padding?
@@ -197,6 +211,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     def _set_actor_list(self, start_index, unk0=None, actor_id=None, count=None, unkC=None,
                         unkE=None, unk10=None, unk14=None, unk18=None, unk1C=None, unk20=None,
                         unk24=None, unk28=None, unk2C=None, unk30=None):
+        '''Modifies what item(s) drop from breaking/killing an object'''
         if(unk0 != None):
             self._write_bytes(start_index, 2, unk0)
         if(actor_id != None):
@@ -231,6 +246,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     ##################
 
     def _get_animation_functions_dict(self, start_index):
+        '''Gets the animation functions for a particular object'''
         animation_dict = {
             "ID": self._read_byte_list_to_int(start_index, 4),
             "INIT": self._read_byte_list_to_int(start_index + 0x04, 4),
@@ -241,11 +257,13 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return animation_dict
 
     def _get_all_animation_functions_dict(self):
+        '''Gets the animation functions for all objects'''
         animations_dict = {}
         for start_index in range(0x294, 0xE9C, 0x14):
             animations_dict[start_index] = self._get_animation_functions(start_index)
     
     def _set_animation_functions(self, start_index, animation_dict):
+        '''Sets the animation functions for a particular object'''
         self._write_bytes(start_index + 0x04, 4, animation_dict["INIT"])
         self._write_bytes(start_index + 0x08, 4, animation_dict["Update"])
         self._write_bytes(start_index + 0x0C, 4, animation_dict["End"])
@@ -256,6 +274,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     ############
     
     def _adjust_menu_for_witchs_lair(self):
+        '''Changes the positioning, ordering, and sprite of the pause menu when 'Exit To Witch's Lair' is added'''
         # Positioning
         self._write_bytes(0x8F5C, 2, 0x2D) # "RETURN TO GAME"
         self._write_bytes(0x8F6C, 2, 0x4C) # "EXIT TO WITCH'S LAIR"
@@ -275,6 +294,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # Termite
 
     def _get_termite_speed_dict(self):
+        '''Gets the values for the Termite BK's speed'''
         speed_dict = {
             "Termite_Unk0": self._read_byte_list_to_float(0x13D0, 4),
             "Termite_Unk1": self._read_byte_list_to_float(0x13D4, 4),
@@ -286,6 +306,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return speed_dict
 
     def _set_termite_speed_dict(self, speed_dict):
+        '''Sets the values for the Termite BK's speed'''
         self._write_float_bytes(0x13D0, speed_dict["Termite_Unk0"])
         self._write_float_bytes(0x13D4, speed_dict["Termite_Unk1"])
         self._write_float_bytes(0x13D8, speed_dict["Termite_Unk2"])
@@ -296,6 +317,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # Crocodile
 
     def _get_crocodile_speed_dict(self):
+        '''Gets the values for the Crocodile BK's speed'''
         speed_dict = {
             "Crocodile_Unk0": self._read_byte_list_to_float(0x1570, 4),
             "Crocodile_Unk1": self._read_byte_list_to_float(0x1574, 4),
@@ -309,6 +331,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return speed_dict
 
     def _set_crocodile_speed_dict(self, speed_dict):
+        '''Sets the values for the Crocodile BK's speed'''
         self._write_float_bytes(0x1570, speed_dict["Crocodile_Unk0"])
         self._write_float_bytes(0x1574, speed_dict["Crocodile_Unk1"])
         self._write_float_bytes(0x1578, speed_dict["Crocodile_Unk2"])
@@ -321,6 +344,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # Pumpkin
 
     def _get_pumpkin_speed_dict(self):
+        '''Gets the values for the Pumpkin BK's speed'''
         speed_dict = {
             "Pumpkin_Unk0": self._read_byte_list_to_float(0x1760, 4),
             "Pumpkin_Unk1": self._read_byte_list_to_float(0x1764, 4),
@@ -332,6 +356,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return speed_dict
 
     def _set_pumpkin_speed_dict(self, speed_dict):
+        '''Sets the values for the Pumpkin BK's speed'''
         self._write_float_bytes(0x1760, speed_dict["Pumpkin_Unk0"])
         self._write_float_bytes(0x1764, speed_dict["Pumpkin_Unk1"])
         self._write_float_bytes(0x1768, speed_dict["Pumpkin_Unk2"])
@@ -342,6 +367,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # Walrus
 
     def _get_walrus_speed_dict(self):
+        '''Gets the values for the Walrus BK's speed'''
         speed_dict = {
             "Walrus_Unk0": self._read_byte_list_to_float(0x1830, 4),
             "Walrus_Unk1": self._read_byte_list_to_float(0x1834, 4),
@@ -359,6 +385,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return speed_dict
 
     def _set_walrus_speed_dict(self, speed_dict):
+        '''Sets the values for the Walrus BK's speed'''
         self._write_float_bytes(0x1830, speed_dict["Walrus_Unk0"])
         self._write_float_bytes(0x1834, speed_dict["Walrus_Unk1"])
         self._write_float_bytes(0x1838, speed_dict["Walrus_Unk2"])
@@ -375,6 +402,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # BK Talon Trot
 
     def _get_bk_talon_trot_speed_dict(self):
+        '''Gets the values for the BK's speed in Talon Trot'''
         speed_dict = {
             "Talon_Trot_Unk0": self._read_byte_list_to_float(0x1500, 4),
             "Talon_Trot_Unk1": self._read_byte_list_to_float(0x1504, 4),
@@ -393,6 +421,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return speed_dict
 
     def _set_bk_talon_trot_speed_dict(self, speed_dict):
+        '''Sets the values for the BK's speed in Talon Trot'''
         self._write_float_bytes(0x1500, speed_dict["Talon_Trot_Unk0"])
         self._write_float_bytes(0x1504, speed_dict["Talon_Trot_Unk1"])
         self._write_float_bytes(0x1508, speed_dict["Talon_Trot_Unk2"])
@@ -410,6 +439,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # Banjo Swim
 
     def _get_banjo_swim_speed_dict(self):
+        '''Gets the values for the BK's speed while swimming above water'''
         speed_dict = {
             "Swim_Unk0": self._read_byte_list_to_float(0x17B0, 4),
             "Swim_Unk1": self._read_byte_list_to_float(0x17B4, 4),
@@ -419,6 +449,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return speed_dict
 
     def _set_banjo_swim_speed_dict(self, speed_dict):
+        '''Sets the values for the BK's speed while swimming above water'''
         self._write_float_bytes(0x17B0, speed_dict["Swim_Unk0"])
         self._write_float_bytes(0x17B4, speed_dict["Swim_Unk1"])
         self._write_float_bytes(0x17B8, speed_dict["Swim_Unk2"])
@@ -427,6 +458,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # Banjo Walk
 
     def _get_banjo_walk_speed_dict(self):
+        '''Gets the values for the BK's walking speed'''
         speed_dict = {
             "Creep_Min": self._read_byte_list_to_float(0x17E0, 4),
             "Creep_Max/Slow_Walk_Min": self._read_byte_list_to_float(0x17E4, 4),
@@ -450,6 +482,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return speed_dict
 
     def _set_banjo_walk_speed_dict(self, speed_dict):
+        '''Sets the values for the BK's walking speed'''
         self._write_float_bytes(0x17E0, speed_dict["Creep_Min"])
         self._write_float_bytes(0x17E4, speed_dict["Creep_Max/Slow_Walk_Min"])
         self._write_float_bytes(0x17E8, speed_dict["Slow_Walk_Max/Walk_Min"])
@@ -487,6 +520,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # Actor Intervals: 0x18
 
     def _get_level_models(self, start_index):
+        '''Gets the level models for a particular map'''
         level_models_dict = {
             "Map": self._read_byte_list_to_int(start_index, 2),
             "Side_A": self._read_byte_list_to_int(start_index + 0x2, 2),
@@ -502,12 +536,14 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return level_models_dict
     
     def _get_all_level_models(self):
+        '''Gets the level models for every map'''
         level_models_dict = {}
         for level_count, start_index in enumerate(range(0x7650, 0x8250, 0x18)):
             level_models_dict[level_count] = self._get_level_models(start_index)
         return level_models_dict
 
     def _set_level_models(self, start_index, replacement_dict):
+        '''Sets the level models for a particular map'''
         self._write_bytes(start_index, 2, replacement_dict["Map"])
         self._write_bytes(start_index + 0x2, 2, replacement_dict["Side_A"])
         self._write_bytes(start_index + 0x4, 2, replacement_dict["Side_B"])
@@ -520,6 +556,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         self._write_float_bytes(start_index + 0x14, replacement_dict["Unk9"])
     
     def _set_all_level_models(self, replacement_dict):
+        '''Sets the level models for every map'''
         for level_count, start_index in enumerate(range(0x7650, 0x8250, 0x18)):
             self._set_level_models(start_index, replacement_dict[level_count])
     
@@ -548,6 +585,72 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
                 self._write_bytes(curr_index + 0x2, 2, new_level_id)
             if(new_dev_string_offset != None):
                 self._write_bytes(curr_index + 0x4, 4, new_dev_string_offset)
+    
+    #############################
+    ### WARP PAD DESTINATIONS ###
+    #############################
+
+    def _mm_warp_pad(self, new_map_id, new_exit_id):
+        '''When exiting MM via the warp pad/'Exit To Witch's Lair', this is the map and entry the player is warped to'''
+        # Default 0x69, 0x2
+        self._write_bytes(0x8FD0, 2, new_map_id)
+        self._write_bytes(0x8FD2, 2, new_exit_id)
+
+    def _ttc_warp_pad(self, new_map_id, new_exit_id):
+        '''When exiting TTC via the warp pad/'Exit To Witch's Lair', this is the map and entry the player is warped to'''
+        # Default 0x6D, 0x4
+        self._write_bytes(0x8FD4, 2, new_map_id)
+        self._write_bytes(0x8FD6, 2, new_exit_id)
+
+    def _cc_warp_pad(self, new_map_id, new_exit_id):
+        '''When exiting CC via the warp pad/'Exit To Witch's Lair', this is the map and entry the player is warped to'''
+        # Default 0x70, 0x2
+        self._write_bytes(0x8FD8, 2, new_map_id)
+        self._write_bytes(0x8FDA, 2, new_exit_id)
+
+    def _bgs_warp_pad(self, new_map_id, new_exit_id):
+        '''When exiting BGS via the warp pad/'Exit To Witch's Lair', this is the map and entry the player is warped to'''
+        # Default 0x72, 0x2
+        self._write_bytes(0x8FDC, 2, new_map_id)
+        self._write_bytes(0x8FDE, 2, new_exit_id)
+
+    def _fp_warp_pad(self, new_map_id, new_exit_id):
+        '''When exiting FP via the warp pad/'Exit To Witch's Lair', this is the map and entry the player is warped to'''
+        # Default 0x6F, 0x6
+        self._write_bytes(0x8FE0, 2, new_map_id)
+        self._write_bytes(0x8FE2, 2, new_exit_id)
+    
+    # 0x8FE4 has -1 -1 here? Probably scrapped level
+
+    def _gv_warp_pad(self, new_map_id, new_exit_id):
+        '''When exiting GV via the warp pad/'Exit To Witch's Lair', this is the map and entry the player is warped to'''
+        # Default 0x6E, 0x3
+        self._write_bytes(0x8FE8, 2, new_map_id)
+        self._write_bytes(0x8FEA, 2, new_exit_id)
+
+    def _ccw_warp_pad(self, new_map_id, new_exit_id):
+        '''When exiting CCW via the warp pad/'Exit To Witch's Lair', this is the map and entry the player is warped to'''
+        # Default 0x79, 0x6
+        self._write_bytes(0x8FEC, 2, new_map_id)
+        self._write_bytes(0x8FEE, 2, new_exit_id)
+
+    def _rbb_warp_pad(self, new_map_id, new_exit_id):
+        '''When exiting RBB via the warp pad/'Exit To Witch's Lair', this is the map and entry the player is warped to'''
+        # Default 0x77, 0x2
+        self._write_bytes(0x8FF0, 2, new_map_id)
+        self._write_bytes(0x8FF2, 2, new_exit_id)
+
+    def _mmm_warp_pad(self, new_map_id, new_exit_id):
+        '''When exiting MMM via the warp pad/'Exit To Witch's Lair', this is the map and entry the player is warped to'''
+        # Default 0x75, 0x2
+        self._write_bytes(0x8FF4, 2, new_map_id)
+        self._write_bytes(0x8FF6, 2, new_exit_id)
+
+    def _sm_warp_pad(self, new_map_id, new_exit_id):
+        '''When exiting SM via the warp pad/'Exit To Witch's Lair', this is the map and entry the player is warped to'''
+        # Default 0x69, 0x12
+        self._write_bytes(0x8FD0, 2, new_map_id)
+        self._write_bytes(0x8FD2, 2, new_exit_id)
 
 if __name__ == '__main__':
     FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test/Rando3_Test/"

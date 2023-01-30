@@ -8,6 +8,7 @@ class CORE_1_DATA_CLASS(GENERIC_FILE_CLASS):
         super().__init__(file_dir, file_name)
 
     def _calculate_checksum(self):
+        '''Runs through algorithm to calculate the new checksum (Might not work?)'''
         crc1 = 0
         crc2 = 0xFFFFFFFF
         for val in self._mmap:
@@ -17,4 +18,5 @@ class CORE_1_DATA_CLASS(GENERIC_FILE_CLASS):
         return crc1, crc2
 
     def _set_checksum(self, crc):
+        '''Sets the checksum located in Core 1's Data'''
         self._write_bytes(0xF64, 4, crc)

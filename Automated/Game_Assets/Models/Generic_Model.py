@@ -74,6 +74,9 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
             old_blue_val = max(old_blue_val, ten_percent)
             old_luminosity = self._calculate_luminosity(old_red_val, old_green_val, old_blue_val)
             new_luminosity = self._calculate_luminosity(red_ratio, green_ratio, blue_ratio)
+            print(f"old_luminosity: {old_luminosity}")
+            print(f"new_luminosity: {new_luminosity}")
+            print(f"target_luminosity: {target_luminosity}")
             luminosity_scaling = old_luminosity / new_luminosity * target_luminosity
             new_red_val, new_green_val, new_blue_val = self._scale_colors_by_luminosity(red_ratio, green_ratio, blue_ratio, luminosity_scaling)
         largest_val = max(new_red_val, new_green_val, new_blue_val, self._color_format_dict[color_format]["Max_Value"])

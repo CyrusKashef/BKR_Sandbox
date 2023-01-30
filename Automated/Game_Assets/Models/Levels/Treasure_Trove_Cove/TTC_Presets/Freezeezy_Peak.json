@@ -1,0 +1,74 @@
+{
+    "Floor": {
+        "Color_Ratio": "A0D0F0",
+        "Ignore_Gray": false
+    },
+    "Road": {
+        "Color_Ratio": "80B0E0",
+        "Ignore_Gray": false
+    },
+    "Mountain": {
+        "Color_Ratio": "424057",
+        "Ignore_Gray": false
+    },
+    "Walls": {
+        "Color_Ratio": "424057",
+        "Ignore_Gray": false
+    },
+    "Platforms": {
+        "Color_Ratio": "293B45",
+        "Ignore_Gray": false
+    },
+    "Pools": {
+        "Color_Ratio": "4F4B61",
+        "Ignore_Gray": false
+    },
+    "Sandcastle": {
+        "Color_Ratio": "A0D0F0",
+        "Ignore_Gray": false
+    },
+    "Brick_Walls": {
+        "Color_Ratio": "424057",
+        "Ignore_Gray": false
+    },
+    "Brick_Floors": {
+        "Color_Ratio": "293B45",
+        "Ignore_Gray": false
+    },
+    "Bramble": {
+        "Color_Ratio": "5197C8",
+        "Ignore_Gray": false
+    },
+    "Wood_Sides": {
+        "Color_Ratio": "5197C8",
+        "Ignore_Gray": false
+    },
+    "Grass": {
+        "Color_Ratio": "293B45",
+        "Ignore_Gray": false
+    },
+    "Boxes": {
+        "Color_Ratio": "A0A0FF",
+        "Ignore_Gray": false
+    },
+    "Salty_Hippo": {
+        "Color_Ratio": "A0A0FF",
+        "Ignore_Gray": false
+    },
+    "Wood_Top": {
+        "Color_Ratio": "293B45",
+        "Ignore_Gray": false
+    },
+    "Fence": {
+        "Color_Ratio": "A0A0FF",
+        "Ignore_Gray": false
+    },
+    "Water": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Rope": {
+        "Color_Ratio": "A0A0FF",
+        "Ignore_Gray": false
+    }
+}

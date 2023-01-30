@@ -69,7 +69,11 @@ class GENERIC_FILE_CLASS():
         return self._leading_zeros(hex_str, str_len)
 
     def _hex_str_to_float(self, hex_str_val):
-        return struct.unpack('!f', bytes.fromhex(hex_str_val))[0]
+        try:
+            return struct.unpack('!f', bytes.fromhex(hex_str_val))[0]
+        except ValueError as e:
+            print(f"Hex Str Val: {hex_str_val}")
+            raise e
 
     # BYTE LIST
     def _byte_list_to_int(self, byte_list):
@@ -80,11 +84,11 @@ class GENERIC_FILE_CLASS():
 
     def _byte_list_to_hex_str(self, byte_list):
         int_val = self._byte_list_to_int(byte_list)
-        return self._int_to_hex_str(int_val)
+        return self._int_to_hex_str(int_val, len(byte_list) * 2)
 
     def _byte_list_to_float(self, byte_list):
         int_val = self._byte_list_to_int(byte_list)
-        hex_str_val = self._int_to_hex_str(int_val)
+        hex_str_val = self._int_to_hex_str(int_val, len(byte_list) * 2)
         return self._hex_str_to_float(hex_str_val)
 
     # READ BYTE LIST

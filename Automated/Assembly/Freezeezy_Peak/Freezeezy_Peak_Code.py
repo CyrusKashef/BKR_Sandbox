@@ -8,4 +8,5 @@ class FREEZEEZY_PEAK_CODE_CLASS(GENERIC_FILE_CLASS):
         super().__init__(file_dir, file_name)
     
     def _disable_anti_tamper(self):
+        '''No known anti-tampering for Freezeezy Peak'''
         pass

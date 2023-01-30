@@ -1,0 +1,58 @@
+{
+    "Grunty_Skin": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Dress_Main": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Dress_Pants": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Dress_Sleeve": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Dress_Inside": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Hat": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Hair": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Shoes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Broomstick_Front": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Broomstick_Back": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Scarf_&_Socks": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
+    },
+    "Grunty_Teeth": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Grunty_Mouth": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    }
+}

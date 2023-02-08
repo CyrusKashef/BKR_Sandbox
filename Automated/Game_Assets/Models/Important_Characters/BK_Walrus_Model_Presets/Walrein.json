@@ -1,0 +1,31 @@
+{
+    "Body": {
+        "Color_Ratio": "0186BB",
+        "Ignore_Gray": false
+    },
+    "Shorts": {
+        "Color_Ratio": "0186BB",
+        "Ignore_Gray": false
+    },
+    "Backpack": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false,
+        "Brightness": 3
+    },
+    "Eyes": {
+        "Color_Ratio": "FFE792",
+        "Ignore_Gray": true
+    },
+    "Sled_Blades": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Sled_Wood": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Mouth": {
+        "Color_Ratio": "922F01",
+        "Ignore_Gray": false
+    }
+}

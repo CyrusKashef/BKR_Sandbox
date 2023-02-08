@@ -103,9 +103,6 @@ GROUND_ENEMIES_DICT = {
     "Black Gruntling": [
         (0x03C0, 0x190C)
     ],
-    "Quarrie": [
-        (0x016F, 0x190C) # Empty Honeycomb
-    ]
 }
 
 FLYING_ENEMIES_DICT = {

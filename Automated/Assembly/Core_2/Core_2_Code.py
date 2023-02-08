@@ -83,6 +83,9 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
         else:
             print("Cannot Have Zero For Starting Air Value, Player Will Die LMAO")
             exit(0)
+    
+    def _blue_egg_count_bottles_tutorial(self, blue_egg_count):
+        self._write_byte(0x52987, blue_egg_count)
 
     def _blue_egg_before_cheato_limit(self, capacity_limit):
         '''Modifies the blue egg carrying capacity before inputting Cheato's code'''
@@ -92,6 +95,9 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
         '''Modifies the blue egg carrying capacity after inputting Cheato's code'''
         self._write_byte(0xBF217, capacity_limit)
     
+    def _red_feather_count_bottles_tutorial(self, red_feather_count):
+        self._write_byte(0x5299B, red_feather_count)
+    
     def _red_feather_before_cheato_limit(self, capacity_limit):
         '''Modifies the red feather carrying capacity before inputting Cheato's code'''
         self._write_byte(0xBF23F, capacity_limit)
@@ -99,6 +105,9 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
     def _red_feather_after_cheato_limit(self, capacity_limit):
         '''Modifies the red feather carrying capacity after inputting Cheato's code'''
         self._write_byte(0xBF237, capacity_limit)
+    
+    def _gold_feather_count_bottles_tutorial(self, gold_feather_count):
+        self._write_byte(0x529AF, gold_feather_count)
     
     def _gold_feather_before_cheato_limit(self, capacity_limit):
         '''Modifies the gold feather carrying capacity before inputting Cheato's code'''
@@ -112,18 +121,50 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
     ### HEALTH & LIVES ###
     ######################
 
-    def _starting_max_health(self, start_val):
+    def _starting_max_health(self, start_health_val):
         '''Modifies the player's starting health total'''
-        self._write_byte(0xBF517, start_val)
-        self._write_byte(0xC097B, 8 - start_val)
-        self._write_byte(0xC097F, start_val)
+        # D_80385F30[ITEM_14_HEALTH] = D_80385F30[ITEM_15_HEALTH_TOTAL] = start_health_val;
+        self._write_byte(0xBF517, start_health_val)
+        # D_80385F30[ITEM_15_HEALTH_TOTAL] =  start_health_val + MIN(8 - start_health_val, (honeycombscore_get_total() / eh_val));
+        self._write_byte(0xC096B, 9 - start_health_val) # Adjusts MIN function itself
+        self._write_byte(0xC097B, 8 - start_health_val) # Adjusts parameter within MIN function
+        self._write_byte(0xC097F, start_health_val)
+    
+    def _remove_game_select_health_display(self, start_health_val):
+        '''
+        Modifies when the player's health is under constant display.
+        For some reason, the game select will display the player's health for that player's file.
+        '''
+        self._write_byte(0xBF763, start_health_val)
 
     def _empty_honeycombs_for_extra_health(self, eh_val):
         '''
         Modifies the number of empty honeycombs for the player to receive extra health
-        NOTE: Doesn't give health until you go through warp, and even then, you don't get a health refill
+        NOTE: These adjustment work once per warp use. If you don't warp,
+        the player will go into a state where they can't pause and their
+        health will increase at the wrong rate, but will be adjusted after
+        they warp.
+        FIX: When decomp is finished, add "D_803815C0 = 0;" to "case 2://L802FECD4"
         '''
+        # Disables Pausing To Not Interrupt Next Step
+        # If interrupted, the player won't receive the updated health until warp
+        # if(!(item_getCount(ITEM_13_EMPTY_HONEYCOMB) < 6))
+        self._write_byte(0x5863, eh_val)
+        
+        # Health Upgrade Animation & Updating Health
+        # if(eh_val <= D_803815D4...
+        byte_list = self._float_to_byte_list(eh_val)
+        self._write_byte(0x77AC6, byte_list[0])
+        self._write_byte(0x77AC7, byte_list[1])
+        
+        # Removes Current Empty Honeycomb Count
+            # func_803463D4(ITEM_13_EMPTY_HONEYCOMB, -eh_val);
+        self._write_bytes(0x77C9A, 2, 0x8000 - eh_val)
+        
+        # Total Health Calculation (Loading Game/Zone)
+        # D_80385F30[ITEM_13_EMPTY_HONEYCOMB] = honeycombscore_get_total() % eh_val;
         self._write_byte(0xC091F, eh_val)
+        # D_80385F30[ITEM_15_HEALTH_TOTAL] =  start_health + MIN(8 - start_val, (honeycombscore_get_total() / eh_val));
         self._write_byte(0xC095F, eh_val)
 
     def _starting_lives(self, start_val):

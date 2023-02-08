@@ -30,12 +30,17 @@ from Automated.Game_Assets.Models.Levels.Gruntildas_Lair.Furance_Fun import FURN
 
 from Automated.Game_Assets.Sounds.BK_Sound import BK_SOUND_CLASS
 
-from Data_Files.Setups.Generic_Setup_File import GENERIC_SETUP_FILE
+from Automated.Game_Assets.Speeches.Automated_Speech_Class import AUTOMATED_SPEECH_CLASS
+
+from Automated.Game_Assets.Setups.Generic_Setup_File import GENERIC_SETUP_FILE
 
 from Data_Files.Asset_Table_Pointer_Dict import ASSET_TABLE_POINTER_DICT
 from Data_Files.Asset_Id_Dict import ASSET_ID_DICT
 from Data_Files.Skybox_And_Cloud_Dict import SKYBOX_AND_CLOUD_DICT
 from Data_Files.Setups.Map_Setup_Pointer_Dict import MAP_SETUP_POINTER_DICT, LAIR_SETUP_POINTER_DICT
+from Data_Files.Setups.Lair_Enemy_Id_Dict import LAIR_ENEMY_ID_DICT
+
+from Data_Files import Speech_Dict
 
 class AUTOMATED_CLASS():
     def __init__(self, file_dir, original_rom_path, new_rom_path):
@@ -52,6 +57,7 @@ class AUTOMATED_CLASS():
         self._make_copy_of_ROM(original_rom_path, new_rom_path)
         self._bk_rom_obj = BK_ROM_CLASS(file_dir, new_rom_path)
         self._assembly_obj = None
+        self._automated_speech_obj = None
         self._clean_up_obj = None
         self._seed = None
     
@@ -164,6 +170,10 @@ class AUTOMATED_CLASS():
         if(not self._assembly_obj):
             self._assembly_obj = ASSEMBLY_CLASS(self._file_dir)
     
+    def _automated_speech_class_creation(self):
+        if(not self._automated_speech_obj):
+            self._automated_speech_obj = AUTOMATED_SPEECH_CLASS(self._file_dir)
+    
     def _clean_up_class_creation(self):
         if(not self._clean_up_obj):
             self._clean_up_obj = CLEAN_UP_CLASS(self._file_dir)
@@ -227,7 +237,6 @@ class AUTOMATED_CLASS():
         model_obj = GENERIC_MODEL_CLASS(self._file_dir + self._EXTRACTED_FILES_DIR, f"{file_name}-Decompressed")
         model_obj._get_object_vertex_header_info()
         model_obj._set_draw_distance_coords(neg_x=0x8001, neg_y=0x8001, neg_z=0x8001, pos_x=0x7999, pos_y=0x7999, pos_z=0x7999, min_coord=0x8001, max_coord=0x7999)
-        print()
         model_obj._get_object_vertex_header_info()
 
     ###########################
@@ -238,9 +247,9 @@ class AUTOMATED_CLASS():
         self._assembly_class_creation()
         self._assembly_obj._starting_lives(starting_life_count)
     
-    def _starting_health(self, start_val):
+    def _starting_health(self, start_health_val):
         self._assembly_class_creation()
-        self._assembly_obj._starting_max_health(start_val)
+        self._assembly_obj._starting_max_health(start_health_val)
     
     def _empty_honeycombs_for_extra_health(self, eh_val):
         self._assembly_class_creation()
@@ -276,6 +285,7 @@ class AUTOMATED_CLASS():
                     raise e
 
     def _random_color_category(self, category, additional_scaling=1, skip_pointer=[]):
+        print("Randomize Color Category")
         pointer_start = ASSET_TABLE_POINTER_DICT[category]["Start"]
         pointer_end = ASSET_TABLE_POINTER_DICT[category]["End"]
         for pointer in range(pointer_start, pointer_end+1, 0x8):
@@ -295,47 +305,57 @@ class AUTOMATED_CLASS():
                     raise e
     
     def _randomize_skybox_and_clouds(self):
+        print("Randomize Skybox And Clouds")
         self._assembly_class_creation()
         self._assembly_obj._randomize_skybox_and_clouds(self._seed)
     
     def _randomize_collisions(self):
+        print("Randomize Collisions")
         self._assembly_class_creation()
         self._assembly_obj._modify_collision_markers(self._seed, effect_to_bk_option="Randomize", sound_effect_option="Randomize",
                                                      bk_damage_option="Randomize", hit_count_option="Randomize", num_of_honeycombs_option="Randomize")
 
     def _remove_hut_notes(self):
+        print("Remove Hut Notes")
         self._assembly_class_creation()
         self._assembly_obj._remove_hut_notes()
         
     def _banjo_soulie(self):
+        print("Banjo Soulie")
         self._assembly_class_creation()
         self._assembly_obj._soulie_collision_markers()
         for pointer in MAP_SETUP_POINTER_DICT:
             print(f"Map: {pointer} - {MAP_SETUP_POINTER_DICT[pointer]}")
             setup_obj = GENERIC_SETUP_FILE(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
             setup_obj._get_setup_file_info()
-            setup_obj._remove_all_floating_notes()
+            setup_obj._remove_all_object_instances(complex_object_list=["Extra Life"], simple_object_list=["Note"])
             if(pointer in LAIR_SETUP_POINTER_DICT):
-                setup_obj._only_gruntlings_lair()
+                # (0x0367, 0x190C): "Red Gruntling"
+                # (0x03BF, 0x190C): "Blue Gruntling"
+                # (0x03C0, 0x190C): "Black Gruntling"
+                red_gruntling_dict = {"Object_ID": 0x0367, "Script_ID": 0x190C}
+                setup_obj._replace_complex_objects_by_id(original_objects_dict=LAIR_ENEMY_ID_DICT, new_object_dict=red_gruntling_dict)
             setup_obj._create_setup_file(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
+        self._automated_speech_class_creation()
+        self._automated_speech_obj._replace_non_furnace_fun_speech(Speech_Dict.BANJO_SOULIE_INTRO_BOTTLES_SPEECH_DICT)
     
     def _enemy_note_drop(self, note_count1, note_count2, note_count3):
+        print("Enemy  Note Drop")
         self._assembly_class_creation()
         self._assembly_obj._enemy_note_drops(note_count1, note_count2, note_count3)
     
-    def _grublin_honeycomb(self):
-        self._assembly_class_creation()
-        self._assembly_obj._grublin_honeycomb()
-    
     def _exit_to_witchs_lair(self):
+        print("Exit To Witchs Lair")
         self._assembly_class_creation()
         self._assembly_obj._exit_to_witchs_lair()
     
     def _fallproof(self):
+        print("Fallproof")
         self._assembly_class_creation()
         self._assembly_obj._fallproof()
     
     def _jiggy_win_condition(self, jiggy_count):
+        print("Jiggy Win Condition")
         self._assembly_class_creation()
         self._assembly_obj._jiggy_win_condition(jiggy_count)
     
@@ -406,10 +426,47 @@ class AUTOMATED_CLASS():
             mumbo_sign_obj._modify_cost_image(transformation_cost)
     
     def _furnace_fun_finale(self):
+        print("Furnace Fun Finale")
         self._assembly_class_creation()
         self._assembly_obj._replace_level_model(104, 127, ["Side_A", "Unk3", "Unk4", "Unk5", "Unk6", "Unk7", "Unk8"])
         furnace_fun_model_obj = FURNACE_FUN_MODEL_CLASS(self._file_dir + self._EXTRACTED_FILES_DIR, "105D8-Decompressed")
         furnace_fun_model_obj._lower_invisible_barriers()
+        # Final Battle
+        setup_obj = GENERIC_SETUP_FILE(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"9BF8-Decompressed")
+        setup_obj._get_setup_file_info()
+        entry_1 = {"Object_ID": 0x01, "Script_ID": 0x190C}
+        move_it = {"X_Position": -5, "Y_Position": 50, "Z_Position": 1020}
+        setup_obj._modify_complex_objects(original_objects_dict=entry_1, modification_dict=move_it)
+        shock_jump_pad_dict = {
+            "X_Position": 0x0000,
+            "Y_Position": 0x0000,
+            "Z_Position": 0x0514,
+            "Script_ID": 0x190C,
+            "Object_ID": 0x000B,
+            "Unk_Byte_A": 0x00,
+            "Unk_Byte_B": 0x00,
+            "Rotation": 0x0000,
+            "Size": 0x0064,
+            "Current_Node": 0x0,
+            "Next_Node": 0x0,
+            "End_Object_Indicator": 0x40,
+        }
+        setup_obj._add_complex_object(object_dict=shock_jump_pad_dict)
+        setup_obj._create_setup_file(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"9BF8-Decompressed")
+    
+    def _adjust_final_battle_phases(self,
+                                    phase1_hits=None,
+                                    phase2_hits=None, phase2_spots=None,
+                                    phase3_hits=None,
+                                    phase4_num_of_jinjos=None, phase4_egg_per_jinjo=None,
+                                    phase5_eggs_per_hole=None):
+        print("Adjust Final Battle Phases")
+        self._assembly_class_creation()
+        self._assembly_obj._adjust_final_battle_phases(phase1_hits,
+                                                       phase2_hits, phase2_spots,
+                                                       phase3_hits,
+                                                       phase4_num_of_jinjos, phase4_egg_per_jinjo,
+                                                       phase5_eggs_per_hole)
     
     def _overwrite_asset_file(self, pointer, custom_file_name):
         self._ASSET_TABLE_OFFSET = 0x10CD0
@@ -482,6 +539,20 @@ class AUTOMATED_CLASS():
     def _remove_tutorial_option(self):
         self._assembly_class_creation()
         self._assembly_obj._remove_tutorial_option()
+        self._automated_speech_class_creation()
+        self._automated_speech_obj._replace_non_furnace_fun_speech(Speech_Dict.REMOVE_BOTTLES_TUTORIAL_SPEECH_DICT)
+    
+    def _remove_unknown_object(self):
+        for pointer in MAP_SETUP_POINTER_DICT:
+            print(f"Map: {pointer} - {MAP_SETUP_POINTER_DICT[pointer]}")
+            setup_obj = GENERIC_SETUP_FILE(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
+            setup_obj._get_setup_file_info()
+            setup_obj._remove_all_object_instances(complex_object_list=["Unknown (Jombo's Favorite)"])
+            setup_obj._create_setup_file(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
+
+    def _round_three_vile_only(self):
+        self._assembly_class_creation()
+        self._assembly_obj._round_three_vile_only()
 
     ###################
     ### BANJO TOOIE ###
@@ -607,7 +678,6 @@ if __name__ == '__main__':
         0x10548, # Test Map
         0x10550, # Test Map
         ]
-    # GRAYSCALE_SKIP_POINTERS = [0x8320, 0x9548, 0x9D60, 0x9F70]
 
     print("Extraction & Decompression Start")
     FILE_DIR = "C:/Users/Cyrus/Documents/VS_Code/BK_Randomizer/BK_Randomizer_v3/"
@@ -617,6 +687,7 @@ if __name__ == '__main__':
     automated_obj._set_seed(897442)
     automated_obj._extract_and_decompress_asset_category("Object Model Files")
     automated_obj._extract_and_decompress_asset_category("Map Setup Files")
+    automated_obj._extract_and_decompress_asset_category("Text Files")
     automated_obj._extract_and_decompress_asset_category("Level Model Files")
     automated_obj._extract_and_decompress_asset_category("Sprite/Texture Files")
     automated_obj._extract_and_decompress_asset_category("Music Files")
@@ -627,24 +698,45 @@ if __name__ == '__main__':
     print("DEV Options Start")
     automated_obj._skippable_cutscenes()
     automated_obj._boot_to_game_select()
-    automated_obj._set_note_door_values([50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600])
-    automated_obj._set_jigsaw_puzzle_costs([1, 3, 4, 5, 6, 7, 8, 9, 10, 0, 1])
-    automated_obj._set_transformation_costs([1, 23, 45, 67, 89])
+    # automated_obj._set_note_door_values([46, 92, 138, 184, 230, 276, 322, 368, 414, 460, 506, 552])
+    automated_obj._set_note_door_values([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    # automated_obj._set_jigsaw_puzzle_costs([1, 3, 4, 5, 6, 7, 8, 9, 10, 0, 1])
+    automated_obj._set_jigsaw_puzzle_costs([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    automated_obj._set_transformation_costs([0, 4, 9, 12, 17])
     automated_obj._exit_to_witchs_lair()
 
     print("Testing Options Start")
     automated_obj._starting_lives("Infinite")
-    automated_obj._starting_health(3)
+    automated_obj._starting_health(2)
+    automated_obj._empty_honeycombs_for_extra_health(4)
     automated_obj._replace_bk_model("Grayscale")
     automated_obj._ambient_winds()
-    
-    # automated_obj._grayscale_category("Object Model Files", skip_pointer=GRAYSCALE_SKIP_POINTERS)
-    # automated_obj._grayscale_category("Level Model Files")
-    # automated_obj._grayscale_category("Sprite/Texture Files", skip_pointer=GRAYSCALE_SKIP_POINTERS)
     automated_obj._remove_hut_notes()
     automated_obj._banjo_soulie()
+    automated_obj._remove_unknown_object()
     automated_obj._enemy_note_drop(note_count1=1, note_count2=4, note_count3=7)
+    capacity_dict = {
+        "Blue_Eggs": {
+            "Before_Cheato": 50,
+            "After_Cheato": 250,
+        },
+        "Red_Feathers": {
+            "Before_Cheato": 20,
+            "After_Cheato": 100,
+        },
+        "Gold_Feathers": {
+            "Before_Cheato": 1,
+            "After_Cheato": 5,
+        }
+    }
+    automated_obj._carrying_capacity(capacity_dict)
     automated_obj._remove_tutorial_option()
+    automated_obj._adjust_final_battle_phases(phase1_hits=1,
+                                              phase2_hits=1, phase2_spots=1,
+                                              phase3_hits=1,
+                                              phase4_num_of_jinjos=1, phase4_egg_per_jinjo=1,
+                                              phase5_eggs_per_hole=1)
+    automated_obj._super_banjo()
     print("Options Complete")
 
     print("Adjusting Core Checksums Start")
@@ -655,6 +747,7 @@ if __name__ == '__main__':
     print("Compression & Insertion Start")
     automated_obj._compress_and_insert_asset_category("Object Model Files", skip_pointer_list=OBJECT_SKIP_POINTERS)
     automated_obj._compress_and_insert_asset_category("Map Setup Files")
+    automated_obj._compress_and_insert_asset_category("Text Files")
     automated_obj._compress_and_insert_asset_category("Level Model Files", skip_pointer_list=LEVEL_SKIP_POINTERS)
     automated_obj._compress_and_insert_asset_category("Sprite/Texture Files")
     automated_obj._compress_and_insert_asset_category("Music Files")

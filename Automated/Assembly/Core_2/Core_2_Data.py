@@ -29,38 +29,6 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     def _set_checksum(self, crc):
         '''Sets the checksum located in Core 2's Data'''
         self._write_bytes(0xF264, 4, crc)
-
-    ####################
-    ### REQUIREMENTS ###
-    ####################
-
-    def _set_jigsaw_puzzle_requirements(self, puzzle_requirement_dict):
-        '''
-        Modifies the number of Jiggies required for each world's jigsaw puzzle
-        Also adjusts the bit requirement used to save the number of Jiggies if the player leaves the lair
-        '''
-        total_bit_requirement = 0
-        curr_index = 0x1B48
-        curr_offset = 0x5D
-        for puzzle_count in puzzle_requirement_dict:
-            requirement = puzzle_requirement_dict[puzzle_count]
-            bit_requirement = max(requirement.bit_length(), 1)
-            total_bit_requirement += bit_requirement
-            self._write_byte(curr_index, requirement)
-            self._write_byte(curr_index + 1, bit_requirement)
-            self._write_bytes(curr_index + 2, 2, curr_offset)
-            curr_index += 4
-            curr_offset += bit_requirement
-        if(total_bit_requirement > 37):
-            print("Not Enough Bits For Jigsaw Puzzle Requirements")
-            raise SystemError("Not Enough Bits For Jigsaw Puzzle Requirements")
-    
-    def _set_note_door_requirements(self, notes_requirement_dict):
-        '''Modifies the number of Notes required for each note door'''
-        curr_index = 0x7CC
-        for note_door_count in notes_requirement_dict:
-            self._write_bytes(curr_index, 2, notes_requirement_dict[note_door_count])
-            curr_index += 2
     
     ###########################
     ### SKYBOXES AND CLOUDS ###

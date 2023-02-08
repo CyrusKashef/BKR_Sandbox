@@ -174,13 +174,16 @@ class ASSEMBLY_CLASS():
         self._core_2_code._bee_transformation_cost(transformation_cost_dict["Bee"])
     
     def _carrying_capacity(self, capacity_dict):
-        self._core_2_code._starting_blue_egg_count(capacity_dict["Blue_Eggs"]["Starting"])
+        # self._core_2_code._starting_blue_egg_count(capacity_dict["Blue_Eggs"]["Starting"])
+        self._core_2_code._blue_egg_count_bottles_tutorial(capacity_dict["Blue_Eggs"]["Before_Cheato"] // 2)
         self._core_2_code._blue_egg_before_cheato_limit(capacity_dict["Blue_Eggs"]["Before_Cheato"])
         self._core_2_code._blue_egg_after_cheato_limit(capacity_dict["Blue_Eggs"]["After_Cheato"])
-        self._core_2_code._starting_red_feather_count(capacity_dict["Red_Feathers"]["Starting"])
+        # self._core_2_code._starting_red_feather_count(capacity_dict["Red_Feathers"]["Starting"])
+        self._core_2_code._red_feather_count_bottles_tutorial(capacity_dict["Red_Feathers"]["Before_Cheato"] // 2)
         self._core_2_code._red_feather_before_cheato_limit(capacity_dict["Red_Feathers"]["Before_Cheato"])
         self._core_2_code._red_feather_after_cheato_limit(capacity_dict["Red_Feathers"]["After_Cheato"])
-        self._core_2_code._starting_gold_feather_count(capacity_dict["Gold_Feathers"]["Starting"])
+        # self._core_2_code._starting_gold_feather_count(capacity_dict["Gold_Feathers"]["Starting"])
+        self._core_2_code._gold_feather_count_bottles_tutorial(capacity_dict["Gold_Feathers"]["Before_Cheato"] // 2)
         self._core_2_code._gold_feather_before_cheato_limit(capacity_dict["Gold_Feathers"]["Before_Cheato"])
         self._core_2_code._gold_feather_after_cheato_limit(capacity_dict["Gold_Feathers"]["After_Cheato"])
     
@@ -227,6 +230,7 @@ class ASSEMBLY_CLASS():
     
     def _starting_max_health(self, start_val):
         self._core_2_code._starting_max_health(start_val)
+        self._core_2_code._remove_game_select_health_display(start_val)
     
     def _empty_honeycombs_for_extra_health(self, eh_val):
         self._core_2_code._empty_honeycombs_for_extra_health(eh_val)
@@ -279,9 +283,11 @@ class ASSEMBLY_CLASS():
                                                            BANJO_SOULIE_MARKERS[index_start][collision_index][5])
     
     def _remove_hut_notes(self):
+        # Mumbos Mountain
         self._core_2_data._set_actor_list(start_index=0x2ED0, actor_id=0x52, unkC=0x21, unk14=0x42C80000,
                                           unk18=0x42480000, unk1C=0x43FA0000, unk20=0x437A0000,
                                           unk24=0x42C80000, unk28=0x42480000)
+        # Bubblegloop Swamp
         self._core_2_data._set_actor_list(start_index=0x310C, actor_id=0x52, unkC=0x21, unk14=0x42C80000,
                                           unk18=0x42480000, unk1C=0x43FA0000, unk20=0x437A0000,
                                           unk24=0x42C80000, unk28=0x42480000)
@@ -435,3 +441,18 @@ class ASSEMBLY_CLASS():
 
     def _remove_tutorial_option(self):
         self._spiral_mountain_code._remove_tutorial_option()
+
+    def _adjust_final_battle_phases(self,
+                                    phase1_hits=None,
+                                    phase2_hits=None, phase2_spots=None,
+                                    phase3_hits=None,
+                                    phase4_num_of_jinjos=None, phase4_egg_per_jinjo=None,
+                                    phase5_eggs_per_hole=None):
+        self._final_battle_code._adjust_final_battle_phases(phase1_hits,
+                                                            phase2_hits, phase2_spots,
+                                                            phase3_hits,
+                                                            phase4_num_of_jinjos, phase4_egg_per_jinjo,
+                                                            phase5_eggs_per_hole)
+    
+    def _round_three_vile_only(self):
+        self._bubblegloop_swamp_code._round_three_vile_only()

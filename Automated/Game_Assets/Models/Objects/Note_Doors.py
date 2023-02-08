@@ -133,57 +133,57 @@ class NOTE_DOOR_CLASS(GENERIC_MODEL_CLASS):
             8: { # 828
                 100: {
                     "Door_Vertices": [0xC410, 0xC420, 0xC430, 0xC440],
-                    "Overlay_Textures": 0xB886,
+                    "Overlay_Textures": 0xB95E,
                     },
                 10: {
                     "Door_Vertices": [0xC450, 0xC460, 0xC470, 0xC480],
-                    "Overlay_Textures": 0xB8DE,
+                    "Overlay_Textures": 0xB9B6,
                     },
                 1: {
                     "Door_Vertices": [0xC490, 0xC4A0, 0xC4B0, 0xC4C0],
-                    "Overlay_Textures": 0xB90E,
+                    "Overlay_Textures": 0xB9E6,
                     },
                 },
             9: { # 846
                 100: {
                     "Door_Vertices": [0xC4D0, 0xC4E0, 0xC4F0, 0xC500],
-                    "Overlay_Textures": 0xB886,
+                    "Overlay_Textures": 0xBA36,
                     },
                 10: {
                     "Door_Vertices": [0xC510, 0xC520, 0xC530, 0xC540],
-                    "Overlay_Textures": 0xB8DE,
+                    "Overlay_Textures": 0xBA8E,
                     },
                 1: {
                     "Door_Vertices": [0xC550, 0xC560, 0xC570, 0xC580],
-                    "Overlay_Textures": 0xB90E,
+                    "Overlay_Textures": 0xBABE,
                     },
                 },
             10: { # 864
                 100: {
                     "Door_Vertices": [0xC590, 0xC5A0, 0xC5B0, 0xC5C0],
-                    "Overlay_Textures": 0xB886,
+                    "Overlay_Textures": 0xBB0E,
                     },
                 10: {
                     "Door_Vertices": [0xC5D0, 0xC5E0, 0xC5F0, 0xC600],
-                    "Overlay_Textures": 0xB8DE,
+                    "Overlay_Textures": 0xBB66,
                     },
                 1: {
                     "Door_Vertices": [0xC610, 0xC620, 0xC630, 0xC640],
-                    "Overlay_Textures": 0xB90E,
+                    "Overlay_Textures": 0xBB96,
                     },
                 },
             11: { # 882
                 100: {
                     "Door_Vertices": [0xC650, 0xC660, 0xC670, 0xC680],
-                    "Overlay_Textures": 0xB886,
+                    "Overlay_Textures": 0xBBE6,
                     },
                 10: {
                     "Door_Vertices": [0xC690, 0xC6A0, 0xC6B0, 0xC6C0],
-                    "Overlay_Textures": 0xB8DE,
+                    "Overlay_Textures": 0xBBE6,
                     },
                 1: {
                     "Door_Vertices": [0xC6D0, 0xC6E0, 0xC6F0, 0xC700],
-                    "Overlay_Textures": 0xB90E,
+                    "Overlay_Textures": 0xBC46,
                     },
                 },
             }
@@ -226,6 +226,10 @@ class NOTE_DOOR_CLASS(GENERIC_MODEL_CLASS):
             self._debug_print("Count for the first door must be between 0 and 99, inclusively")
         elif(count_value >= 1000 or count_value < 0):
             self._debug_print("Count for the first door must be between 0 and 999, inclusively")
+        hundreds_value = count_value // 100
+        tens_value = (count_value // 10) % 10
+        if(door_num == 11 and hundreds_value != tens_value and hundreds_value not in [6, 9] and tens_value not in [6, 9]):
+            self._debug_print("Until we figure out how to modify display lists, the hundreds need to match the tens for door 11")
         # Setting Value
         if(door_num > 0):
             self._set_digit(door_num, count_value, 100)

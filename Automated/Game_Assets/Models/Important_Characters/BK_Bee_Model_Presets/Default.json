@@ -1,0 +1,26 @@
+{
+    "Body": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Shorts": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Backpack": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": true
+    },
+    "Mouth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Wings": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

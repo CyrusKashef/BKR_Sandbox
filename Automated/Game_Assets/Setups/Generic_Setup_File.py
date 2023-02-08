@@ -1,11 +1,11 @@
 import struct
 import sys
+from math import floor
 
 sys.path.append(".")
 from Automated.Generic_File import GENERIC_FILE_CLASS
 from Data_Files.Setups.Map_Setup_Dict import MAP_SETUP_DICT
 from Data_Files.Setups.Object_Dicts import *
-from Data_Files.Setups.Lair_Enemy_Id_Dict import LAIR_ENEMY_ID_DICT
 
 EMPTY_VOXEL = "EMPTY_VOXEL"
 OBJECT_0x14_LIST = "OBJECT_0x14_LIST"
@@ -957,35 +957,141 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         self._new_file.write(self._possible_negative_to_bytes(unknown_object["Section4_Unk2"], 4))
         self._new_file.write(self._possible_negative_to_bytes(unknown_object["Section4_Unk3"], 4))
     
-    #########################
-    ### SPECIFIC FUNCTION ###
-    #########################
+    #############################
+    ### MANIULATION FUNCTIONS ###
+    #############################
+    
+    def _calculate_voxel_num(self, x_position, y_position, z_position):
+        x_count = (x_position - (self._neg_x_voxel_count * 1000)) // 1000
+        y_count = (y_position - (self._neg_y_voxel_count * 1000)) // 1000
+        z_count = (z_position - (self._neg_z_voxel_count * 1000)) // 1000
+        x_dimension = self._neg_x_voxel_count + self._pos_x_voxel_count + 1
+        y_dimension = self._neg_y_voxel_count + self._pos_y_voxel_count + 1
+        voxel_num = x_count * (x_dimension ^ 2) + y_count * (y_dimension) + z_count
+        return voxel_num
 
-    def _remove_all_floating_notes(self):
+    ### REMOVE
+
+    def _remove_complex_object_by_attributes(self, original_objects_dict):
+        for voxel_num in self._voxel_dict:
+            curr_item_num = 0
+            while(curr_item_num < len(self._voxel_dict[voxel_num][OBJECT_0x14_LIST])):
+                curr_item = self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num]
+                remove_this = True
+                for attribute in original_objects_dict:
+                    if((attribute not in curr_item) or (curr_item[attribute] != original_objects_dict[attribute])):
+                        remove_this = False
+                        break
+                if(remove_this):
+                    self._voxel_dict[voxel_num][OBJECT_0x14_LIST].pop(curr_item_num)
+                else:
+                    curr_item_num += 1
+
+    def _remove_simple_object_by_attributes(self, original_objects_dict):
         for voxel_num in self._voxel_dict:
             curr_item_num = 0
             while(curr_item_num < len(self._voxel_dict[voxel_num][OBJECT_0x0C_LIST])):
                 curr_item = self._voxel_dict[voxel_num][OBJECT_0x0C_LIST][curr_item_num]
-                if(curr_item["Object_ID"] in SPRITE_OBJECT_DICT and SPRITE_OBJECT_DICT[curr_item["Object_ID"]] == "Note"):
+                remove_this = True
+                for attribute in original_objects_dict:
+                    if((attribute not in curr_item) or (curr_item[attribute] != original_objects_dict[attribute])):
+                        remove_this = False
+                        break
+                if(remove_this):
                     self._voxel_dict[voxel_num][OBJECT_0x0C_LIST].pop(curr_item_num)
                 else:
                     curr_item_num += 1
+
+    def _remove_complex_object_instances(self, voxel_num, complex_object_list):
+        curr_item_num = 0
+        while(curr_item_num < len(self._voxel_dict[voxel_num][OBJECT_0x14_LIST])):
+            item_popped = False
+            curr_item = self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num]
+            if("Script_ID" in curr_item):
+                if((curr_item["Object_ID"], curr_item["Script_ID"]) in ACTOR_OBJECT_DICT):
+                    if(ACTOR_OBJECT_DICT[(curr_item["Object_ID"], curr_item["Script_ID"])] in complex_object_list):
+                        self._voxel_dict[voxel_num][OBJECT_0x14_LIST].pop(curr_item_num)
+                        item_popped = True
+                elif((curr_item["Object_ID"], curr_item["Script_ID"]) in TIMED_OBJECT_DICT):
+                    if(TIMED_OBJECT_DICT[(curr_item["Object_ID"], curr_item["Script_ID"])] in complex_object_list):
+                        self._voxel_dict[voxel_num][OBJECT_0x14_LIST].pop(curr_item_num)
+                        item_popped = True
+                elif((curr_item["Object_ID"], curr_item["Script_ID"]) in MISC_OBJECT_DICT):
+                    if(MISC_OBJECT_DICT[(curr_item["Object_ID"], curr_item["Script_ID"])] in complex_object_list):
+                        self._voxel_dict[voxel_num][OBJECT_0x14_LIST].pop(curr_item_num)
+                        item_popped = True
+            elif("Object_ID" in curr_item):
+                if(curr_item["Object_ID"] in RADIUS_OBJECT_ID_DICT):
+                    if(RADIUS_OBJECT_ID_DICT[curr_item["Object_ID"]] in complex_object_list):
+                        self._voxel_dict[voxel_num][OBJECT_0x14_LIST].pop(curr_item_num)
+                        item_popped = True
+            if(not item_popped):
+                curr_item_num += 1
+
+    def _remove_simple_object_instances(self, voxel_num, simple_object_list):
+        curr_item_num = 0
+        while(curr_item_num < len(self._voxel_dict[voxel_num][OBJECT_0x0C_LIST])):
+            item_popped = False
+            curr_item = self._voxel_dict[voxel_num][OBJECT_0x0C_LIST][curr_item_num]
+            if(curr_item["Object_ID"] in SPRITE_OBJECT_DICT):
+                if(SPRITE_OBJECT_DICT[curr_item["Object_ID"]] in simple_object_list):
+                    self._voxel_dict[voxel_num][OBJECT_0x0C_LIST].pop(curr_item_num)
+                    item_popped = True
+            elif(curr_item["Object_ID"] in STATIC_OBJECT_DICT):
+                if(STATIC_OBJECT_DICT[curr_item["Object_ID"]] in simple_object_list):
+                    self._voxel_dict[voxel_num][OBJECT_0x0C_LIST].pop(curr_item_num)
+                    item_popped = True
+            if(not item_popped):
+                curr_item_num += 1
+
+    def _remove_all_object_instances(self, complex_object_list=None, simple_object_list=None):
+        for voxel_num in self._voxel_dict:
+            if(complex_object_list):
+                self._remove_complex_object_instances(voxel_num, complex_object_list)
+            if(simple_object_list):
+                self._remove_simple_object_instances(voxel_num, simple_object_list)
+
+    ### MODIFY
     
-    def _only_gruntlings_lair(self):
+    def _replace_complex_objects_by_id(self, original_objects_dict, new_object_dict):
         for voxel_num in self._voxel_dict:
             curr_item_num = 0
             while(curr_item_num < len(self._voxel_dict[voxel_num][OBJECT_0x14_LIST])):
                 curr_item = self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num]
                 if("Object_ID" in curr_item and
                    "Script_ID" in curr_item and 
-                   (curr_item["Object_ID"], curr_item["Script_ID"]) in LAIR_ENEMY_ID_DICT):
-                    # (0x0367, 0x190C): "Red Gruntling"
-                    # (0x03BF, 0x190C): "Blue Gruntling"
-                    # (0x03C0, 0x190C): "Black Gruntling"
-                    self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num]["Object_ID"] = 0x0367
-                    self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num]["Script_ID"] =0x190C
+                   (curr_item["Object_ID"], curr_item["Script_ID"]) in original_objects_dict):
+                    self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num]["Object_ID"] = new_object_dict["Object_ID"]
+                    self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num]["Script_ID"] = new_object_dict["Script_ID"]
+                curr_item_num += 1
+    
+    def _modify_complex_objects(self, original_objects_dict, modification_dict):
+        for voxel_num in self._voxel_dict:
+            curr_item_num = 0
+            while(curr_item_num < len(self._voxel_dict[voxel_num][OBJECT_0x14_LIST])):
+                curr_item = self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num]
+                modify_this = True
+                for attribute in original_objects_dict:
+                    if((attribute not in curr_item) or (curr_item[attribute] != original_objects_dict[attribute])):
+                        modify_this = False
+                        break
+                if(modify_this):
+                    for attribute in modification_dict:
+                        self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num][attribute] = modification_dict[attribute]
                 curr_item_num += 1
 
+    ### ADD
+
+    def _add_complex_object(self, object_dict):
+        # Calculate Voxel Number
+        x_position = object_dict["X_Position"]
+        y_position = object_dict["Y_Position"]
+        z_position = object_dict["Z_Position"]
+        voxel_num = self._calculate_voxel_num(x_position, y_position, z_position)
+        print(f"Voxel Num: {voxel_num}")
+        # Add Object
+        self._voxel_dict[voxel_num][OBJECT_0x14_LIST].append(object_dict)
+        self._voxel_dict[voxel_num][EMPTY_VOXEL] = False
 
 #############################################
 ################## TESTING ##################

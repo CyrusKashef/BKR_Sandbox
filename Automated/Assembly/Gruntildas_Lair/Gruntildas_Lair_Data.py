@@ -31,12 +31,31 @@ class GRUNTILDAS_LAIR_DATA_CLASS(GENERIC_FILE_CLASS):
     def _read_jigsaw_puzzle_costs(self):
         '''Gets the required count for every world jigsaw puzzle'''
         jigsaw_puzzle_list = []
-        for curr_index in range(0x1B46, 0x1B71, 0x4):
-            jigsaw_puzzle_list.append(self._read_byte(curr_index + 0x2))
+        for curr_index in range(0x1B48, 0x1B74, 0x4):
+            jigsaw_puzzle_list.append(self._read_byte(curr_index))
         return jigsaw_puzzle_list
 
     def _modify_jigsaw_puzzle_costs(self, replacement_list):
-        '''Modifies the required count for every world jigsaw puzzle'''
-        for index_count, curr_index in enumerate(range(0x1B46, 0x1B71, 0x4)):
+        '''
+        Modifies the number of Jiggies required for each world's jigsaw puzzle
+        Also adjusts the bit requirement used to save the number of Jiggies if the player leaves the lair
+        '''
+        total_bit_requirement = 0
+        current_bit_offset = 0x5D
+        for index_count, curr_index in enumerate(range(0x1B48, 0x1B74, 0x4)):
             if(replacement_list[index_count] != None):
-                self._write_byte(curr_index + 0x2, replacement_list[index_count])
+                puzzle_cost = replacement_list[index_count]
+                needed_bits = max(puzzle_cost.bit_length(), 1)
+                total_bit_requirement += needed_bits
+                self._write_byte(curr_index, puzzle_cost)
+                self._write_byte(curr_index + 0x1, needed_bits)
+                self._write_bytes(curr_index + 0x2, 2, current_bit_offset)
+                current_bit_offset += needed_bits
+            else:
+                needed_bits = self._read_byte(curr_index + 0x1)
+                total_bit_requirement += needed_bits
+                self._write_bytes(curr_index + 0x2, 2, current_bit_offset)
+                current_bit_offset += needed_bits
+        if(total_bit_requirement > 37):
+            print("Not Enough Bits For Jigsaw Puzzle Requirements")
+            raise SystemError("Not Enough Bits For Jigsaw Puzzle Requirements")

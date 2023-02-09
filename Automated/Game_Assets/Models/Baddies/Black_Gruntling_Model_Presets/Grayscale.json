@@ -1,4 +1,8 @@
 {
+    "Test": {
+        "Color_Ratio": "0101FF",
+        "Ignore_Gray": false
+    },
     "Eyes": {
         "Color_Ratio": "010101",
         "Ignore_Gray": true
@@ -7,19 +11,15 @@
         "Color_Ratio": "010101",
         "Ignore_Gray": false
     },
-    "Mouth": {
-        "Color_Ratio": "010101",
-        "Ignore_Gray": false
-    },
-    "Ring": {
-        "Color_Ratio": "010101",
-        "Ignore_Gray": false
-    },
-    "Horn_Calves": {
+    "Cloak": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
     },
     "Teeth": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Mouth": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
     }

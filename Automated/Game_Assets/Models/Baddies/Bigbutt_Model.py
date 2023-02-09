@@ -9,12 +9,52 @@ class BIGBUTT_MODEL_CLASS(GENERIC_MODEL_CLASS):
         self._get_object_texture_header_info()
         self._get_object_vertex_header_info()
         self._texture_dict = {
+            0: "Eyes",
+            # 1: "Test",
+            # 2: "Body",
+            # 3: "Test",
+            # 4: "Test",
         }
         self._texture_specific_dict = {
         }
         self._vertex_dict = {
+            (0x00, 0x00, 0x00, 0xFF): "Skip", # Unsure
+            (0x11, 0x18, 0x1E, 0xFF): "Body",
+            (0x1F, 0x2B, 0x37, 0xFF): "Body",
+            (0x20, 0x20, 0x20, 0xFF): "Skip", # Hooves
+            (0x2C, 0x3E, 0x51, 0xFF): "Body",
+            (0x3A, 0x4F, 0x67, 0xFF): "Body",
+            (0x49, 0x68, 0x85, 0xFF): "Body",
+            (0x4E, 0x33, 0x1B, 0xFF): "Body",
+            (0x4F, 0x4F, 0x4F, 0xFF): "Skip", # Eyes
+            (0x52, 0x13, 0x21, 0xFF): "Mouth",
+            (0x61, 0x08, 0x1F, 0xFF): "Mouth",
+            (0x62, 0x89, 0xB6, 0xFF): "Body",
+            (0x65, 0x3D, 0x06, 0xFF): "Ring",
+            (0x6F, 0x55, 0x3E, 0xFF): "Horn_Calves",
+            (0x78, 0xA8, 0xE1, 0xFF): "Body",
+            (0x7A, 0x7A, 0x7A, 0xFF): "Skip", # Eyes & Hooves
+            (0x9A, 0x78, 0x5B, 0xFF): "Horn_Calves",
+            (0xA3, 0x10, 0x36, 0xFF): "Mouth",
+            (0xA7, 0xA7, 0xA7, 0xFF): "Skip", # Hooves
+            (0xB7, 0x6E, 0x04, 0xFF): "Ring",
+            (0xC0, 0x9A, 0x77, 0xFF): "Horn_Calves",
+            (0xD0, 0xB9, 0x00, 0xFF): "Ring",
+            (0xDB, 0xDB, 0xDB, 0xFF): "Skip", # Eyes
+            (0xDF, 0xB7, 0x93, 0xFF): "Horn_Calves",
+            (0xE9, 0xE9, 0xB0, 0xFF): "Ring",
+            (0xFB, 0xDA, 0xB2, 0xFF): "Horn_Calves",
+            (0xFB, 0xE7, 0xA2, 0xFF): "Teeth",
+            (0xFF, 0x15, 0x38, 0xFF): "Mouth",
+            (0xFF, 0xFF, 0xFF, 0xFF): "Skip", # Too Much
         }
         self._vertex_count_dict = {}
+
+    def _get_texture_count(self):
+        self._get_object_texture_header_info()
+        print(f"Texture Count: {self._texture_count}")
+        for texture_count in range(self._texture_count):
+            print(f'{texture_count}: "Test",')
 
     def _get_all_vertex_colors(self):
         vertex_dict = {}
@@ -34,16 +74,17 @@ class BIGBUTT_MODEL_CLASS(GENERIC_MODEL_CLASS):
 
 if __name__ == '__main__':
     FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test/Rando3_Test/"
-    FILE_NAME = "1C23F8"
-    MODEL_NAME = "Bawl"
+    FILE_NAME = "1AA248"
+    MODEL_NAME = "Bigbutt"
     JSON_FILE_DIR = f"C:/Users/Cyrus/Documents/VS_Code/BK_Randomizer/BK_Randomizer_v3/Automated/Game_Assets/Models/Baddies/{MODEL_NAME}_Model_Presets/"
     from shutil import copy
     ### SINGLE TESTING ###
-    JSON_FILE_NAME = "Grayscale.json"
-    copy(FILE_DIR + FILE_NAME + "-Default.bin", FILE_DIR + f"{MODEL_NAME}_Models/" + FILE_NAME + "-" + JSON_FILE_NAME[:-5] + ".bin")
-    level_model_obj = BIGBUTT_MODEL_CLASS(FILE_DIR + f"{MODEL_NAME}_Models/", FILE_NAME + "-" + JSON_FILE_NAME[:-5])
-    level_model_obj._get_all_vertex_colors()
-    level_model_obj._color_shift_based_on_json(JSON_FILE_DIR, JSON_FILE_NAME[:-5])
+    # JSON_FILE_NAME = "Grayscale.json"
+    # copy(FILE_DIR + FILE_NAME + "-Default.bin", FILE_DIR + f"{MODEL_NAME}_Models/" + FILE_NAME + "-" + JSON_FILE_NAME[:-5] + ".bin")
+    # level_model_obj = BIGBUTT_MODEL_CLASS(FILE_DIR + f"{MODEL_NAME}_Models/", FILE_NAME + "-" + JSON_FILE_NAME[:-5])
+    # level_model_obj._get_texture_count()
+    # level_model_obj._get_all_vertex_colors()
+    # level_model_obj._color_shift_based_on_json(JSON_FILE_DIR, JSON_FILE_NAME[:-5])
 
     ### BULK TESTING ###
     from os import listdir

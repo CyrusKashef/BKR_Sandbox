@@ -1,0 +1,29 @@
+{
+    "Body": {
+        "Color_Ratio": "FF0101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
+    },
+    "Shorts": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false,
+        "Brightness": 3
+    },
+    "Belt": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false,
+        "Brightness": 0.7
+    },
+    "Backpack": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false,
+        "Brightness": 0.7
+    },
+    "Stem": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

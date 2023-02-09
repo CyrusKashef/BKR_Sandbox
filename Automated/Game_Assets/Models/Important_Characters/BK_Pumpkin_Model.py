@@ -73,16 +73,16 @@ if __name__ == '__main__':
     JSON_FILE_DIR = "C:/Users/Cyrus/Documents/VS_Code/BK_Randomizer/BK_Randomizer_v3/Automated/Game_Assets/Models/Important_Characters/BK_Pumpkin_Model_Presets/"
     from shutil import copy
     ### SINGLE TESTING ###
-    JSON_FILE_NAME = "Grayscale.json"
-    copy(FILE_DIR + FILE_NAME + "-Default.bin", FILE_DIR + "BK_Pumpkin_Models/" + FILE_NAME + "-" + JSON_FILE_NAME[:-5] + ".bin")
-    level_model_obj = BK_PUMPKIN_MODEL_CLASS(FILE_DIR + "BK_Pumpkin_Models/", FILE_NAME + "-" + JSON_FILE_NAME[:-5])
-    level_model_obj._get_all_vertex_colors()
-    level_model_obj._color_shift_based_on_json(JSON_FILE_DIR, JSON_FILE_NAME[:-5])
+    # JSON_FILE_NAME = "Grayscale.json"
+    # copy(FILE_DIR + FILE_NAME + "-Default.bin", FILE_DIR + "BK_Pumpkin_Models/" + FILE_NAME + "-" + JSON_FILE_NAME[:-5] + ".bin")
+    # level_model_obj = BK_PUMPKIN_MODEL_CLASS(FILE_DIR + "BK_Pumpkin_Models/", FILE_NAME + "-" + JSON_FILE_NAME[:-5])
+    # level_model_obj._get_all_vertex_colors()
+    # level_model_obj._color_shift_based_on_json(JSON_FILE_DIR, JSON_FILE_NAME[:-5])
 
     ### BULK TESTING ###
-    # from os import listdir
-    # for JSON_FILE_NAME in listdir(JSON_FILE_DIR):
-    #     print(JSON_FILE_NAME)
-    #     copy(FILE_DIR + FILE_NAME + "-Default.bin", FILE_DIR + "BK_Pumpkin_Models/" + FILE_NAME + "-" + JSON_FILE_NAME[:-5] + ".bin")
-    #     level_model_obj = BK_PUMPKIN_MODEL_CLASS(FILE_DIR + "BK_Pumpkin_Models/", FILE_NAME + "-" + JSON_FILE_NAME[:-5])
-    #     level_model_obj._color_shift_based_on_json(JSON_FILE_DIR, JSON_FILE_NAME[:-5])
+    from os import listdir
+    for JSON_FILE_NAME in listdir(JSON_FILE_DIR):
+        print(JSON_FILE_NAME)
+        copy(FILE_DIR + FILE_NAME + "-Default.bin", FILE_DIR + "BK_Pumpkin_Models/" + FILE_NAME + "-" + JSON_FILE_NAME[:-5] + ".bin")
+        level_model_obj = BK_PUMPKIN_MODEL_CLASS(FILE_DIR + "BK_Pumpkin_Models/", FILE_NAME + "-" + JSON_FILE_NAME[:-5])
+        level_model_obj._color_shift_based_on_json(JSON_FILE_DIR, JSON_FILE_NAME[:-5])

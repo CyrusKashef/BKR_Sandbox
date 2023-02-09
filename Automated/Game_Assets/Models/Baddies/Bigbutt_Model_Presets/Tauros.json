@@ -1,14 +1,16 @@
 {
     "Eyes": {
         "Color_Ratio": "010101",
-        "Ignore_Gray": true
+        "Ignore_Gray": true,
+        "Brightness": 0.3
     },
     "Body": {
-        "Color_Ratio": "010101",
-        "Ignore_Gray": false
+        "Color_Ratio": "DCAB66",
+        "Ignore_Gray": false,
+        "Brightness": 1.1
     },
     "Mouth": {
-        "Color_Ratio": "010101",
+        "Color_Ratio": "DC97B6",
         "Ignore_Gray": false
     },
     "Ring": {
@@ -16,8 +18,9 @@
         "Ignore_Gray": false
     },
     "Horn_Calves": {
-        "Color_Ratio": "010101",
-        "Ignore_Gray": false
+        "Color_Ratio": "9496A2",
+        "Ignore_Gray": false,
+        "Brightness": 0.7
     },
     "Teeth": {
         "Color_Ratio": "010101",

@@ -14,14 +14,15 @@ class BUBBLEGLOOP_SWAMP_CODE_CLASS(GENERIC_FILE_CLASS):
         '''
         self._write_bytes(0x86C0, 2, 0x1000)
     
-    def _round_three_vile_only(self):
+    def _one_round_vile(self):
         '''
-        Doesn't Work :(
+        Accepting to play Mr Vile's Game will start round 3, and supply a Jiggy if victorious.
+        Mr. Vile will offer the bonus game afterwards,
+        but beating this and talking to Mr Vile again will crash the game.
         '''
-        # initialize local->unkC
-        self._write_byte(0x4A1B, 3)
-        # initialize local->unkD
-        # We want this less than 4
-        self._write_byte(0x4A37, 3)
-        # First 'Next State'
-        self._write_byte(0x4ABB, 5)
+        # local->unkC--; -> local->unkC -= 3;
+        self._write_byte(0x384B, 0xFD)
+        # local->unkC++; -> local->unkC += 3;
+        self._write_byte(0x3F4B, 3)
+        # Spits out Jiggy after first round
+        self._write_byte(0x4D1B, 9)

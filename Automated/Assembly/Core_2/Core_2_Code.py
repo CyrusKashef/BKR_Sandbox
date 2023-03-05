@@ -290,8 +290,8 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
         '''Replaces the Jiggy count that warps the player to the Beach 100 Jiggies cutscene with a Note count'''
         # Note Requirement
         self._write_bytes(0xBFE70, 4, 0x0C0D1BBB)
-        self._write_bytes(0xBFE78, 3, 0x240100)
-        self._write_byte(0xBFE7B, item_count)
+        self._write_bytes(0xBFE78, 2, 0x2401)
+        self._write_byte(0xBFE7A, 2, item_count)
         self._write_bytes(0xBFE7C, 4, 0x1441000A)
         self._write_bytes(0xBFE80, 4, 0x00000000)
         self._write_bytes(0xBFE84, 4, 0x00000000)
@@ -436,3 +436,11 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
     #############
     ### WARPS ###
     #############
+
+    def _reassign_banjos_house_warp(self, warp_id):
+        '''
+        Replaces going into Banjo's house warp with a new warp
+        '''
+        # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_956B0.c
+        # https://hack64.net/wiki/doku.php?id=banjo_kazooie:enums#map_exit_indices
+        self._write_bytes(0x986D6, 2, warp_id)

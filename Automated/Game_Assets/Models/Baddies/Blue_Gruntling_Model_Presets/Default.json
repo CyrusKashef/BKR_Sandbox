@@ -1,0 +1,22 @@
+{
+    "Eyes": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": true
+    },
+    "Body": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Cloak": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Teeth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Mouth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

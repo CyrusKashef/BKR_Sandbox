@@ -1,6 +1,14 @@
 {
-    "Test": {
+    "Body": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
+    },
+    "Mouth": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
     }
 }

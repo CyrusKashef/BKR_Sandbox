@@ -1,6 +1,30 @@
 {
     "Test": {
+        "Color_Ratio": "FF0101",
+        "Ignore_Gray": false
+    },
+    "Body": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
+    },
+    "Belly": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Pants": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Feather": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Ear_Inner": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
     }
 }

@@ -1,0 +1,20 @@
+{
+    "Body": {
+        "Color_Ratio": "FF0B09",
+        "Ignore_Gray": false,
+        "Brightness": 0.3
+    },
+    "Grille": {
+        "Color_Ratio": "3771DD",
+        "Ignore_Gray": false
+    },
+    "Mouth": {
+        "Color_Ratio": "FE6178",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "20EF03",
+        "Ignore_Gray": true,
+        "Brightness": 1.3
+    }
+}

@@ -1,5 +1,17 @@
 {
-    "Test": {
+    "Tube": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
+    },
+    "Tips": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyelids": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
     }

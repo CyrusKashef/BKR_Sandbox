@@ -1,5 +1,25 @@
 {
     "Test": {
+        "Color_Ratio": "0101FF",
+        "Ignore_Gray": false
+    },
+    "Blank_Sides": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "TNT_Sides": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
+    },
+    "Mouth": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Teeth": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
     }

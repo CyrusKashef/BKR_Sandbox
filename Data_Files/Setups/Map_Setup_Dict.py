@@ -102,7 +102,7 @@ MAP_SETUP_DICT = {
     "4EF088": "GL - Floor 5",
     "4EF998": "GL - Floor 6",
     "4F0758": "GL - CC Entrance",
-    #"4F0EC8": "GL - Floor 4",
+    "4F0EC8": "GL - Floor 4",
     "4F15A0": "GL - BGS Entrance",
     "4F2180": "GL - Lava Room",
     "4F26A0": "GL - MMM Entrance",

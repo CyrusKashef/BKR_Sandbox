@@ -1,0 +1,15 @@
+{
+    "Eyes": {
+        "Color_Ratio": "E65C50",
+        "Ignore_Gray": true
+    },
+    "Body": {
+        "Color_Ratio": "567D9A",
+        "Ignore_Gray": false,
+        "Brightness": 0.7
+    },
+    "Leafs": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

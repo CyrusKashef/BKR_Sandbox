@@ -23,7 +23,7 @@ class MAD_MONSTER_MANSION_DATA_CLASS(GENERIC_FILE_CLASS):
         for count, index in enumerate(range(0x7EC, 0x7F1)):
             self._write_byte(index, keys_list[count])
     
-    def _set_motzands_first_song(self, keys_list):
+    def _set_motzands_second_song(self, keys_list):
         # What Motzand Presses
         for count, index in enumerate(range(0xDC, 0xE6)):
             self._write_byte(index, keys_list[count])
@@ -46,11 +46,24 @@ class MAD_MONSTER_MANSION_DATA_CLASS(GENERIC_FILE_CLASS):
     # Counts Start At 0x1, End At 0x1F
     # Counts 0x4, 0xC, 0x14, & 0x1C are corners
 
-    def _get_tumblar_tile_value(self, index_start):
-        count = self._read_byte(index_start + 0x1)
-        letter = self._read_byte(index_start + 0x2)
-        return count, letter
+    def _get_tumblar_tile_dict(self):
+        tumblar_tile_dict = {}
+        start_index = 0x810
+        end_index = 0x900
+        for count, curr_index in enumerate(range(start_index, end_index + 1, 0x8)):
+            tumblar_tile_dict[count] = {
+                "Tile_Count": self._read_byte_list_to_int(curr_index, 2),
+                "Tile_Value": self._read_byte_list_to_int(curr_index + 0x2, 2),
+                "Unk2": self._read_byte_list_to_int(curr_index + 0x4, 2),
+                "Unk3": self._read_byte_list_to_float(curr_index + 0x6, 4),
+            }
+        return tumblar_tile_dict
     
-    def _set_tumblar_tile_value(self, index_start):
-        self._write_byte(index_start + 0x1)
-        self._write_byte(index_start + 0x2)
+    def _set_tumblar_tile_dict(self, tumblar_tile_dict):
+        start_index = 0x810
+        end_index = 0x900
+        for count, curr_index in enumerate(range(start_index, end_index + 1, 0x8)):
+            self._write_bytes(curr_index, 2, tumblar_tile_dict["Tile_Count"])
+            self._write_bytes(curr_index + 0x2, 2, tumblar_tile_dict["Tile_Value"])
+            self._write_bytes(curr_index + 0x4, 2, tumblar_tile_dict["Unk2"])
+            self._write_float_bytes(curr_index + 0x6, tumblar_tile_dict["Unk3"])

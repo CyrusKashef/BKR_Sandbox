@@ -1,0 +1,24 @@
+{
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
+    },
+    "Body": {
+        "Color_Ratio": "E4D6C8",
+        "Ignore_Gray": false,
+        "Brightness": 1.7
+    },
+    "Cloak": {
+        "Color_Ratio": "897460",
+        "Ignore_Gray": false,
+        "Brightness": 1.7
+    },
+    "Teeth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Mouth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

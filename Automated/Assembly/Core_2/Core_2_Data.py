@@ -504,7 +504,10 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         return level_models_dict
     
     def _get_all_level_models(self):
-        '''Gets the level models for every map'''
+        '''
+        Gets the level models for every map
+        Decomp: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/mapModel.c#L28
+        '''
         level_models_dict = {}
         for level_count, start_index in enumerate(range(0x7650, 0x8250, 0x18)):
             level_models_dict[level_count] = self._get_level_models(start_index)

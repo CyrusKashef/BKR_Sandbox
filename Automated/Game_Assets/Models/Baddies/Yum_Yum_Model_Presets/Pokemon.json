@@ -1,0 +1,15 @@
+{
+    "Body": {
+        "Color_Ratio": "A49CBE",
+        "Ignore_Gray": false
+    },
+    "Mouth": {
+        "Color_Ratio": "5D588C",
+        "Ignore_Gray": false,
+        "Brightness": 0.1
+    },
+    "Eyes": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": true
+    }
+}

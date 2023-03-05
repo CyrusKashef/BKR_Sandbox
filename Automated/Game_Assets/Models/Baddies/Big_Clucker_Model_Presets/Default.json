@@ -1,0 +1,30 @@
+{
+    "Eyes": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": true
+    },
+    "Body": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Wings": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Beak_Legs": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Feathers": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Birdhole": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Mouth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

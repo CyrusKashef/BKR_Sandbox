@@ -17,7 +17,7 @@ class BLACK_GRUNTLING_MODEL_CLASS(GENERIC_MODEL_CLASS):
         self._texture_specific_dict = {
         }
         self._vertex_dict = {
-            # (0x00, 0x00, 0x00, 0xFF): "Test",
+            (0x00, 0x00, 0x00, 0xFF): "Skip", # Unsure
             (0x1D, 0x13, 0x0E, 0xFF): "Body",
             (0x26, 0x0B, 0x0C, 0x00): "Cloak",
             (0x26, 0x0B, 0x0C, 0xFF): "Cloak",
@@ -75,17 +75,17 @@ if __name__ == '__main__':
     JSON_FILE_DIR = f"C:/Users/Cyrus/Documents/VS_Code/BK_Randomizer/BK_Randomizer_v3/Automated/Game_Assets/Models/Baddies/{MODEL_NAME}_Model_Presets/"
     from shutil import copy
     ### SINGLE TESTING ###
-    JSON_FILE_NAME = "Grayscale.json"
-    copy(FILE_DIR + FILE_NAME + "-Default.bin", FILE_DIR + f"{MODEL_NAME}_Models/" + FILE_NAME + "-" + JSON_FILE_NAME[:-5] + ".bin")
-    level_model_obj = BLACK_GRUNTLING_MODEL_CLASS(FILE_DIR + f"{MODEL_NAME}_Models/", FILE_NAME + "-" + JSON_FILE_NAME[:-5])
-    level_model_obj._get_texture_count()
-    level_model_obj._get_all_vertex_colors()
-    level_model_obj._color_shift_based_on_json(JSON_FILE_DIR, JSON_FILE_NAME[:-5])
+    # JSON_FILE_NAME = "Grayscale.json"
+    # copy(FILE_DIR + FILE_NAME + "-Default.bin", FILE_DIR + f"{MODEL_NAME}_Models/" + FILE_NAME + "-" + JSON_FILE_NAME[:-5] + ".bin")
+    # level_model_obj = BLACK_GRUNTLING_MODEL_CLASS(FILE_DIR + f"{MODEL_NAME}_Models/", FILE_NAME + "-" + JSON_FILE_NAME[:-5])
+    # level_model_obj._get_texture_count()
+    # level_model_obj._get_all_vertex_colors()
+    # level_model_obj._color_shift_based_on_json(JSON_FILE_DIR, JSON_FILE_NAME[:-5])
 
     ### BULK TESTING ###
-    # from os import listdir
-    # for JSON_FILE_NAME in listdir(JSON_FILE_DIR):
-    #     print(JSON_FILE_NAME)
-    #     copy(FILE_DIR + FILE_NAME + "-Default.bin", FILE_DIR + f"{MODEL_NAME}_Models/" + FILE_NAME + "-" + JSON_FILE_NAME[:-5] + ".bin")
-    #     level_model_obj = BLACK_GRUNTLING_MODEL_CLASS(FILE_DIR + f"{MODEL_NAME}_Models/", FILE_NAME + "-" + JSON_FILE_NAME[:-5])
-    #     level_model_obj._color_shift_based_on_json(JSON_FILE_DIR, JSON_FILE_NAME[:-5])
+    from os import listdir
+    for JSON_FILE_NAME in listdir(JSON_FILE_DIR):
+        print(JSON_FILE_NAME)
+        copy(FILE_DIR + FILE_NAME + "-Default.bin", FILE_DIR + f"{MODEL_NAME}_Models/" + FILE_NAME + "-" + JSON_FILE_NAME[:-5] + ".bin")
+        level_model_obj = BLACK_GRUNTLING_MODEL_CLASS(FILE_DIR + f"{MODEL_NAME}_Models/", FILE_NAME + "-" + JSON_FILE_NAME[:-5])
+        level_model_obj._color_shift_based_on_json(JSON_FILE_DIR, JSON_FILE_NAME[:-5])

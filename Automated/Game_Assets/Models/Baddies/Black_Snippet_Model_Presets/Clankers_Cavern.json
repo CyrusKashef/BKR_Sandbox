@@ -1,0 +1,17 @@
+{
+    "Body_Top": {
+        "Color_Ratio": "8A6F4F",
+        "Ignore_Gray": false,
+        "Brightness": 2
+    },
+    "Body_Bottom": {
+        "Color_Ratio": "EEDDAA",
+        "Ignore_Gray": false,
+        "Brightness": 2
+    },
+    "Eyes": {
+        "Color_Ratio": "FFFFFF",
+        "Ignore_Gray": false,
+        "Brightness": 3
+    }
+}

@@ -1,6 +1,18 @@
 {
     "Test": {
+        "Color_Ratio": "0101FF",
+        "Ignore_Gray": false
+    },
+    "Skeleton_Outside": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
+    },
+    "Skeleton_Inside": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
     }
 }

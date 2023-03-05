@@ -1,0 +1,14 @@
+{
+    "Eyes": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": true
+    },
+    "Body": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Leafs": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

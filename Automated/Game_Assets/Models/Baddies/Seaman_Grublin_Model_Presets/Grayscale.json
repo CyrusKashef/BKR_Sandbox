@@ -1,6 +1,38 @@
 {
     "Test": {
+        "Color_Ratio": "01FF01",
+        "Ignore_Gray": false
+    },
+    "Shoes": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
+    },
+    "Hat_Cape": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Body": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Pants": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Ear": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Mouth": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Teeth": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
     }
 }

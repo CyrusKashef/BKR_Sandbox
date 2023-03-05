@@ -1,0 +1,16 @@
+{
+    "Eyes": {
+        "Color_Ratio": "70B9DA",
+        "Ignore_Gray": true
+    },
+    "Body": {
+        "Color_Ratio": "7C817D",
+        "Ignore_Gray": false,
+        "Brightness": 0.6
+    },
+    "Roof_Legs": {
+        "Color_Ratio": "7C817D",
+        "Ignore_Gray": false,
+        "Brightness": 0.6
+    }
+}

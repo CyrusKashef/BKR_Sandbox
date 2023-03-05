@@ -101,7 +101,7 @@ MAP_SETUP_POINTER_DICT = {
     "9AE8": "GL - Floor 5",
     "9AF0": "GL - Floor 6",
     "9AF8": "GL - CC Entrance",
-    # "9B00": "GL - Floor 4", # I had this commented out for some reason, not sure why
+    "9B00": "GL - Floor 4",
     "9B08": "GL - BGS Entrance",
     "9B18": "GL - Lava Room",
     "9B20": "GL - MMM Entrance",

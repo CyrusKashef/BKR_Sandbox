@@ -13,6 +13,7 @@ from Automated.Assembly.Clankers_Cavern.Clankers_Cavern_Code import CLANKERS_CAV
 from Automated.Assembly.Bubblegloop_Swamp.Bubblegloop_Swamp_Code import BUBBLEGLOOP_SWAMP_CODE_CLASS
 from Automated.Assembly.Freezeezy_Peak.Freezeezy_Peak_Code import FREEZEEZY_PEAK_CODE_CLASS
 from Automated.Assembly.Gobis_Valley.Gobis_Valley_Code import GOBIS_VALLEY_CODE_CLASS
+from Automated.Assembly.Gobis_Valley.Gobis_Valley_Data import GOBIS_VALLEY_DATA_CLASS
 from Automated.Assembly.Mad_Monster_Mansion.Mad_Monster_Mansion_Code import MAD_MONSTER_MANSION_CODE_CLASS
 from Automated.Assembly.Mad_Monster_Mansion.Mad_Monster_Mansion_Data import MAD_MONSTER_MANSION_DATA_CLASS
 from Automated.Assembly.Rusty_Bucket_Bay.Rusty_Bucket_Bay_Code import RUSTY_BUCKET_BAY_CODE_CLASS
@@ -62,9 +63,9 @@ class ASSEMBLY_CLASS():
         self._freezeezy_peak_code = FREEZEEZY_PEAK_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FBEBE0{self._DECOMPRESSED_EXTENSION}")
         self._freezeezy_peak_data = None
         self._gobis_valley_code = GOBIS_VALLEY_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FA9150{self._DECOMPRESSED_EXTENSION}")
-        self._gobis_valley_data = None
+        self._gobis_valley_data = GOBIS_VALLEY_DATA_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FAE27E{self._DECOMPRESSED_EXTENSION}")
         self._mad_monster_mansion_code = MAD_MONSTER_MANSION_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FA5F50{self._DECOMPRESSED_EXTENSION}")
-        self._mad_monster_mansion_data = MAD_MONSTER_MANSION_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FA8CE6{self._DECOMPRESSED_EXTENSION}")
+        self._mad_monster_mansion_data = MAD_MONSTER_MANSION_DATA_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FA8CE6{self._DECOMPRESSED_EXTENSION}")
         self._rusty_bucket_bay_code = RUSTY_BUCKET_BAY_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FB9A30{self._DECOMPRESSED_EXTENSION}")
         self._rusty_bucket_bay_data = None
         self._click_clock_wood_code = CLICK_CLOCK_WOOD_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FD6190{self._DECOMPRESSED_EXTENSION}")
@@ -454,5 +455,43 @@ class ASSEMBLY_CLASS():
                                                             phase4_num_of_jinjos, phase4_egg_per_jinjo,
                                                             phase5_eggs_per_hole)
     
-    def _round_three_vile_only(self):
-        self._bubblegloop_swamp_code._round_three_vile_only()
+    def _one_round_vile(self):
+        self._bubblegloop_swamp_code._one_round_vile()
+    
+    def _reassign_ff_tile_types(self, ff_tile_dict):
+        self._TILE_TRANSLATOR_DICT = {
+            "Blank_Tile": 0,
+            "BK_Tile": 1,
+            "Eye_Tile": 2,
+            "Sound_Tile": 3,
+            "Timer_Tile": 4,
+            "Gruntilda_Tile": 5,
+            "Skull_Tile": 6,
+            "Joker_Tile": 8,
+        }
+        board_dict = self._gruntildas_lair_data._get_board_dict()
+        for count in board_dict:
+            board_dict[count]["Tile_Type"] = self._TILE_TRANSLATOR_DICT[ff_tile_dict[count]]
+        self._gruntildas_lair_data._set_board_dict(board_dict)
+    
+    def _reassign_gv_matching_puzzle_tile_types(self, gv_mp_tile_dict):
+        matching_puzzle_dict = self._gobis_valley_data._get_matching_puzzle_dict()
+        for tile_count, puzzle_count in enumerate(matching_puzzle_dict):
+            matching_puzzle_dict[puzzle_count]["Tile_Value"] = gv_mp_tile_dict[tile_count]
+        self._gobis_valley_data._set_matching_puzzle_dict(matching_puzzle_dict)
+    
+    def _reassign_motzands_songs(self, first_song_list=None, second_song_list=None):
+        if(first_song_list):
+            self._mad_monster_mansion_data._set_motzands_first_song(first_song_list)
+        if(second_song_list):
+            self._mad_monster_mansion_data._set_motzands_second_song(second_song_list)
+    
+    def _reassign_tumblars_tiles(self, mm_t_tile_dict):
+        tumblar_tile_dict = self._mad_monster_mansion_data._get_tumblar_tile_dict()
+        for tile_count, puzzle_count in enumerate(tumblar_tile_dict):
+            if(puzzle_count not in [0x4, 0xC, 0x14, 0x1C]):
+                tumblar_tile_dict[puzzle_count]["Tile_Value"] = mm_t_tile_dict[tile_count]
+        self._mad_monster_mansion_data._set_tumblar_tile_dict(tumblar_tile_dict)
+    
+    def _reassign_banjos_house_warp(self, warp_id):
+        self._core_2_code._reassign_banjos_house_warp(warp_id)

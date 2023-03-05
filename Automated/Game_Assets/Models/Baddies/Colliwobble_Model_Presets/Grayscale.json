@@ -1,6 +1,14 @@
 {
-    "Test": {
+    "Leaves": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
+    },
+    "Body": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
     }
 }

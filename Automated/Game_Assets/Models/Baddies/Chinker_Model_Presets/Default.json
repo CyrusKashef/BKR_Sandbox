@@ -1,0 +1,18 @@
+{
+    "Test": {
+        "Color_Ratio": "FF0101",
+        "Ignore_Gray": false
+    },
+    "Body": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Eyes_Pupils": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": true
+    },
+    "Eyes_Sclera": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "Body_Top": {
+        "Color_Ratio": "511041",
+        "Ignore_Gray": false
+    },
+    "Body_Bottom": {
+        "Color_Ratio": "8205BA",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "2F4E61",
+        "Ignore_Gray": false
+    }
+}

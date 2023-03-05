@@ -1,6 +1,5 @@
 import struct
 import sys
-from math import floor
 
 sys.path.append(".")
 from Automated.Generic_File import GENERIC_FILE_CLASS
@@ -210,7 +209,10 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
 
     def _get_camera_info(self, curr_index):
         camera_type = self._read_byte(curr_index + 0x4)
-        if(camera_type == 1):
+        if(camera_type == 0):
+            self._get_camera_type0_info(curr_index)
+            curr_index += 0x5
+        elif(camera_type == 1):
             self._get_camera_type1_info(curr_index)
             curr_index += 0x37
         elif(camera_type == 2):
@@ -278,7 +280,8 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
             "Object_ID": self._read_byte_list_to_int(start_index + 0x08, 2),
             "Unk_Byte_A": self._read_byte(start_index + 0x0A),
             "Unk_Byte_B": self._read_byte(start_index + 0x0B),
-            "Rotation": self._read_byte_list_to_int(start_index + 0x0C, 2),
+            "Rotation": self._read_byte(start_index + 0x0C),
+            "Unk_Byte_D": self._read_byte(start_index + 0x0D),
             "Size": self._read_byte_list_to_int(start_index + 0x0E, 2),
             "Current_Node": int(node[:3], 16),
             "Next_Node": int(node[3:], 16),
@@ -467,6 +470,16 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
     #############################
     ### GET CAMERA TYPES INFO ###
     #############################
+
+    def _get_camera_type0_info(self, index_start):
+        camera_id = self._read_byte(index_start + 0x2)
+        self._camera_dict[camera_id] = {
+            "Camera_Start": self._read_byte(index_start),
+            "Unk_Byte_1": self._read_byte(index_start + 0x1),
+            "Camera_Id": camera_id,
+            "Unk_Byte_3": self._read_byte(index_start + 0x3), # It's always 02
+            "Camera_End": self._read_byte(index_start + 0x4),
+        }
 
     def _get_camera_type1_info(self, index_start):
         camera_id = self._read_byte(index_start + 0x2)
@@ -681,7 +694,8 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         self._new_file.write(self._possible_negative_to_bytes(object_0x14["Object_ID"], 2))
         self._new_file.write(self._possible_negative_to_bytes(object_0x14["Unk_Byte_A"], 1))
         self._new_file.write(self._possible_negative_to_bytes(object_0x14["Unk_Byte_B"], 1))
-        self._new_file.write(self._possible_negative_to_bytes(object_0x14["Rotation"], 2))
+        self._new_file.write(self._possible_negative_to_bytes(object_0x14["Rotation"], 1))
+        self._new_file.write(self._possible_negative_to_bytes(object_0x14["Unk_Byte_D"], 1))
         self._new_file.write(self._possible_negative_to_bytes(object_0x14["Size"], 2))
         node = int(self._int_to_hex_str(object_0x14["Current_Node"], 3) + self._int_to_hex_str(object_0x14["Next_Node"], 3), 16)
         self._new_file.write(self._possible_negative_to_bytes(node, 3))
@@ -848,6 +862,13 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
     ### SET CAMERA TYPES INFO ###
     #############################
 
+    def _set_camera_type0_info(self, camera_object):
+        self._new_file.write(self._possible_negative_to_bytes(camera_object["Camera_Start"], 1))
+        self._new_file.write(self._possible_negative_to_bytes(camera_object["Unk_Byte_1"], 1))
+        self._new_file.write(self._possible_negative_to_bytes(camera_object["Camera_Id"], 1))
+        self._new_file.write(self._possible_negative_to_bytes(camera_object["Unk_Byte_3"], 1))
+        self._new_file.write(self._possible_negative_to_bytes(camera_object["Camera_End"], 1))
+
     def _set_camera_type1_info(self, camera_object):
         self._new_file.write(self._possible_negative_to_bytes(camera_object["Camera_Start"], 1))
         self._new_file.write(self._possible_negative_to_bytes(camera_object["Unk_Byte_1"], 1))
@@ -926,6 +947,9 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         self._new_file.write(self._possible_negative_to_bytes(camera_object["Camera_End"], 1))
 
     def _set_camera_info(self, camera_object):
+        if("Camera_Type" not in camera_object):
+            self._set_camera_type0_info(camera_object)
+            return
         camera_type = camera_object["Camera_Type"]
         if(camera_type == 1):
             self._set_camera_type1_info(camera_object)
@@ -1046,9 +1070,9 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
 
     def _remove_all_object_instances(self, complex_object_list=None, simple_object_list=None):
         for voxel_num in self._voxel_dict:
-            if(complex_object_list):
+            if(complex_object_list is not None):
                 self._remove_complex_object_instances(voxel_num, complex_object_list)
-            if(simple_object_list):
+            if(simple_object_list is not None):
                 self._remove_simple_object_instances(voxel_num, simple_object_list)
 
     ### MODIFY
@@ -1079,6 +1103,36 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
                     for attribute in modification_dict:
                         self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num][attribute] = modification_dict[attribute]
                 curr_item_num += 1
+    
+    def _replace_static_with_actor_object(self, replacement_dict):
+        for voxel_num in self._voxel_dict:
+            curr_item_num = 0
+            while(curr_item_num < len(self._voxel_dict[voxel_num][OBJECT_0x0C_LIST])):
+                item_replaced = False
+                curr_item = self._voxel_dict[voxel_num][OBJECT_0x0C_LIST][curr_item_num]
+                curr_obj_id = curr_item["Object_ID"]
+                if(curr_item["Object_ID"] in replacement_dict):
+                    self._voxel_dict[voxel_num][OBJECT_0x0C_LIST].pop(curr_item_num)
+                    replacement_object = replacement_dict[curr_obj_id]
+                    object_dict = {
+                        "X_Position": curr_item["X_Position"],
+                        "Y_Position": curr_item["Y_Position"],
+                        "Z_Position": curr_item["Z_Position"],
+                        "Script_ID": replacement_object["Script_ID"],
+                        "Object_ID": replacement_object["Object_ID"],
+                        "Unk_Byte_A": replacement_object["Unk_Byte_A"],
+                        "Unk_Byte_B": replacement_object["Unk_Byte_B"],
+                        "Rotation": curr_item["Rotation_Y"],
+                        "Unk_Byte_D": replacement_object["Unk_Byte_D"],
+                        "Size": curr_item["Size"],
+                        "Current_Node": replacement_object["Current_Node"],
+                        "Next_Node": replacement_object["Next_Node"],
+                        "End_Object_Indicator": 0x40,
+                    }
+                    self._voxel_dict[voxel_num][OBJECT_0x14_LIST].append(object_dict)
+                    item_replaced = True
+                if(not item_replaced):
+                    curr_item_num += 1
 
     ### ADD
 
@@ -1101,18 +1155,20 @@ if __name__ == '__main__':
     import filecmp
     ORIGINAL_FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test2/"
     COPY_FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test3/"
+
     ### SINGLE SETUP FILE TESTING ###
-    # rom_address = "4C5A30"
-    # setup_obj = GENERIC_SETUP_FILE(ORIGINAL_FILE_DIR, rom_address)
-    # setup_obj._get_setup_file_info()
-    # setup_obj._create_setup_file(COPY_FILE_DIR, rom_address)
+    rom_address = "4F0EC8"
+    setup_obj = GENERIC_SETUP_FILE(ORIGINAL_FILE_DIR, rom_address)
+    setup_obj._get_setup_file_info()
+    setup_obj._create_setup_file(COPY_FILE_DIR, rom_address)
+
     ### ALL SETUP FILE TESTING ###
-    for rom_address in MAP_SETUP_DICT:
-        print(f"Map: {rom_address} - {MAP_SETUP_DICT[rom_address]}")
-        setup_obj = GENERIC_SETUP_FILE(ORIGINAL_FILE_DIR, rom_address)
-        setup_obj._get_setup_file_info()
-        setup_obj._create_setup_file(COPY_FILE_DIR, rom_address)
-        if(not filecmp.cmp(f"{ORIGINAL_FILE_DIR}{rom_address}.bin", f"{COPY_FILE_DIR}{rom_address}.bin")):
-            print("Does Not Match")
-            exit(0)
-    print("Done")
+    # for rom_address in MAP_SETUP_DICT:
+    #     print(f"Map: {rom_address} - {MAP_SETUP_DICT[rom_address]}")
+    #     setup_obj = GENERIC_SETUP_FILE(ORIGINAL_FILE_DIR, rom_address)
+    #     setup_obj._get_setup_file_info()
+    #     setup_obj._create_setup_file(COPY_FILE_DIR, rom_address)
+    #     if(not filecmp.cmp(f"{ORIGINAL_FILE_DIR}{rom_address}.bin", f"{COPY_FILE_DIR}{rom_address}.bin")):
+    #         print("Does Not Match")
+    #         exit(0)
+    # print("Done")

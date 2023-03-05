@@ -1,5 +1,13 @@
 {
-    "Test": {
+    "Chest": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Teeth": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
     }

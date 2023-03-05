@@ -1,0 +1,26 @@
+{
+    "Eyes": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": true
+    },
+    "Body": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Mouth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Ring": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Horn_Calves": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Teeth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

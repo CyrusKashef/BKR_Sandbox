@@ -17,8 +17,23 @@ class GOBIS_VALLEY_DATA_CLASS(GENERIC_FILE_CLASS):
     # 0x0: Tile Count (0x190-0x19F)
     # 0x2: Tile Value (0-7)
 
-    def _set_matching_puzzle_tile(self, start_index, tile_val):
-        self._write_byte(start_index + 0x4, tile_val)
+    def _get_matching_puzzle_dict(self):
+        matching_puzzle_dict = {}
+        start_index = 0xA80
+        end_index = 0xAF8
+        for count, curr_index in enumerate(range(start_index, end_index + 1, 8)):
+            matching_puzzle_dict[count] = {
+                "Tile_Count": self._read_byte_list_to_int(curr_index, 2),
+                "Tile_Value": self._read_byte_list_to_int(curr_index + 0x2, 2),
+            }
+        return matching_puzzle_dict
+    
+    def _set_matching_puzzle_dict(self, matching_puzzle_dict):
+        start_index = 0xA80
+        end_index = 0xAF8
+        for count, curr_index in enumerate(range(start_index, end_index + 1, 8)):
+            self._write_bytes(curr_index, 2, matching_puzzle_dict[count]["Tile_Count"])
+            self._write_bytes(curr_index + 0x2, 2, matching_puzzle_dict[count]["Tile_Value"])
 
     def _set_matching_puzzle_jiggy_spawn_location(self, x_pos, y_pos, z_pos):
         self._write_float_bytes(0xB08, x_pos)

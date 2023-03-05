@@ -1,3 +1,4 @@
 *.z64
+*.xdelta
 __pycache__/
 Extracted_Files/

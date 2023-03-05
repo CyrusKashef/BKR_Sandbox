@@ -1,6 +1,22 @@
 {
-    "Test": {
+    "Back_Wings": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
+    },
+    "Skin": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Nose": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Mouth": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
     }
 }

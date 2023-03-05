@@ -1,0 +1,18 @@
+{
+    "Base_Color": {
+        "Color_Ratio": "6AA252",
+        "Ignore_Gray": false
+    },
+    "Leaves_Stem": {
+        "Color_Ratio": "C2A54D",
+        "Ignore_Gray": false
+    },
+    "Trap": {
+        "Color_Ratio": "B6D18A",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
+    }
+}

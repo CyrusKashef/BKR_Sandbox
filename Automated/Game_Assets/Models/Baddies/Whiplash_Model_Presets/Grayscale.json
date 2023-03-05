@@ -1,5 +1,13 @@
 {
     "Test": {
+        "Color_Ratio": "0101FF",
+        "Ignore_Gray": false
+    },
+    "Whip": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Veins": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
     }

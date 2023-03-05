@@ -1,0 +1,14 @@
+{
+    "Body_Top": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Body_Bottom": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    }
+}

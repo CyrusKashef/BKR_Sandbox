@@ -1,5 +1,21 @@
 {
     "Test": {
+        "Color_Ratio": "01FF01",
+        "Ignore_Gray": false
+    },
+    "Buttons": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Hat": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Body": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
     }

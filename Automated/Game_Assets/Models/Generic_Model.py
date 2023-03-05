@@ -28,12 +28,61 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
         self._texture_specific_dict = {}
         self._vertex_dict = {}
         self._vertex_count_dict = {}
+        # FC_DO_NOT_ADJUST_LIST are things that are shiny
+        # that have FC commands that shouldn't adjusted
+        # when adjusting their color
         self._FC_DO_NOT_ADJUST_LIST = [
             "7990-Decompressed", # Jiggy
+            "79A0-Decompressed", # Empty Honeycomb
             "79B0-Decompressed", # Honeycomb (Health)
             "7CD0-Decompressed", # Blubber's Gold
             "81D0-Decompressed", # Jiggy Transition Picture
             ]
+        self._get_object_texture_header_info()
+        self._get_object_vertex_header_info()
+        self._get_display_list_header_info()
+        self._get_animation_header_info()
+        self._get_collision_header_info()
+        self._get_effect_header_info()
+        self._get_geometry_layout_header_info()
+        self._get_unknown1_header_info()
+        self._get_unknown2_header_info()
+    
+    # Shift Sections
+
+    def _adjust_offsets(self, starting_index, index_diff):
+        if(self._texture_setup_offset >= starting_index):
+            self._adjust_texture_setup_offset(index_diff)
+        if(self._vertex_setup_offset >= starting_index):
+            self._adjust_vertex_setup_offset(index_diff)
+        if(self._display_list_setup_offset >= starting_index):
+            self._adjust_display_list_setup_offset(index_diff)
+        if(self._animation_setup_offset >= starting_index):
+            self._adjust_animation_setup_offset(index_diff)
+        if(self._collision_setup_offset >= starting_index):
+            self._adjust_collision_setup_offset(index_diff)
+        if(self._effect_setup_offset >= starting_index):
+            self._adjust_effect_setup_offset(index_diff)
+        if(self._geometry_layout_setup_offset >= starting_index):
+            self._adjust_geometry_layout_setup_offset(index_diff)
+        if(self._unknown1_setup_offset >= starting_index):
+            self._adjust_unknown1_setup_offset(index_diff)
+        if(self._unknown2_setup_offset >= starting_index):
+            self._adjust_unknown2_setup_offset(index_diff)
+
+    def _change_model_file_size(self, starting_index, index_diff):
+        original_mmap_size = len(self._mmap)
+        if(index_diff > 0):
+            self._mmap.resize(original_mmap_size + index_diff)
+            for curr_index in range(original_mmap_size - 1, starting_index - 1, -1):
+                self._mmap[curr_index + index_diff] = self._mmap[curr_index]
+            for curr_index in range(starting_index, starting_index + index_diff):
+                self._mmap[curr_index] = 0
+        if(index_diff < 0):
+            for curr_index in range(starting_index, original_mmap_size):
+                self._mmap[curr_index + index_diff] = self._mmap[curr_index]
+            self._mmap.resize(original_mmap_size + index_diff)
+        self._adjust_offsets(starting_index, index_diff)
     
     # COLORS
 
@@ -74,9 +123,6 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
             old_blue_val = max(old_blue_val, ten_percent)
             old_luminosity = self._calculate_luminosity(old_red_val, old_green_val, old_blue_val)
             new_luminosity = self._calculate_luminosity(red_ratio, green_ratio, blue_ratio)
-            print(f"old_luminosity: {old_luminosity}")
-            print(f"new_luminosity: {new_luminosity}")
-            print(f"target_luminosity: {target_luminosity}")
             luminosity_scaling = old_luminosity / new_luminosity * target_luminosity
             new_red_val, new_green_val, new_blue_val = self._scale_colors_by_luminosity(red_ratio, green_ratio, blue_ratio, luminosity_scaling)
         largest_val = max(new_red_val, new_green_val, new_blue_val, self._color_format_dict[color_format]["Max_Value"])
@@ -109,6 +155,10 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
     def _get_object_texture_header_info(self):
         self._texture_setup_offset = self._read_byte_list_to_int(0x8, 2)
         self._texture_count = self._read_byte_list_to_int(self._texture_setup_offset + 0x4, 2)
+    
+    def _adjust_texture_setup_offset(self, offset_diff):
+        self._texture_setup_offset += offset_diff
+        self._write_bytes(0x8, 4, self._texture_setup_offset)
     
     def _get_object_texture_info(self, count):
         texture_info_index_start = self._texture_setup_offset + 0x8 + count * 0x10
@@ -181,6 +231,10 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
         # print(f"Max Coord: {self._int_to_hex_str(self._max_obj_coord_range, 4)}")
         self._vertex_count = self._read_byte_list_to_int(self._vertex_setup_offset + 0x14, 2)
     
+    def _adjust_vertex_setup_offset(self, offset_diff):
+        self._vertex_setup_offset += offset_diff
+        self._write_bytes(0x10, 4, self._vertex_setup_offset)
+    
     def _get_vertex_info(self, count):
         vertex_info_index_start = self._vertex_setup_offset + 0x18 + count * 0x10
         x_position = self._read_byte_list_to_int(vertex_info_index_start, 2)
@@ -207,25 +261,6 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
         self._write_byte(vertex_info_index_start + 0xE, new_blue)
         self._write_byte(vertex_info_index_start + 0xF, new_alpha)
     
-    def _set_draw_distance_coords(self, neg_x=None, neg_y=None, neg_z=None, pos_x=None, pos_y=None, pos_z=None, min_coord=None, max_coord=None):
-        '''This Doesn't Do Anything :('''
-        if(neg_x != None):
-            self._write_bytes(self._vertex_setup_offset, 2, neg_x)
-        if(neg_y != None):
-            self._write_bytes(self._vertex_setup_offset + 0x2, 2, neg_y)
-        if(neg_z != None):
-            self._write_bytes(self._vertex_setup_offset + 0x4, 2, neg_z)
-        if(pos_x != None):
-            self._write_bytes(self._vertex_setup_offset + 0x6, 2, pos_x)
-        if(pos_y != None):
-            self._write_bytes(self._vertex_setup_offset + 0x8, 2, pos_y)
-        if(pos_z != None):
-            self._write_bytes(self._vertex_setup_offset + 0xA, 2, pos_z)
-        if(min_coord != None):
-            self._write_bytes(self._vertex_setup_offset + 0xC, 2, min_coord)
-        if(max_coord != None):
-            self._write_bytes(self._vertex_setup_offset + 0xE, 2, max_coord)
-    
     #############################
     ### DISPLAY LIST COMMANDS ###
     #############################
@@ -234,17 +269,106 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
         self._display_list_setup_offset = self._read_byte_list_to_int(0xC, 4)
         self._display_list_command_count = self._read_byte_list_to_int(self._display_list_setup_offset, 4)
     
+    def _adjust_display_list_setup_offset(self, offset_diff):
+        self._display_list_setup_offset += offset_diff
+        self._write_bytes(0xC, 4, self._display_list_setup_offset)
+
+    def _adjust_display_list_command_count(self, count_diff):
+        self._display_list_command_count += count_diff
+        self._write_bytes(self._display_list_setup_offset, 4, self._display_list_command_count)
+    
     def _get_display_list_command_info(self, count):
         display_list_command_index_start = self._display_list_setup_offset + 0x8 + count * 0x8
         display_list_command = self._read_byte(display_list_command_index_start)
-        display_list_command_parameters = self._read_byte_list_to_int(display_list_command_index_start, 7)
+        display_list_command_parameters = self._read_byte_list_to_int(display_list_command_index_start + 1, 7)
         # Something goes here to actually read what the command does
         # Maybe put it into a dictionary or something, idk
         return display_list_command, display_list_command_parameters
     
+    def _find_display_list_command_count(self, dlist_command_line):
+        for count in range(self._display_list_command_count):
+            display_list_command_index_start = self._display_list_setup_offset + 0x8 + count * 0x8
+            curr_dlist_command_line = self._read_byte_list_to_int(display_list_command_index_start, 8)
+            if(curr_dlist_command_line == dlist_command_line):
+                return count
+        raise Exception(f"Could Not Find DList Command: {hex(dlist_command_line)}")
+    
+    def _insert_display_list_command(self, count, dlist_command):
+        display_list_command_index_start = self._display_list_setup_offset + 0x8 + count * 0x8
+        self._change_model_file_size(display_list_command_index_start, 8)
+        self._write_bytes(display_list_command_index_start, 8, dlist_command)
+        self._adjust_display_list_command_count(1)
+    
     def _modify_display_list_command(self, count, new_command):
         display_list_command_index_start = self._display_list_setup_offset + 0x8 + count * 0x8
         self._write_bytes(display_list_command_index_start, 8, new_command)
+    
+    def _pop_display_list_command(self, count):
+        display_list_command_index_start = self._display_list_setup_offset + 0x8 + count * 0x8
+        self._change_model_file_size(display_list_command_index_start, -8)
+        self._adjust_display_list_command_count -= 1
+
+    ##################
+    ### ANIMATIONS ###
+    ##################
+
+    def _get_animation_header_info(self):
+        self._animation_setup_offset = self._read_byte_list_to_int(0x18, 4)
+    
+    def _adjust_animation_setup_offset(self, offset_diff):
+        self._animation_setup_offset += offset_diff
+        self._write_bytes(0x18, 4, self._animation_setup_offset)
+
+    ##################
+    ### COLLISIONS ###
+    ##################
+
+    def _get_collision_header_info(self):
+        self._collision_setup_offset = self._read_byte_list_to_int(0x1C, 4)
+    
+    def _adjust_collision_setup_offset(self, offset_diff):
+        self._collision_setup_offset += offset_diff
+        self._write_bytes(0x1C, 4, self._collision_setup_offset)
+
+    ###############
+    ### EFFECTS ###
+    ###############
+
+    def _get_effect_header_info(self):
+        self._effect_setup_offset = self._read_byte_list_to_int(0x24, 4)
+    
+    def _adjust_effect_setup_offset(self, offset_diff):
+        self._effect_setup_offset += offset_diff
+        self._write_bytes(0x24, 4, self._effect_setup_offset)
+
+    #######################
+    ### GEOMETRY LAYOUT ###
+    #######################
+
+    def _get_geometry_layout_header_info(self):
+        self._geometry_layout_setup_offset = self._read_byte_list_to_int(0x04, 4)
+    
+    def _adjust_geometry_layout_setup_offset(self, offset_diff):
+        self._geometry_layout_setup_offset += offset_diff
+        self._write_bytes(0x04, 4, self._geometry_layout_setup_offset)
+
+    ########################
+    ### UNKNOWN SECTIONS ###
+    ########################
+
+    def _get_unknown1_header_info(self):
+        self._unknown1_setup_offset = self._read_byte_list_to_int(0x20, 4)
+    
+    def _adjust_unknown1_setup_offset(self, offset_diff):
+        self._unknown1_setup_offset += offset_diff
+        self._write_bytes(0x20, 4, self._unknown1_setup_offset)
+
+    def _get_unknown2_header_info(self):
+        self._unknown2_setup_offset = self._read_byte_list_to_int(0x2C, 4)
+    
+    def _adjust_unknown2_setup_offset(self, offset_diff):
+        self._unknown2_setup_offset += offset_diff
+        self._write_bytes(0x2C, 4, self._unknown2_setup_offset)
 
     #################################
     ### FULL MODEL COLOR SHIFTING ###
@@ -391,7 +515,7 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
         brightness = "Default"
         if(body_part and ("Brightness" in self._json_data[body_part])):
             brightness = self._json_data[body_part]["Brightness"]
-            print(f"Brightness: {brightness}")
+            # print(f"Brightness: {brightness}")
         return red_ratio, green_ratio, blue_ratio, brightness
     
     def _color_index_texture_color_shift(self, count, red_ratio, green_ratio, blue_ratio, color_index, brightness="Default"):
@@ -399,8 +523,12 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
         texture_index_start = self._texture_setup_offset + texture_offset + 0x8 + self._texture_count * 0x10
         for color_offset in color_index:
             color_start_index = texture_index_start + color_offset * 0x2
+            print(f"\tColor Index Start: {hex(color_start_index)}")
             old_color_val = self._read_byte_list_to_int(color_start_index, 2)
+            print(f"\t\tOld Color Val: {hex(old_color_val)}")
+            print(f"\t\tBrightness: {brightness}")
             new_color_val = self._color_shift(old_color_val, "RGBA5551", red_ratio, green_ratio, blue_ratio, brightness)
+            print(f"\t\tNew Color Val: {hex(new_color_val)}")
             self._write_bytes(color_start_index, 2, new_color_val)
 
     def _conditional_vertex_color_shift(self, count):
@@ -428,9 +556,13 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
                 self._ignore_gray = self._json_data[body_part]["Ignore_Gray"]
                 self._single_object_texture_color_shift(texture_count, red_ratio, green_ratio, blue_ratio, brightness)
         for texture_count in self._texture_specific_dict:
+            print(f"Texture Count: {texture_count}")
             for body_part in self._texture_specific_dict[texture_count]:
+                print(f"\tBody Part: {body_part}")
                 color_ratio = self._json_data[body_part]["Color_Ratio"]
                 if(color_ratio != "Skip"):
+                    print(f"\tColor Ratio: {color_ratio}")
+                    red_ratio, green_ratio, blue_ratio, brightness = self._read_ratios(color_ratio, body_part=body_part)
                     self._ignore_gray = self._json_data[body_part]["Ignore_Gray"]
                     color_index = self._texture_specific_dict[texture_count][body_part]
                     self._color_index_texture_color_shift(texture_count, red_ratio, green_ratio, blue_ratio, color_index, brightness)
@@ -444,4 +576,3 @@ if __name__ == '__main__':
     model_obj = GENERIC_MODEL_CLASS(FILE_DIR, FILE_NAME)
     # model_obj._full_model_color_shift(0xA0, 0xA0, 0xA0, brightness="Default")
     model_obj._get_object_vertex_header_info()
-    model_obj._set_draw_distance_coords()

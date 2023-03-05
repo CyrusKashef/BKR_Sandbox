@@ -1,12 +1,13 @@
-from Data_Files.Enums import Move_Enums, Warp_Enums, Area_Enums
+from Data_Files.Enums import Move_Enums, Area_Enums
+from Data_Files.Enums.Warp_Ids import WARP_IDS
 
 AREA_REQUIREMENT_DICT = {
     #######################
     ### Spiral Mountain ###
     #######################
     Area_Enums.SM_MAIN: [
-        [Warp_Enums.SM_BANJOS_HOUSE_TO_SM_MAIN],
-        [Warp_Enums.GL_MM_ENTRANCE_TO_SM_MAIN],
+        [WARP_IDS.SM_BANJOS_HOUSE_TO_SM_MAIN],
+        [WARP_IDS.GL_MM_ENTRANCE_TO_SM_MAIN],
     ],
     Area_Enums.SM_HOUSE_ROOF: [
         [Area_Enums.SM_MAIN, Move_Enums.FLAP_FLIP],
@@ -66,7 +67,7 @@ AREA_REQUIREMENT_DICT = {
         [Area_Enums.SM_MAIN, Move_Enums.DIVE],
     ],
     Area_Enums.SM_BH_MAIN: [
-        [Warp_Enums.SM_MAIN_TO_SM_BANJOS_HOUSE],
+        [WARP_IDS.SM_MAIN_TO_SM_BANJOS_HOUSE],
     ]
     #######################
     ### Mumbos Mountain ###

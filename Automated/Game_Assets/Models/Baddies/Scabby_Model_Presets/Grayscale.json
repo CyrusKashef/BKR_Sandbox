@@ -1,6 +1,22 @@
 {
     "Test": {
+        "Color_Ratio": "0101FF",
+        "Ignore_Gray": false
+    },
+    "Body_Lower": {
         "Color_Ratio": "010101",
         "Ignore_Gray": false
+    },
+    "Face_Wing_Flaps": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Wings": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": false
+    },
+    "Eyes": {
+        "Color_Ratio": "010101",
+        "Ignore_Gray": true
     }
 }

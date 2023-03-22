@@ -31,8 +31,8 @@ class GENERIC_FILE_CLASS():
         for count, int_val in enumerate(byte_list):
             self._write_byte(index_start + count, int_val)
 
-    def _write_float_bytes(self, index_start, float_val):
-        byte_list = self._float_to_byte_list(float_val)
+    def _write_float_bytes(self, index_start, float_val, byte_count=4):
+        byte_list = self._float_to_byte_list(float_val)[:byte_count]
         for count, int_val in enumerate(byte_list):
             self._write_byte(index_start + count, int_val)
     

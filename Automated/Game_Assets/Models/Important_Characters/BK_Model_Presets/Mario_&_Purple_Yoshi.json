@@ -1,0 +1,76 @@
+{
+    "Banjo_Fur": {
+        "Color_Ratio": "F73018",
+        "Ignore_Gray": false
+    },
+    "Banjo_Skin": {
+        "Color_Ratio": "FDDAB8",
+        "Ignore_Gray": false
+    },
+    "Banjo_Eyes": {
+        "Color_Ratio": "66D1FA",
+        "Ignore_Gray": true
+    },
+    "Banjo_Eyelids": {
+        "Color_Ratio": "F73018",
+        "Ignore_Gray": false
+    },
+    "Banjo_Shorts": {
+        "Color_Ratio": "2458BD",
+        "Ignore_Gray": false
+    },
+    "Banjo_Belt": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Banjo_Necklace_String": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Banjo_Necklace_Tooth": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Banjo_Nose": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Kazooie_Feathers_Primary": {
+        "Color_Ratio": "AE56EC",
+        "Ignore_Gray": false
+    },
+    "Kazooie_Feathers_Secondary": {
+        "Color_Ratio": "FFFFFF",
+        "Ignore_Gray": false,
+        "Brightness": 3
+    },
+    "Kazooie_Head_Feather": {
+        "Color_Ratio": "FFFF32",
+        "Ignore_Gray": false
+    },
+    "Kazooie_Eyes": {
+        "Color_Ratio": "76929D",
+        "Ignore_Gray": true
+    },
+    "Kazooie_Beak/Legs": {
+        "Color_Ratio": "AE56EC",
+        "Ignore_Gray": false
+    },
+    "Mouths": {
+        "Color_Ratio": "Skip",
+        "Ignore_Gray": false
+    },
+    "Backpack": {
+        "Color_Ratio": "FFFFFF",
+        "Ignore_Gray": false,
+        "Brightness": 3
+    },
+    "Turbo_Talon_Trainers": {
+        "Color_Ratio": "E363C9",
+        "Ignore_Gray": false
+    },
+    "Wading_Boots": {
+        "Color_Ratio": "E363C9",
+        "Ignore_Gray": false
+    }
+}

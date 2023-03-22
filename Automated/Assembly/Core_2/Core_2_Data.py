@@ -260,6 +260,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     ###################
 
     # Termite
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/ant.c#L10
 
     def _get_termite_speed_dict(self):
         '''Gets the values for the Termite BK's speed'''
@@ -283,6 +284,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         self._write_float_bytes(0x13E4, speed_dict["Termite_Unk5"])
 
     # Crocodile
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/croc.c#L10
 
     def _get_crocodile_speed_dict(self):
         '''Gets the values for the Crocodile BK's speed'''
@@ -310,6 +312,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         self._write_float_bytes(0x158C, speed_dict["Crocodile_Unk7"])
 
     # Pumpkin
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/pumpkin.c#L11
 
     def _get_pumpkin_speed_dict(self):
         '''Gets the values for the Pumpkin BK's speed'''
@@ -333,6 +336,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         self._write_float_bytes(0x1774, speed_dict["Pumpkin_Unk5"])
 
     # Walrus
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/walrus.c#L10
 
     def _get_walrus_speed_dict(self):
         '''Gets the values for the Walrus BK's speed'''
@@ -368,6 +372,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         self._write_float_bytes(0x185C, speed_dict["Walrus_UnkB"])
 
     # BK Talon Trot
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/bTrot.c#L9
 
     def _get_bk_talon_trot_speed_dict(self):
         '''Gets the values for the BK's speed in Talon Trot'''
@@ -405,70 +410,81 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         self._write_float_bytes(0x1530, speed_dict["Talon_Trot_UnkC"])
 
     # Banjo Swim
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/swim.c#L11
 
     def _get_banjo_swim_speed_dict(self):
         '''Gets the values for the BK's speed while swimming above water'''
         speed_dict = {
-            "Swim_Unk0": self._read_byte_list_to_float(0x17B0, 4),
-            "Swim_Unk1": self._read_byte_list_to_float(0x17B4, 4),
-            "Swim_Unk2": self._read_byte_list_to_float(0x17B8, 4),
-            "Swim_Unk3": self._read_byte_list_to_float(0x17BC, 4),
+            "Swim_Min_Horz_Velocity": self._read_byte_list_to_float(0x17B0, 4),
+            "Swim_Max_Horz_Velocity": self._read_byte_list_to_float(0x17B4, 4),
+            "Swim_Min_Duration": self._read_byte_list_to_float(0x17B8, 4),
+            "Swim_Max_Duration": self._read_byte_list_to_float(0x17BC, 4),
         }
         return speed_dict
 
     def _set_banjo_swim_speed_dict(self, speed_dict):
         '''Sets the values for the BK's speed while swimming above water'''
-        self._write_float_bytes(0x17B0, speed_dict["Swim_Unk0"])
-        self._write_float_bytes(0x17B4, speed_dict["Swim_Unk1"])
-        self._write_float_bytes(0x17B8, speed_dict["Swim_Unk2"])
-        self._write_float_bytes(0x17BC, speed_dict["Swim_Unk3"])
+        self._write_float_bytes(0x17B0, speed_dict["Swim_Min_Horz_Velocity"])
+        self._write_float_bytes(0x17B4, speed_dict["Swim_Max_Horz_Velocity"])
+        self._write_float_bytes(0x17B8, speed_dict["Swim_Min_Duration"])
+        self._write_float_bytes(0x17BC, speed_dict["Swim_Max_Duration"])
 
     # Banjo Walk
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/walk.c#L20
 
     def _get_banjo_walk_speed_dict(self):
         '''Gets the values for the BK's walking speed'''
         speed_dict = {
-            "Creep_Min": self._read_byte_list_to_float(0x17E0, 4),
-            "Creep_Max/Slow_Walk_Min": self._read_byte_list_to_float(0x17E4, 4),
-            "Slow_Walk_Max/Walk_Min": self._read_byte_list_to_float(0x17E8, 4),
-            "Walk_Max/Walk_Fast_Min": self._read_byte_list_to_float(0x17EC, 4),
-            "Walk_Fast_Max": self._read_byte_list_to_float(0x17F0, 4),
-            "Mud_Min": self._read_byte_list_to_float(0x17F4, 4),
-            "Mud_Max": self._read_byte_list_to_float(0x17F8, 4),
-            "Walk_Unk7": self._read_byte_list_to_float(0x17FC, 4),
-            "Walk_Slow": self._read_byte_list_to_float(0x1800, 4),
-            "Walk_Unk9": self._read_byte_list_to_float(0x1804, 4),
-            "Creep": self._read_byte_list_to_float(0x1808, 4),
-            "Walk_UnkB": self._read_byte_list_to_float(0x180C, 4),
-            "Walk": self._read_byte_list_to_float(0x1810, 4),
-            "Walk_UnkD": self._read_byte_list_to_float(0x1814, 4),
-            "Walk_Fast": self._read_byte_list_to_float(0x1818, 4),
-            "Walk_UnkF": self._read_byte_list_to_float(0x181C, 4),
-            "Mud": self._read_byte_list_to_float(0x1820, 4),
-            "Walk_Unk11": self._read_byte_list_to_float(0x1824, 4),
+            "Creep_Min_Velocity": self._read_byte_list_to_float(0x17E0, 4),
+            "Creep_Max/Slow_Walk_Min_Velocity_Threshold": self._read_byte_list_to_float(0x17E4, 4),
+            "Slow_Walk_Max/Walk_Min_Threshold": self._read_byte_list_to_float(0x17E8, 4),
+            "Walk_Max/Walk_Fast_Min_Threshold": self._read_byte_list_to_float(0x17EC, 4),
+            "Walk_Fast_Max_Velocity": self._read_byte_list_to_float(0x17F0, 4),
+            "Mud_Min_Velocity": self._read_byte_list_to_float(0x17F4, 4),
+            "Mud_Max_Velocity": self._read_byte_list_to_float(0x17F8, 4),
+            "Skid_Velocity": self._read_byte_list_to_float(0x17FC, 4),
+            "Walk_Slowest_Slow_Duration": self._read_byte_list_to_float(0x1800, 4),
+            "Walk_Fastest_Slow_Duration": self._read_byte_list_to_float(0x1804, 4),
+            "Creep_Slowest_Duration": self._read_byte_list_to_float(0x1808, 4),
+            "Creep_Fastest_Duration": self._read_byte_list_to_float(0x180C, 4),
+            "Walk_Slowest_Duration": self._read_byte_list_to_float(0x1810, 4),
+            "Walk_Fast_Duration": self._read_byte_list_to_float(0x1814, 4),
+            "Walk_Slowest_Fast_Walk_Duration": self._read_byte_list_to_float(0x1818, 4),
+            "Walk_Fastest_Fast_Walk_Duration": self._read_byte_list_to_float(0x181C, 4),
+            "Mud_Slowest_Duration": self._read_byte_list_to_float(0x1820, 4),
+            "Mud_Fastest_Duration": self._read_byte_list_to_float(0x1824, 4),
         }
         return speed_dict
 
     def _set_banjo_walk_speed_dict(self, speed_dict):
         '''Sets the values for the BK's walking speed'''
-        self._write_float_bytes(0x17E0, speed_dict["Creep_Min"])
-        self._write_float_bytes(0x17E4, speed_dict["Creep_Max/Slow_Walk_Min"])
-        self._write_float_bytes(0x17E8, speed_dict["Slow_Walk_Max/Walk_Min"])
-        self._write_float_bytes(0x17EC, speed_dict["Walk_Max/Walk_Fast_Min"])
-        self._write_float_bytes(0x17F0, speed_dict["Walk_Fast_Max"])
-        self._write_float_bytes(0x17F4, speed_dict["Mud_Min"])
-        self._write_float_bytes(0x17F8, speed_dict["Mud_Max"])
-        self._write_float_bytes(0x17FC, speed_dict["Walk_Unk7"])
-        self._write_float_bytes(0x1800, speed_dict["Walk_Slow"])
-        self._write_float_bytes(0x1804, speed_dict["Walk_Unk9"])
-        self._write_float_bytes(0x1808, speed_dict["Creep"])
-        self._write_float_bytes(0x180C, speed_dict["Walk_UnkB"])
-        self._write_float_bytes(0x1810, speed_dict["Walk"])
-        self._write_float_bytes(0x1814, speed_dict["Walk_UnkD"])
-        self._write_float_bytes(0x1818, speed_dict["Walk_Fast"])
-        self._write_float_bytes(0x181C, speed_dict["Walk_UnkF"])
-        self._write_float_bytes(0x1820, speed_dict["Mud"])
-        self._write_float_bytes(0x1824, speed_dict["Walk_Unk11"])
+        self._write_float_bytes(0x17E0, speed_dict["Creep_Min_Velocity"])
+        self._write_float_bytes(0x17E4, speed_dict["Creep_Max/Slow_Walk_Min_Velocity_Threshold"])
+        self._write_float_bytes(0x17E8, speed_dict["Slow_Walk_Max/Walk_Min_Threshold"])
+        self._write_float_bytes(0x17EC, speed_dict["Walk_Max/Walk_Fast_Min_Threshold"])
+        self._write_float_bytes(0x17F0, speed_dict["Walk_Fast_Max_Velocity"])
+        self._write_float_bytes(0x17F4, speed_dict["Mud_Min_Velocity"])
+        self._write_float_bytes(0x17F8, speed_dict["Mud_Max_Velocity"])
+        self._write_float_bytes(0x17FC, speed_dict["Skid_Velocity"])
+        self._write_float_bytes(0x1800, speed_dict["Walk_Slowest_Slow_Duration"])
+        self._write_float_bytes(0x1804, speed_dict["Walk_Fastest_Slow_Duration"])
+        self._write_float_bytes(0x1808, speed_dict["Creep_Slowest_Duration"])
+        self._write_float_bytes(0x180C, speed_dict["Creep_Fastest_Duration"])
+        self._write_float_bytes(0x1810, speed_dict["Walk_Slowest_Duration"])
+        self._write_float_bytes(0x1814, speed_dict["Walk_Fast_Duration"])
+        self._write_float_bytes(0x1818, speed_dict["Walk_Slowest_Fast_Walk_Duration"])
+        self._write_float_bytes(0x181C, speed_dict["Walk_Fastest_Fast_Walk_Duration"])
+        self._write_float_bytes(0x1820, speed_dict["Mud_Slowest_Duration"])
+        self._write_float_bytes(0x1824, speed_dict["Mud_Fastest_Duration"])
+    
+    # Long Legs
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/bLongLeg.c#L9
+
+    # Swim
+    # Possibly: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/bSwim.c#L73
+
+    # Flight
+    # Possibly: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/bFly.c#L53
 
     ##############################
     ### LEVEL MODEL ASSIGNMENT ###

@@ -204,6 +204,34 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
         self._write_bytes(0x1172A, 2, asset)
         self._write_bytes(0x1172E, 2, asset)
     
+    ####################
+    ### OTHER MODELS ###
+    ####################
+    
+    def _replace_bk_termite_model_with_asset(self, asset):
+        '''Replaces instance of the BK Termite model with another model'''
+        self._write_bytes(0x1169A, 2, asset)
+    
+    def _replace_bk_crocodile_model_with_asset(self, asset):
+        '''Replaces instance of the BK Crocodile model with another model'''
+        self._write_bytes(0x116AA, 2, asset)
+    
+    def _replace_bk_walrus_model_with_asset(self, asset):
+        '''Replaces instance of the BK Walrus model with another model'''
+        self._write_bytes(0x116B2, 2, asset)
+    
+    def _replace_bk_pumpkin_model_with_asset(self, asset):
+        '''Replaces instance of the BK Pumpkin model with another model'''
+        self._write_bytes(0x116A2, 2, asset)
+    
+    def _replace_bk_bee_model_with_asset(self, asset):
+        '''Replaces instance of the BK Bee model with another model'''
+        self._write_bytes(0x116BA, 2, asset)
+    
+    def _replace_bk_wishywashy_model_with_asset(self, asset):
+        '''Replaces instance of the BK WishyWashy model with another model'''
+        self._write_bytes(0x116C2, 2, asset)
+    
     ##################
     ### PAUSE MENU ###
     ##################
@@ -315,6 +343,14 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
     def _skippable_game_over_cutscene(self):
         '''Pressing Start will allow the player to skip the game over cutscene'''
         self._write_bytes(0x95770, 4, 0x00000000)
+    
+    def _booting_up_map(self, map_id):
+        '''
+        When loading the game, this is the location the player boots up at
+        Typically used to skip the Rareware & N64 logo cutscene and the concert
+        '''
+        self._write_byte(0x1467F, map_id)
+        self._write_byte(0x9580B, map_id)
 
     ############################
     ### TRANSFORMATION COSTS ###
@@ -359,7 +395,7 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
     ### NEW GAME START AREA ###
     ###########################
 
-    def _new_game_start_area(self, area_id):
+    def _new_game_start_area(self, map_id, entry_id):
         '''
         Changes the map location and entry point where the player begins their game.
         Not implemented yet.
@@ -372,7 +408,9 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
         # self.core2_obj._modify_byte(0x986FA, start_level_ids[new_start_level_name])
         # if(skip_intro_cutscene):
         #     self.core2_obj._modify_byte(0x3E17B, start_level_ids[new_start_level_name])
-        self._write_byte(0x986FA, area_id)
+        self._write_byte(0x3E17B, map_id)
+        self._write_byte(0x986FA, map_id)
+        self._write_byte(0x986FB, entry_id)
 
     def _after_lair_cutscene_starting_area(self):
         '''
@@ -444,3 +482,31 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
         # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_956B0.c
         # https://hack64.net/wiki/doku.php?id=banjo_kazooie:enums#map_exit_indices
         self._write_bytes(0x986D6, 2, warp_id)
+    
+    ##############
+    ### TIMERS ###
+    ##############
+
+    def _remove_regular_slope_slide_timer(self):
+        '''
+        Removes the slope timer for slopes that require talon trot or transformations.
+        Banjo still slows as he goes up, but the player can jump their way to the top.
+        * Changed the "STATE_TIMER_5_UNKNOWN" to a "STATE_TIMER_1_THROW".
+        * Get_Slope_Timer function always returns zero.
+        '''
+        # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_39D0.c#L213
+        self._write_byte(0x43B7, 0x01)
+        # self._write_bytes(0x43CE, 2, 0xBFF0)
+        # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_D9B0.c#L51
+        self._write_bytes(0xDA4E, 2, 0x0000)
+    
+    def _remove_steep_slope_slide_timer(self):
+        '''
+        Removes the slope timer for slopes that require transformations.
+        * Changed the "STATE_TIMER_6_UNKNOWN" to a "STATE_TIMER_1_THROW".
+        * Get_Slope_Timer function always returns zero.
+        '''
+        # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_39D0.c#L200
+        self._write_byte(0x425F, 0x01)
+        # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_D9B0.c#L51
+        self._write_bytes(0xDA4E, 2, 0x0000)

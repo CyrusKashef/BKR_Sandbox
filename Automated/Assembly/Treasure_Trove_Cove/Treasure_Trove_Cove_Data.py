@@ -3,7 +3,7 @@ import sys
 sys.path.append(".")
 from Automated.Generic_File import GENERIC_FILE_CLASS
 
-class TREASURE_TROVE_COVE_CODE_DATA(GENERIC_FILE_CLASS):
+class TREASURE_TROVE_COVE_DATA_CLASS(GENERIC_FILE_CLASS):
     def __init__(self, file_dir, file_name):
         super().__init__(file_dir, file_name)
         self._CHEAT_INDEX_START = 0xAA0
@@ -36,6 +36,9 @@ class TREASURE_TROVE_COVE_CODE_DATA(GENERIC_FILE_CLASS):
             0x65: "Y", # e
             0x33: "Z", # 3
         }
+        self._SANDCASTLE_REVERSE_TRANSLATION_DICT = {}
+        for key in self._SANDCASTLE_TRANSLATION_DICT:
+            self._SANDCASTLE_REVERSE_TRANSLATION_DICT[self._SANDCASTLE_TRANSLATION_DICT[key]] = key
         self._cheat_dict = {}
     
     def _obtain_sandcastle_cheats(self):
@@ -58,16 +61,36 @@ class TREASURE_TROVE_COVE_CODE_DATA(GENERIC_FILE_CLASS):
             if((char < "A") or (char > "Z") or (char == "Q")):
                 print(f"Illegal Character: {char}")
                 raise SystemError(f"Illegal Character: {char}")
-        self._cheat_dict[count] = new_text
+        old_cheat_len = len(self._cheat_dict[count])
+        new_cheat_len = len(new_text)
+        if(len(self._cheat_dict[count]) < len(new_text)):
+            raise SystemError("New Cheat Too Long: {new_text}")
+        self._cheat_dict[count] = new_text + " " * (old_cheat_len - new_cheat_len)
     
     def _set_sandcastle_cheats(self):
-        curr_index = 0xAA0
-
+        curr_index = self._CHEAT_INDEX_START
+        for cheat_num in self._cheat_dict:
+            for curr_char in self._cheat_dict[cheat_num]:
+                if(curr_char == " "):
+                    self._write_byte(curr_index, 0x00)
+                    curr_index += 1
+                else:
+                    translated_byte = self._SANDCASTLE_REVERSE_TRANSLATION_DICT[curr_char]
+                    self._write_byte(curr_index, translated_byte)
+                    curr_index += 1
+            self._write_byte(curr_index, 0x00)
+            curr_index += 1
+            while(curr_index % 4 != 0):
+                self._write_byte(curr_index, 0x00)
+                curr_index += 1
+        if(curr_index > self._CHEAT_INDEX_END):
+            raise SystemError("Cheat Code Lengths Exceed Previous Length")
 
 if __name__ == '__main__':
     FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test2/"
     FILE_NAME = "FB1AEB"
-    ttc_data_obj = TREASURE_TROVE_COVE_CODE_DATA(FILE_DIR, FILE_NAME)
+    ttc_data_obj = TREASURE_TROVE_COVE_DATA_CLASS(FILE_DIR, FILE_NAME)
     ttc_data_obj._obtain_sandcastle_cheats()
-    print(ttc_data_obj._cheat_dict)
+    for key in ttc_data_obj._cheat_dict:
+        print(f"{key}: {ttc_data_obj._cheat_dict[key]}")
     ttc_data_obj._edit_sandcastle_cheat(0, "KAZOOIEBANJO")

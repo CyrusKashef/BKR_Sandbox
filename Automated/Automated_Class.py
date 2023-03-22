@@ -45,6 +45,11 @@ class AUTOMATED_CLASS():
         self._DECOMPRESSED_BIN_EXTENSION = "-Decompressed.bin"
         self._MODELS_DIR = "Automated/Game_Assets/Models/"
         self._BK_MODEL_PRESET_DIR = "Important_Characters/BK_Model_Presets/"
+        self._BK_TERMITE_MODEL_PRESET_DIR = "Important_Characters/BK_Termite_Model_Presets/"
+        self._BK_CROCODILE_MODEL_PRESET_DIR = "Important_Characters/BK_Crocodile_Model_Presets/"
+        self._BK_WALRUS_MODEL_PRESET_DIR = "Important_Characters/BK_Walrus_Model_Presets/"
+        self._BK_PUMPKIN_MODEL_PRESET_DIR = "Important_Characters/BK_Pumpkin_Model_Presets/"
+        self._BK_BEE_MODEL_PRESET_DIR = "Important_Characters/BK_Bee_Model_Presets/"
         ### VARIABLES ###
         self._file_dir = file_dir
         self._make_copy_of_ROM(original_rom_path, new_rom_path)
@@ -232,7 +237,87 @@ class AUTOMATED_CLASS():
             asset = ASSET_ID_DICT[preset_selection]
             self._assembly_obj._replace_bk_model_with_asset(asset)
         else:
-            print("SOMETHING IS HAPPENING")
+            print("Replace BK Model Error: {preset_selection}")
+            exit(0)
+    
+    def _replace_bk_termite_model(self, preset_selection):
+        print("Replace BK Termite Model")
+        self._model_class_creation()
+        adjusted_selection = preset_selection.replace(" ", "_")
+        if((adjusted_selection + ".json") in listdir(self._file_dir + self._MODELS_DIR + self._BK_TERMITE_MODEL_PRESET_DIR)):
+            self._model_class_creation()
+            self._model_obj._bk_model(adjusted_selection)
+        elif(preset_selection in ASSET_ID_DICT):
+            asset = ASSET_ID_DICT[preset_selection]
+            self._assembly_obj._replace_bk_termite_model_with_asset(asset)
+        else:
+            print("Replace BK Termite Model Error: {preset_selection}")
+            exit(0)
+    
+    def _replace_bk_crocodile_model(self, preset_selection):
+        print("Replace BK Crocodile Model")
+        self._model_class_creation()
+        adjusted_selection = preset_selection.replace(" ", "_")
+        if((adjusted_selection + ".json") in listdir(self._file_dir + self._MODELS_DIR + self._BK_CROCODILE_MODEL_PRESET_DIR)):
+            self._model_class_creation()
+            self._model_obj._bk_model(adjusted_selection)
+        elif(preset_selection in ASSET_ID_DICT):
+            asset = ASSET_ID_DICT[preset_selection]
+            self._assembly_obj._replace_bk_crocodile_model_with_asset(asset)
+        else:
+            print("Replace BK Termite Model Error: {preset_selection}")
+            exit(0)
+    
+    def _replace_bk_walrus_model(self, preset_selection):
+        print("Replace BK Walrus Model")
+        self._model_class_creation()
+        adjusted_selection = preset_selection.replace(" ", "_")
+        if((adjusted_selection + ".json") in listdir(self._file_dir + self._MODELS_DIR + self._BK_WALRUS_MODEL_PRESET_DIR)):
+            self._model_class_creation()
+            self._model_obj._bk_model(adjusted_selection)
+        elif(preset_selection in ASSET_ID_DICT):
+            asset = ASSET_ID_DICT[preset_selection]
+            self._assembly_obj._replace_bk_walrus_model_with_asset(asset)
+        else:
+            print("Replace BK Termite Model Error: {preset_selection}")
+            exit(0)
+    
+    def _replace_bk_pumpkin_model(self, preset_selection):
+        print("Replace BK Pumpkin Model")
+        self._model_class_creation()
+        adjusted_selection = preset_selection.replace(" ", "_")
+        if((adjusted_selection + ".json") in listdir(self._file_dir + self._MODELS_DIR + self._BK_PUMPKIN_MODEL_PRESET_DIR)):
+            self._model_class_creation()
+            self._model_obj._bk_model(adjusted_selection)
+        elif(preset_selection in ASSET_ID_DICT):
+            asset = ASSET_ID_DICT[preset_selection]
+            self._assembly_obj._replace_bk_pumpkin_model_with_asset(asset)
+        else:
+            print("Replace BK Termite Model Error: {preset_selection}")
+            exit(0)
+    
+    def _replace_bk_bee_model(self, preset_selection):
+        print("Replace BK Bee Model")
+        self._model_class_creation()
+        adjusted_selection = preset_selection.replace(" ", "_")
+        if((adjusted_selection + ".json") in listdir(self._file_dir + self._MODELS_DIR + self._BK_BEE_MODEL_PRESET_DIR)):
+            self._model_class_creation()
+            self._model_obj._bk_model(adjusted_selection)
+        elif(preset_selection in ASSET_ID_DICT):
+            asset = ASSET_ID_DICT[preset_selection]
+            self._assembly_obj._replace_bk_bee_model_with_asset(asset)
+        else:
+            print("Replace BK Termite Model Error: {preset_selection}")
+            exit(0)
+    
+    def _replace_bk_wishywashy_model(self, preset_selection):
+        print("Replace BK Wishywashy Model")
+        self._model_class_creation()
+        if(preset_selection in ASSET_ID_DICT):
+            asset = ASSET_ID_DICT[preset_selection]
+            self._assembly_obj._replace_bk_wishywashy_model_with_asset(asset)
+        else:
+            print("Replace BK Termite Model Error: {preset_selection}")
             exit(0)
 
     def _grayscale_category(self, category, skip_pointer=[]):
@@ -449,10 +534,15 @@ class AUTOMATED_CLASS():
             0x1C, 0x23, 0x24, 0x27, 0x33, 0x3D,
             0x44, 0x4A, 0x54, 0x58, 0x5A, 0x5D
             ]
+        joker_tile_list = [
+            0x04, 0x0C, 0x10, 0x3B, 0x4E
+            ]
         ff_tile_dict = {}
         for count in range(0, 0x5F):
             if(count in blank_tile_list):
                 ff_tile_dict[count] = "Blank_Tile"
+            elif(count in joker_tile_list):
+                ff_tile_dict[count] = "Joker_Tile"
             else:
                 ff_tile_dict[count] = self._rand_choice_weighted(allowed_tile_type_dict, count)
         self._assembly_class_creation()
@@ -615,6 +705,29 @@ class AUTOMATED_CLASS():
     def _reassign_banjos_house_warp(self, warp_id):
         self._assembly_class_creation()
         self._assembly_obj._reassign_banjos_house_warp(warp_id)
+    
+    def _new_game_start_area(self, map_id, entry_id):
+        self._assembly_class_creation()
+        self._assembly_obj._new_game_start_area(map_id, entry_id)
+    
+    def _shock_jump_to_gl_cc_entrance(self):
+        self._setup_class_creation()
+        self._setup_obj._shock_jump_to_gl_cc_entrance()
+    
+    def _remove_slope_slide_timer(self):
+        self._assembly_class_creation()
+        self._assembly_obj._remove_slope_slide_timer()
+    
+    def _stonehenge_conga(self):
+        self._assembly_class_creation()
+        self._assembly_obj._stonehenge_conga()
+        self._setup_class_creation()
+        self._setup_obj._stonehenge_conga()
+    
+    def _unlimited_cheat_codes(self):
+        self._assembly_class_creation()
+        self._assembly_obj._unlimited_cheat_codes()
+        self._assembly_obj._simplified_cheat_codes()
 
     ############################
     ### BACKGROUND FUNCTIONS ###
@@ -672,8 +785,12 @@ class AUTOMATED_CLASS():
 
 if __name__ == '__main__':
     print("START")
-    OBJECT_SKIP_POINTERS = [0x8460, 0x8858]
-    LEVEL_SKIP_POINTERS = [0x10378, 0x10548, 0x10550]
+    OBJECT_SKIP_POINTERS = []
+    LEVEL_SKIP_POINTERS = [
+        0x10378, # Black everywhere! You dont fall and theres invisible walls and floors!
+        0x10548, # Test Map
+        0x10550, # Test Map
+        ]
 
     print("Extraction & Decompression Start")
     FILE_DIR = "C:/Users/Cyrus/Documents/VS_Code/BK_Randomizer/BK_Randomizer_v3/"
@@ -681,7 +798,7 @@ if __name__ == '__main__':
     use_seed = randint(0, 1000000)
     print(f"Seed: {use_seed}")
     automated_obj._set_seed(897442)
-    # automated_obj._extract_and_decompress_asset_category("Object Model Files")
+    automated_obj._extract_and_decompress_asset_category("Object Model Files")
     # automated_obj._extract_and_decompress_asset_category("Map Setup Files")
     # automated_obj._extract_and_decompress_asset_category("Text Files")
     # automated_obj._extract_and_decompress_asset_category("Level Model Files")
@@ -694,9 +811,9 @@ if __name__ == '__main__':
     print("DEV Options Start")
     automated_obj._skippable_cutscenes()
     automated_obj._boot_to_game_select()
-    # automated_obj._replace_note_doors("Note", 0)
-    # automated_obj._replace_jigsaw_puzzles("Jiggy", 0)
-    # automated_obj._modify_transformation_costs("Token", 0)
+    automated_obj._set_note_door_values([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    automated_obj._set_jigsaw_puzzle_costs([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    automated_obj._set_transformation_costs([0, 0, 0, 0, 0])
     # automated_obj._exit_to_witchs_lair()
     # automated_obj._super_banjo()
     # automated_obj._faster_transformation_movement()
@@ -704,7 +821,7 @@ if __name__ == '__main__':
 
     print("Testing Options Start")
     # automated_obj._starting_lives("Infinite")
-    # automated_obj._starting_lives(6)
+    # automated_obj._starting_lives(0)
     # automated_obj._mm_fix_honeycomb_flags()
     # automated_obj._mmm_anyones_empty_honeycomb()
     # automated_obj._snacker_everywhere()
@@ -715,6 +832,7 @@ if __name__ == '__main__':
     # automated_obj._replace_bk_model("Wishywashy")
     # automated_obj._replace_bk_model("Conga")
     # automated_obj._replace_bk_model("Mario & Luigi")
+    automated_obj._replace_bk_model("Mario & Purple Yoshi")
     # OBJECT_SKIP_POINTERS.append(0x7908)
     # automated_obj._replace_mm_model("Treasure Trove Cove")
     # automated_obj._replace_ttc_model("Rusty Bucket Bay")
@@ -739,9 +857,11 @@ if __name__ == '__main__':
     # automated_obj._overwrite_asset_file(0x10758, "KQ_ZDD_Main_Cave-Riposte")
     # automated_obj._insert_compressed_asset_file(0x10758, "KQ_ZDD_Main_Cave-Riposte")
     # automated_obj._insert_decompressed_asset_file(0x8900, "BK_Rando_Logo-TSRStormed_&_Kurko")
+    # automated_obj._insert_decompressed_asset_file(0x7900, "Green_Yoshi_Model-Decompressed")
     # automated_obj._remove_tutorial_option()
     # automated_obj._one_round_vile()
-    automated_obj._reassign_banjos_house_warp(0x4307)
+    # automated_obj._reassign_banjos_house_warp(0x4307) # Warp Testing
+    automated_obj._unlimited_cheat_codes()
     print("Options Complete")
 
     print("Adjusting Core Checksums Start")
@@ -750,14 +870,15 @@ if __name__ == '__main__':
     print("Adjusting Core Checksums Complete")
 
     print("Compression & Insertion Start")
-    # automated_obj._compress_and_insert_asset_category("Object Model Files", skip_pointer_list=OBJECT_SKIP_POINTERS)
+    automated_obj._compress_and_insert_asset_category("Object Model Files", skip_pointer_list=OBJECT_SKIP_POINTERS)
     # automated_obj._compress_and_insert_asset_category("Map Setup Files")
     # automated_obj._compress_and_insert_asset_category("Text Files")
     # automated_obj._compress_and_insert_asset_category("Level Model Files", skip_pointer_list=LEVEL_SKIP_POINTERS)
     # automated_obj._compress_and_insert_asset_category("Sprite/Texture Files")
     # automated_obj._compress_and_insert_asset_category("Music Files")
     automated_obj._compress_and_insert_all_asm()
-    automated_obj._clean_up("All")
+    # automated_obj._clean_up("All")
+    automated_obj._clean_up("Compressed")
     print("Compression & Insertion Complete")
 
     print("Adjusting CRC Start")
@@ -774,7 +895,7 @@ if __name__ == '__main__':
 # if __name__ == '__main__':
 #     print("BANJO SOULIE START")
 #     OBJECT_SKIP_POINTERS = [
-#         0x8460, # Jiggy Switch Beta?
+#         # 0x8460, # Jiggy Switch Beta?
 #         ]
 #     LEVEL_SKIP_POINTERS = [
 #         0x10378, # Black everywhere! You dont fall and theres invisible walls and floors!
@@ -785,7 +906,7 @@ if __name__ == '__main__':
 #     print("Extraction & Decompression Start")
 #     FILE_DIR = "C:/Users/Cyrus/Documents/VS_Code/BK_Randomizer/BK_Randomizer_v3/"
 #     # use_seed = randint(0, 1000000)
-#     use_seed = 20000000
+#     use_seed = 20000003
 #     print(f"Seed: {use_seed}")
 #     # automated_obj = AUTOMATED_CLASS(FILE_DIR, f"{FILE_DIR}Banjo-Kazooie.z64", f"{FILE_DIR}Banjo-Soulie_V0.z64")
 #     automated_obj = AUTOMATED_CLASS(FILE_DIR, f"{FILE_DIR}Banjo-Kazooie.z64", f"{FILE_DIR}Seed_{use_seed}_Banjo-Soulie.z64")
@@ -803,19 +924,20 @@ if __name__ == '__main__':
 #     print("DEV Options Start")
 #     automated_obj._skippable_cutscenes()
 #     automated_obj._boot_to_game_select()
-#     automated_obj._set_note_door_values([46, 92, 138, 184, 230, 276, 322, 368, 414, 460, 506, 552])
-#     # automated_obj._set_note_door_values([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-#     automated_obj._set_jigsaw_puzzle_costs([1, 3, 4, 5, 6, 7, 8, 9, 10, 0, 1])
-#     # automated_obj._set_jigsaw_puzzle_costs([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-#     automated_obj._set_transformation_costs([0, 4, 9, 12, 17])
+#     # automated_obj._set_note_door_values([46, 92, 138, 184, 230, 276, 322, 368, 414, 460, 506, 552])
+#     automated_obj._set_note_door_values([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+#     # automated_obj._set_jigsaw_puzzle_costs([1, 3, 4, 5, 6, 7, 8, 9, 10, 0, 1])
+#     automated_obj._set_jigsaw_puzzle_costs([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+#     # automated_obj._set_transformation_costs([0, 4, 9, 12, 17])
+#     automated_obj._set_transformation_costs([0, 0, 0, 0, 0])
 #     automated_obj._exit_to_witchs_lair()
 
 #     print("Testing Options Start")
 #     automated_obj._starting_lives("Infinite")
 #     automated_obj._starting_health(2)
 #     automated_obj._empty_honeycombs_for_extra_health(4)
-#     automated_obj._replace_bk_model("Mario & Luigi")
-#     automated_obj._ambience()
+#     automated_obj._replace_bk_model("Kazo & Banjooie")
+#     # automated_obj._ambience()
 #     automated_obj._remove_hut_notes()
 #     automated_obj._banjo_soulie()
 #     starting_moves = [
@@ -825,7 +947,7 @@ if __name__ == '__main__':
 #         "Attacks",
 #         "Dive",
 #         "Talon_Trot",
-#         "Wonderwing",
+#         "Egg_Firing",
 #     ]
 #     automated_obj._starting_moves(starting_moves)
 #     automated_obj._remove_unknown_object()
@@ -860,17 +982,20 @@ if __name__ == '__main__':
 #         "High": 7,
 #     }
 #     weighted_ff_tile_dict = {
-#         "BK_Tile": ff_weight_dict["None"],
-#         "Eye_Tile": ff_weight_dict["None"],
-#         "Sound_Tile": ff_weight_dict["None"],
-#         "Timer_Tile": ff_weight_dict["None"],
+#         "BK_Tile": ff_weight_dict["High"],
+#         "Eye_Tile": ff_weight_dict["Medium"],
+#         "Sound_Tile": ff_weight_dict["High"],
+#         "Timer_Tile": ff_weight_dict["Low"],
 #         "Gruntilda_Tile": ff_weight_dict["None"],
-#         "Skull_Tile": ff_weight_dict["High"],
-#         "Joker_Tile": ff_weight_dict["Rare"],
+#         "Skull_Tile": ff_weight_dict["Rare"],
 #     }
 #     automated_obj._randomize_furnace_fun_tiles(weighted_ff_tile_dict)
 #     automated_obj._randomize_matching_puzzle()
 #     automated_obj._randomize_motzands_songs()
+#     automated_obj._new_game_start_area(0x01, 0x12)
+#     automated_obj._shock_jump_to_gl_cc_entrance()
+#     automated_obj._remove_slope_slide_timer()
+#     # automated_obj._stonehenge_conga()
 #     print("Options Complete")
 
 #     print("Adjusting Core Checksums Start")
@@ -903,7 +1028,7 @@ if __name__ == '__main__':
 # if __name__ == '__main__':
 #     print("GENERIC PLAYTHROUGH START")
 #     OBJECT_SKIP_POINTERS = [
-#         0x8460, # Jiggy Switch Beta?
+#         # 0x8460, # Jiggy Switch Beta?
 #         ]
 #     LEVEL_SKIP_POINTERS = [
 #         0x10378, # Black everywhere! You dont fall and theres invisible walls and floors!
@@ -914,7 +1039,7 @@ if __name__ == '__main__':
 #     print("Extraction & Decompression Start")
 #     FILE_DIR = "C:/Users/Cyrus/Documents/VS_Code/BK_Randomizer/BK_Randomizer_v3/"
 #     # use_seed = randint(10000000, 19940303)
-#     use_seed = 10000000
+#     use_seed = 10000002
 #     print(f"Seed: {use_seed}")
 #     automated_obj = AUTOMATED_CLASS(FILE_DIR, f"{FILE_DIR}Banjo-Kazooie.z64", f"{FILE_DIR}Seed_{use_seed}_Basic.z64")
 #     automated_obj._set_seed(use_seed)
@@ -988,17 +1113,26 @@ if __name__ == '__main__':
 #                                         note_door_765_cost, note_door_810_cost, note_door_828_cost,
 #                                         note_door_846_cost, note_door_864_cost, note_door_882_cost])
 #     # World Costs
-#     world_1_cost = automated_obj._rand_int(0, 1, add_val=1)
-#     world_2_cost = automated_obj._rand_int(0, 2, add_val=2)
-#     world_3_cost = automated_obj._rand_int(0, 5, add_val=3)
-#     world_4_cost = automated_obj._rand_int(0, 7, add_val=4)
-#     world_5_cost = automated_obj._rand_int(0, 8, add_val=5)
-#     world_6_cost = automated_obj._rand_int(0, 9, add_val=6)
-#     world_7_cost = automated_obj._rand_int(0, 10, add_val=7)
-#     world_8_cost = automated_obj._rand_int(0, 12, add_val=8)
-#     world_9_cost = automated_obj._rand_int(0, 15, add_val=9)
-#     dog_cost = automated_obj._rand_int(0, 25, add_val=10)
-#     double_health_cost = automated_obj._rand_int(1, 4, add_val=11)
+#     # world_1_cost = automated_obj._rand_int(0, 1, add_val=1)
+#     # world_2_cost = automated_obj._rand_int(0, 2, add_val=2)
+#     # world_3_cost = automated_obj._rand_int(0, 5, add_val=3)
+#     # world_4_cost = automated_obj._rand_int(0, 7, add_val=4)
+#     # world_5_cost = automated_obj._rand_int(0, 8, add_val=5)
+#     # world_6_cost = automated_obj._rand_int(0, 9, add_val=6)
+#     # world_7_cost = automated_obj._rand_int(0, 10, add_val=7)
+#     # world_8_cost = automated_obj._rand_int(0, 12, add_val=8)
+#     # world_9_cost = automated_obj._rand_int(0, 15, add_val=9)
+#     world_1_cost = 1
+#     world_2_cost = 1
+#     world_3_cost = 1
+#     world_4_cost = 1
+#     world_5_cost = 1
+#     world_6_cost = 1
+#     world_7_cost = 1
+#     world_8_cost = 1
+#     world_9_cost = 1
+#     dog_cost = automated_obj._rand_int(10, 25, add_val=10)
+#     double_health_cost = 1
 #     automated_obj._set_jigsaw_puzzle_costs([world_1_cost, world_2_cost, world_3_cost,
 #                                             world_4_cost, world_5_cost, world_6_cost,
 #                                             world_7_cost, world_8_cost, world_9_cost,
@@ -1011,13 +1145,13 @@ if __name__ == '__main__':
 #     bee_cost = automated_obj._rand_int(0, 25, add_val=5)
 #     automated_obj._set_transformation_costs([termite_cost, crocodile_cost, walrus_cost, pumpkin_cost, bee_cost])
 #     # Final Battle
-#     phase1_hits = automated_obj._rand_int(1, 7, add_val=1)
-#     phase2_hits = automated_obj._rand_int(1, 5, add_val=2)
+#     phase1_hits = automated_obj._rand_int(1, 4, add_val=1)
+#     phase2_hits = automated_obj._rand_int(1, 3, add_val=2)
 #     phase2_spots = automated_obj._rand_int(1, 4, add_val=3)
-#     phase3_hits = automated_obj._rand_int(1, 7, add_val=4)
+#     phase3_hits = automated_obj._rand_int(1, 4, add_val=4)
 #     phase4_num_of_jinjos = automated_obj._rand_int(1, 4, add_val=5)
-#     phase4_egg_per_jinjo = automated_obj._rand_int(1, 5, add_val=6)
-#     phase5_eggs_per_hole = automated_obj._rand_int(1, 9, add_val=7)
+#     phase4_egg_per_jinjo = automated_obj._rand_int(1, 3, add_val=6)
+#     phase5_eggs_per_hole = automated_obj._rand_int(1, 5, add_val=7)
 #     automated_obj._adjust_final_battle_phases(phase1_hits=phase1_hits,
 #                                             phase2_hits=phase2_hits, phase2_spots=phase2_spots,
 #                                             phase3_hits=phase3_hits,
@@ -1038,12 +1172,12 @@ if __name__ == '__main__':
 #         "Timer_Tile": ff_weight_dict["None"],
 #         "Gruntilda_Tile": ff_weight_dict["Medium"],
 #         "Skull_Tile": ff_weight_dict["Low"],
-#         "Joker_Tile": ff_weight_dict["Rare"],
 #     }
 #     automated_obj._randomize_furnace_fun_tiles(weighted_ff_tile_dict)
 
 #     print("Quality Of Life Settings")
 #     automated_obj._starting_lives("Infinite")
+#     automated_obj._new_game_start_area(0x01, 0x12)
 
 #     print("Difficulty Settings")
 #     # Capacities
@@ -1075,15 +1209,13 @@ if __name__ == '__main__':
 #     automated_obj._forgiving_engine_room()
 #     automated_obj._randomize_matching_puzzle()
 #     automated_obj._randomize_motzands_songs()
-#     automated_obj._snacker_everywhere()
 #     automated_obj._one_round_vile()
 #     automated_obj._super_banjo()
 #     automated_obj._faster_transformation_movement()
-#     automated_obj._mmm_anyones_empty_honeycomb()
 #     automated_obj._fallproof()
 
 #     print("Aesthetic Settings")
-#     automated_obj._replace_bk_model("Pxl Weezy")
+#     automated_obj._replace_bk_model("Sonic & Tails")
 #     automated_obj._randomize_skybox_and_clouds()
 #     # automated_obj._ambience()
 

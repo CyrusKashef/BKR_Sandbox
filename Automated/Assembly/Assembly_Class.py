@@ -9,6 +9,7 @@ from Automated.Assembly.Core_2.Core_2_Data import CORE_2_DATA_CLASS
 from Automated.Assembly.Spiral_Mountain.Spiral_Mountain_Code import SPIRAL_MOUNTAIN_CODE_CLASS
 from Automated.Assembly.Mumbos_Mountain.Mumbos_Mountain_Code import MUMBOS_MOUNTAIN_CODE_CLASS
 from Automated.Assembly.Treasure_Trove_Cove.Treasure_Trove_Cove_Code import TREASURE_TROVE_COVE_CODE_CLASS
+from Automated.Assembly.Treasure_Trove_Cove.Treasure_Trove_Cove_Data import TREASURE_TROVE_COVE_DATA_CLASS
 from Automated.Assembly.Clankers_Cavern.Clankers_Cavern_Code import CLANKERS_CAVERN_CODE_CLASS
 from Automated.Assembly.Bubblegloop_Swamp.Bubblegloop_Swamp_Code import BUBBLEGLOOP_SWAMP_CODE_CLASS
 from Automated.Assembly.Freezeezy_Peak.Freezeezy_Peak_Code import FREEZEEZY_PEAK_CODE_CLASS
@@ -55,7 +56,7 @@ class ASSEMBLY_CLASS():
         self._mumbos_mountain_code = MUMBOS_MOUNTAIN_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FB24A0{self._DECOMPRESSED_EXTENSION}")
         self._mumbos_mountain_data = None
         self._treasure_trove_cove_code = TREASURE_TROVE_COVE_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FAE860{self._DECOMPRESSED_EXTENSION}")
-        self._treasure_trove_cove_data = None
+        self._treasure_trove_cove_data = TREASURE_TROVE_COVE_DATA_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FB1AEB{self._DECOMPRESSED_EXTENSION}")
         self._clankers_cavern_code = CLANKERS_CAVERN_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FA3FD0{self._DECOMPRESSED_EXTENSION}")
         self._clankers_cavern_data = None
         self._bubblegloop_swamp_code = BUBBLEGLOOP_SWAMP_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FB44E0{self._DECOMPRESSED_EXTENSION}")
@@ -202,6 +203,24 @@ class ASSEMBLY_CLASS():
             self._core_2_code._always_wishywashy_model()
         else:
             self._core_2_code._replace_bk_model_with_asset(asset)
+    
+    def _replace_bk_termite_model_with_asset(self, asset):
+        self._core_2_code._replace_bk_termite_model_with_asset(asset)
+    
+    def _replace_bk_crocodile_model_with_asset(self, asset):
+        self._core_2_code._replace_bk_crocodile_model_with_asset(asset)
+    
+    def _replace_bk_walrus_model_with_asset(self, asset):
+        self._core_2_code._replace_bk_walrus_model_with_asset(asset)
+    
+    def _replace_bk_pumpkin_model_with_asset(self, asset):
+        self._core_2_code._replace_bk_pumpkin_model_with_asset(asset)
+    
+    def _replace_bk_bee_model_with_asset(self, asset):
+        self._core_2_code._replace_bk_bee_model_with_asset(asset)
+    
+    def _replace_bk_wishywashy_model_with_asset(self, asset):
+        self._core_2_code._replace_bk_wishywashy_model_with_asset(asset)
     
     def _set_skybox_and_clouds(self, map_count, new_skybox=None, new_cloud1=None, new_cloud2=None):
         self._core_2_data._set_skybox_and_clouds(map_count, new_skybox, new_cloud1, new_cloud2)
@@ -371,6 +390,7 @@ class ASSEMBLY_CLASS():
     
     def _boot_to_game_select(self):
         self._core_1_code._booting_up_map(0x91)
+        self._core_2_code._booting_up_map(0x91)
     
     def _scale_termite_speed(self, scaling):
         # Limiting it to positive numbers
@@ -410,16 +430,21 @@ class ASSEMBLY_CLASS():
     def _scale_banjos_swim_speed(self, scaling):
         # Limiting it to positive numbers
         speed_dict = self._core_2_data._get_banjo_swim_speed_dict()
-        for item in ["Swim_Unk0", "Swim_Unk1"]:
+        for item in ["Swim_Min_Horz_Velocity", "Swim_Max_Horz_Velocity"]:
             speed_dict[item] = max(min(int(speed_dict[item] * scaling), 0x7F0FFFFF), 0x00000001)
         self._core_2_data._set_banjo_swim_speed_dict(speed_dict)
     
     def _scale_banjos_walk_speed(self, scaling):
         # Limiting it to positive numbers
         speed_dict = self._core_2_data._get_banjo_walk_speed_dict()
-        for item in ["Creep_Min", "Creep_Max/Slow_Walk_Min", "Slow_Walk_Max/Walk_Min", "Walk_Max/Walk_Fast_Min", "Walk_Fast_Max"]:
+        for item in ["Creep_Min_Velocity", "Walk_Fast_Max_Velocity", "Mud_Min_Velocity", "Mud_Max_Velocity",
+                     "Creep_Max/Slow_Walk_Min_Velocity_Threshold", "Slow_Walk_Max/Walk_Min_Threshold", "Walk_Max/Walk_Fast_Min_Threshold"]:
             speed_dict[item] = max(min(int(speed_dict[item] * scaling), 0x7F0FFFFF), 0x00000001)
         self._core_2_data._set_banjo_walk_speed_dict(speed_dict)
+    
+    def _remove_slope_slide_timer(self):
+        self._core_2_code._remove_regular_slope_slide_timer()
+        self._core_2_code._remove_steep_slope_slide_timer()
     
     def _default_totals_screen(self):
         self._core_2_code._default_totals_screen()
@@ -495,3 +520,49 @@ class ASSEMBLY_CLASS():
     
     def _reassign_banjos_house_warp(self, warp_id):
         self._core_2_code._reassign_banjos_house_warp(warp_id)
+    
+    def _new_game_start_area(self, map_id, entry_id):
+        self._core_2_code._new_game_start_area(map_id, entry_id)
+    
+    def _stonehenge_conga(self):
+        self._mumbos_mountain_code._stonehenge_conga()
+    
+    def _unlimited_cheat_codes(self):
+        self._treasure_trove_cove_code._unlimited_cheat_codes()
+    
+    def _simplified_cheat_codes(self):
+        self._treasure_trove_cove_data._obtain_sandcastle_cheats()
+        SIMPLIFIED_CHEAT_DICT = {
+            # Double Items
+            1: "BLUE", 2: "RED", 3: "GOLD",
+            # Bottles Bonus
+            4: "BONUSONE", 5: "BONUSTWO", 6: "BONUSTHREE", 7: "BONUSFOUR",
+            8: "BONUSFIVE", 9: "BIGBONUS", 10: "WISHY", 11: "NOBONUS",
+            # SNS
+            15: "NABNUTSTABLE", 16: "CAPTAINSCABIN", 17: "BATHROOM",
+            18: "DESERTDOOR", 19: "SHARKFOOD", 20: "CELLAR", 21: "ICEKEY",
+            # Note Doors
+            22: "NOTEDOORTWO", 23: "NOTEDOORTHREE", 24: "NOTEDOORFOUR",
+            25: "NOTEDOORFIVE", 26: "NOTEDOORSIX", 27: "NOTEDOORSEVEN",
+            # Complete Puzzles
+            28: "CCPUZZLE", 29: "BGSPUZZLE", 30: "FPPUZZLE", 31: "GVPUZZLE",
+            32: "MMMPUZZLE", 33: "RBBPUZZLE", 34: "CCWPUZZLE",
+            # Infinite Items
+            35: "LIVES", 36: "FIRING", 37: "FLIGHT", 38: "WONDERWING",
+            64: "AIR",
+            # Level Early
+            41: "CCEARLY", 46: "BGSEARLY", 49: "GVEARLY", 53: "FPEARLY",
+            54: "MMMEARLY", 58: "RBBEARLY", 61: "CCWEARLY",
+            # Gruntilda's Lair
+            39: "PIPESONE", 40: "PIPESTWO", 42: "BGSGRATE", 43: "CCWPODIUM",
+            44: "HAT", 45: "ICEBLOCK", 47: "WALLS", 50: "WEBS",
+            51: "EYE", 55: "GATE", 56: "COFFIN", 57: "WATERONE",
+            59: "RBBGRILLE", 60: "MMMGRILLE",
+            # Moves
+            48: "JUMPPAD", 52: "FLYPAD",
+            # Misc
+            62: "ENERGY", 63: "MUMBO",
+        }
+        for cheat_num in SIMPLIFIED_CHEAT_DICT:
+            self._treasure_trove_cove_data._edit_sandcastle_cheat(cheat_num, SIMPLIFIED_CHEAT_DICT[cheat_num])
+        self._treasure_trove_cove_data._set_sandcastle_cheats()

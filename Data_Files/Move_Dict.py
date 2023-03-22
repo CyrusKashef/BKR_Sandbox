@@ -16,7 +16,7 @@ MOVE_DICT = {
         0x0B, # Rat-A-Tap_Rap
         0x0C, # Roll Attack
     ],
-    "Shock Jump": [0x0D],
+    "Shock_Jump": [0x0D],
     "Stilt_Stride": [0x0E],
     "Dive": [0x0F],
     "Talon_Trot": [0x10],

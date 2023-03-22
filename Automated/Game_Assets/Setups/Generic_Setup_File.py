@@ -986,12 +986,12 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
     #############################
     
     def _calculate_voxel_num(self, x_position, y_position, z_position):
-        x_count = (x_position - (self._neg_x_voxel_count * 1000)) // 1000
-        y_count = (y_position - (self._neg_y_voxel_count * 1000)) // 1000
-        z_count = (z_position - (self._neg_z_voxel_count * 1000)) // 1000
-        x_dimension = self._neg_x_voxel_count + self._pos_x_voxel_count + 1
-        y_dimension = self._neg_y_voxel_count + self._pos_y_voxel_count + 1
-        voxel_num = x_count * (x_dimension ^ 2) + y_count * (y_dimension) + z_count
+        x_count = (self._possible_negative(x_position, 2) - (self._neg_x_voxel_count * 1000)) // 1000
+        y_count = (self._possible_negative(y_position, 2) - (self._neg_y_voxel_count * 1000)) // 1000
+        z_count = (self._possible_negative(z_position, 2) - (self._neg_z_voxel_count * 1000)) // 1000
+        y_dimension = self._pos_y_voxel_count - self._neg_y_voxel_count + 1
+        z_dimension = self._pos_z_voxel_count - self._neg_z_voxel_count + 1
+        voxel_num = x_count * (y_dimension * z_dimension) + y_count * (z_dimension) + z_count
         return voxel_num
 
     ### REMOVE
@@ -1095,14 +1095,34 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
             while(curr_item_num < len(self._voxel_dict[voxel_num][OBJECT_0x14_LIST])):
                 curr_item = self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num]
                 modify_this = True
+                same_voxel = True
                 for attribute in original_objects_dict:
                     if((attribute not in curr_item) or (curr_item[attribute] != original_objects_dict[attribute])):
                         modify_this = False
                         break
                 if(modify_this):
-                    for attribute in modification_dict:
-                        self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num][attribute] = modification_dict[attribute]
-                curr_item_num += 1
+                    x_position = curr_item["X_Position"]
+                    y_position = curr_item["Y_Position"]
+                    z_position = curr_item["Z_Position"]
+                    if("X_Position" in modification_dict):
+                        x_position = modification_dict["X_Position"]
+                    if("Y_Position" in modification_dict):
+                        x_position = modification_dict["Y_Position"]
+                    if("Z_Position" in modification_dict):
+                        x_position = modification_dict["Z_Position"]
+                    new_voxel_num = self._calculate_voxel_num(x_position, y_position, z_position)
+                    same_voxel = voxel_num == new_voxel_num
+                    if(same_voxel):
+                        for attribute in modification_dict:
+                            self._voxel_dict[voxel_num][OBJECT_0x14_LIST][curr_item_num][attribute] = modification_dict[attribute]
+                    else:
+                        for attribute in modification_dict:
+                            curr_item[attribute] = modification_dict[attribute]
+                        self._voxel_dict[voxel_num][OBJECT_0x14_LIST].pop(curr_item_num)
+                        self._voxel_dict[new_voxel_num][OBJECT_0x14_LIST].append(curr_item)
+                        self._voxel_dict[new_voxel_num][EMPTY_VOXEL] = False
+                if(same_voxel):
+                    curr_item_num += 1
     
     def _replace_static_with_actor_object(self, replacement_dict):
         for voxel_num in self._voxel_dict:

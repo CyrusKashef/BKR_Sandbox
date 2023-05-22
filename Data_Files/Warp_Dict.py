@@ -1,7 +1,7 @@
-from Data_Files.Enums.World_Enums import *
-from Data_Files.Enums.Room_Enums import ROOM_ENUMS
-from Data_Files.Enums.Warp_Enums import WARP_ENUMS
-from Data_Files.Enums.Area_Enums import AREA_ENUMS
+from Data_Files.Enums.Jigsaw_Puzzle_Enums import *
+from Data_Files.Enums.Map_Enums import ROOM_ENUMS
+from Data_Files.Enums.IntEnums.Warp_Enums import WARP_ENUMS
+from Data_Files.Enums.IntEnums.Area_Enums import AREA_ENUMS
 
 WARP_MAP_DICT = {
     # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_956B0.c

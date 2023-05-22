@@ -16,6 +16,10 @@ class TREASURE_TROVE_COVE_CODE_CLASS(GENERIC_FILE_CLASS):
         self._mmap.seek(0xC90)
         self._mmap.write((0x08096C05).to_bytes(4, "big"))
     
+    ##############################
+    ### SANDCASTLE CHEAT CODES ###
+    ##############################
+    
     def _unlimited_cheat_codes(self):
         '''
         Decomp: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/TTC/code_3E30.c
@@ -34,3 +38,17 @@ class TREASURE_TROVE_COVE_CODE_CLASS(GENERIC_FILE_CLASS):
         self._write_bytes(0x5840, 4, 0x10000007)
         # No Add To Counter
         self._write_byte(0x5867, 0x0)
+    
+    ########################
+    ### SHARKFOOD ISLAND ###
+    ########################
+
+    def _raise_sharkfood_island(self):
+        '''
+        Decomp: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/TTC/code_26D0.c#L143
+        When Sharkfood Island is underwater, it's at y=-1000.0f.
+        When Sharkfood Island is raised, it's at y=700.0f.
+        Afterwards, the game sets everything else depending on the island's y position.
+        Solution: Make it always y=700.0f.
+        '''
+        self._write_float_bytes(0x2A7A, 700, 2)

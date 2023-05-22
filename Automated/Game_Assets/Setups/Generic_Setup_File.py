@@ -4,7 +4,10 @@ import sys
 sys.path.append(".")
 from Automated.Generic_File import GENERIC_FILE_CLASS
 from Data_Files.Setups.Map_Setup_Dict import MAP_SETUP_DICT
-from Data_Files.Setups.Object_Dicts import *
+from Data_Files.Setups.Object_Dicts import (
+    ACTOR_OBJECT_DICT, TIMED_OBJECT_DICT, MISC_OBJECT_DICT,
+    RADIUS_OBJECT_ID_DICT, RADIUS_ASSOCIATED_ID_DICT,
+    SPRITE_OBJECT_DICT, STATIC_OBJECT_DICT)
 
 EMPTY_VOXEL = "EMPTY_VOXEL"
 OBJECT_0x14_LIST = "OBJECT_0x14_LIST"
@@ -412,8 +415,7 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         '''
         object_info_dict = {
             "Object_ID": self._read_byte_list_to_int(start_index, 2),
-            "Unk_Byte_2": self._read_byte(start_index + 0x2),
-            "Size": self._read_byte(start_index + 0x3),
+            "Size": self._read_byte_list_to_int(start_index + 0x2, 2),
             "X_Position": self._possible_negative(self._read_byte_list_to_int(start_index + 0x4, 2), 2),
             "Y_Position": self._possible_negative(self._read_byte_list_to_int(start_index + 0x6, 2), 2),
             "Z_Position": self._possible_negative(self._read_byte_list_to_int(start_index + 0x8, 2), 2),
@@ -812,8 +814,7 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         PyDoc
         '''
         self._new_file.write(self._possible_negative_to_bytes(object_0x0C["Object_ID"], 2))
-        self._new_file.write(self._possible_negative_to_bytes(object_0x0C["Unk_Byte_2"], 1))
-        self._new_file.write(self._possible_negative_to_bytes(object_0x0C["Size"], 1))
+        self._new_file.write(self._possible_negative_to_bytes(object_0x0C["Size"], 2))
         self._new_file.write(self._possible_negative_to_bytes(object_0x0C["X_Position"], 2))
         self._new_file.write(self._possible_negative_to_bytes(object_0x0C["Y_Position"], 2))
         self._new_file.write(self._possible_negative_to_bytes(object_0x0C["Z_Position"], 2))
@@ -1074,6 +1075,11 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
                 self._remove_complex_object_instances(voxel_num, complex_object_list)
             if(simple_object_list is not None):
                 self._remove_simple_object_instances(voxel_num, simple_object_list)
+    
+    def _remove_camera(self, camera_id):
+        if(camera_id not in self._camera_dict):
+            raise SystemError(f"Camera Doesn't Exists: {camera_id}")
+        del self._camera_dict[camera_id]
 
     ### MODIFY
     
@@ -1153,6 +1159,11 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
                     item_replaced = True
                 if(not item_replaced):
                     curr_item_num += 1
+    
+    def _change_camera_id(self, old_camera_id, new_camera_id):
+        self._camera_dict[new_camera_id] = self._camera_dict[old_camera_id]
+        self._camera_dict[new_camera_id]["Camera_Id"] = new_camera_id
+        del self._camera_dict[old_camera_id]
 
     ### ADD
 
@@ -1166,6 +1177,60 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         # Add Object
         self._voxel_dict[voxel_num][OBJECT_0x14_LIST].append(object_dict)
         self._voxel_dict[voxel_num][EMPTY_VOXEL] = False
+
+    def _add_simple_object(self, object_dict):
+        # Calculate Voxel Number
+        x_position = object_dict["X_Position"]
+        y_position = object_dict["Y_Position"]
+        z_position = object_dict["Z_Position"]
+        voxel_num = self._calculate_voxel_num(x_position, y_position, z_position)
+        print(f"Voxel Num: {voxel_num}")
+        # Add Object
+        self._voxel_dict[voxel_num][OBJECT_0x0C_LIST].append(object_dict)
+        self._voxel_dict[voxel_num][EMPTY_VOXEL] = False
+    
+    def _add_camera(self, camera_dict):
+        curr_camera_id = camera_dict["Camera_Id"]
+        if(curr_camera_id in self._camera_dict):
+            raise SystemError(f"Camera Already Exists: {curr_camera_id}")
+        self._camera_dict[curr_camera_id] = camera_dict
+    
+    ### MISC
+
+    def _object_count(self, object_name_list, object_count_dict=None):
+        if(not object_count_dict):
+            object_count_dict = {}
+            for object_name in object_name_list:
+                object_count_dict[object_name] = 0
+        for voxel_num in self._voxel_dict:
+            for curr_item in self._voxel_dict[voxel_num][OBJECT_0x14_LIST]:
+                object_name = None
+                if("Object_ID" in curr_item and "Script_ID" in curr_item):
+                    object_tuple = (curr_item["Object_ID"], curr_item["Script_ID"])
+                    if(object_tuple in ACTOR_OBJECT_DICT):
+                        if(ACTOR_OBJECT_DICT[object_tuple] in object_count_dict):
+                            object_name = ACTOR_OBJECT_DICT[object_tuple]
+                    elif(object_tuple in TIMED_OBJECT_DICT):
+                        if(TIMED_OBJECT_DICT[object_tuple] in object_count_dict):
+                            object_name = TIMED_OBJECT_DICT[object_tuple]
+                    elif(object_tuple in MISC_OBJECT_DICT):
+                        if(MISC_OBJECT_DICT[object_tuple] in object_count_dict):
+                            object_name = MISC_OBJECT_DICT[object_tuple]
+                    if(object_name):
+                        object_count_dict[object_name] += 1
+            for curr_item in self._voxel_dict[voxel_num][OBJECT_0x0C_LIST]:
+                object_name = None
+                object_id = curr_item["Object_ID"]
+                if("Object_ID" in curr_item):
+                    if(object_id in SPRITE_OBJECT_DICT):
+                        if(SPRITE_OBJECT_DICT[object_id] in object_count_dict):
+                            object_name = SPRITE_OBJECT_DICT[object_id]
+                    elif(object_id in STATIC_OBJECT_DICT):
+                        if(STATIC_OBJECT_DICT[object_id] in object_count_dict):
+                            object_name = STATIC_OBJECT_DICT[object_id]
+                    if(object_name):
+                        object_count_dict[object_name] += 1
+        return object_count_dict
 
 #############################################
 ################## TESTING ##################

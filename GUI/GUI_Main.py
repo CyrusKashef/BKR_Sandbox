@@ -1,3 +1,6 @@
+import sys
+sys.path.append(".")
+
 import tkinter as tk
 from tkinter import ttk
 import tkinter.filedialog
@@ -6,12 +9,12 @@ from random import randint
 import json
 import webbrowser
 
-from Data_Files.Models_Dict import MODELS_DICT
-from Data_Files.Video_Overview_Dict import VIDEO_OVERVIEW_DICT
+from Data_Files.GUI.GUI_Models_Dict import GUI_MODELS_DICT
+from Data_Files.GUI.Video_Overview_Dict import VIDEO_OVERVIEW_DICT
 from Data_Files.Enemies_Dict import GROUND_ENEMIES_DICT, FLYING_ENEMIES_DICT, WALL_ENEMIES_DICT, OTHER_ENEMIES_DICT
-from Data_Files.Area_Id_Dict import AREA_ID_DICT
-from .GUI_Style import STYLE_DICT
-from .GUI_Progression import GUI_PROGRESSION_CLASS
+from Data_Files.GUI.GUI_Map_Id_Dict import GUI_MAP_ID_DICT
+from GUI_Style import STYLE_DICT
+from GUI_Progression import GUI_PROGRESSION_CLASS
 
 ############################
 ### ADDITIONAL GUI CLASS ###
@@ -73,7 +76,7 @@ class GUI_MAIN_CLASS():
         self._app_window = tk.Tk()
         self._app_window.winfo_toplevel().title(f"Banjo-Kazooie Randomizer v{self._bk_rando_version}")
         self._cwd = getcwd() + "/"
-        self._bk_model_preset_folder = f"{self._cwd}Automated/Game_Assets/Models/Specific_Models/Important_Characters/BK_Model_Presets/"
+        self._bk_model_preset_folder = f"{self._cwd}Automated/Game_Assets/Models/Important_Characters/BK_Model_Presets/"
     
     #################
     ### GUI STYLE ###
@@ -547,7 +550,7 @@ class GUI_MAIN_CLASS():
     def _create_other_model_selection_frame(self):
         self._other_model_frame = ttk.Frame(self._player_model_frame)
         self._other_model_dict = {}
-        for model_count, model_name in enumerate(sorted(MODELS_DICT)):
+        for model_count, model_name in enumerate(sorted(GUI_MODELS_DICT)):
             self._other_model_dict[model_name] = tk.IntVar()
             temp_checkbutton = ttk.Checkbutton(self._other_model_frame, text=model_name, variable=self._other_model_dict[model_name], width=13)
             temp_checkbutton.grid(row=(model_count // 5) + 1, column=(model_count % 5), padx=0, pady=0, sticky='w')
@@ -2246,7 +2249,7 @@ class GUI_MAIN_CLASS():
         # Starting Area
         self._starting_area_text = ttk.Label(self._developer_other_frame, text="Starting Area", anchor="center", justify="center")
         self._starting_area_text.grid(row=0, column=0, padx=5)
-        self._starting_area_options = [area_name for area_name in AREA_ID_DICT]
+        self._starting_area_options = [area_name for area_name in GUI_MAP_ID_DICT]
         self._starting_area_value = tk.StringVar(self._developer_other_frame)
         self._starting_area_value.set(self._starting_area_options[0])
         self._starting_area_dropdown = ttk.Combobox(self._developer_other_frame, textvariable=self._starting_area_value, font=(self._FONT_TYPE, self._SMALL_FONT_SIZE), width=30)

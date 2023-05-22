@@ -25,7 +25,6 @@ from Automated.Game_Assets.Speeches.Speech_Class import SPEECH_CLASS
 from Automated.Game_Assets.Setups.Setup_Class import SETUP_CLASS
 
 from Data_Files.Asset_Table_Pointer_Dict import ASSET_TABLE_POINTER_DICT
-from Data_Files.Asset_Id_Dict import ASSET_ID_DICT
 from Data_Files.Skybox_And_Cloud_Dict import SKYBOX_AND_CLOUD_DICT
 
 from Data_Files.Speeches import (
@@ -36,6 +35,13 @@ from Data_Files.Speeches import (
     Intro_Bottles_Speech_Dicts,
     Move_Speech_Dict,
 )
+
+from Data_Files.Enums.Map_Enums import MAP_ENUMS
+from Data_Files.Enums.Warp_Enums import WARP_ENUMS
+from Data_Files.Enums.World_Enums import WORLD_ENUMS
+from Data_Files.Enums.Ability_Enums import ABILITY_ENUMS
+
+from Data_Files.Speeches.General_Speech_Dict import SHORTEN_BOTTLES_SECRET_GAME_SPEECH_DICT
 
 class AUTOMATED_CLASS():
     def __init__(self, file_dir, original_rom_path, new_rom_path):
@@ -115,10 +121,17 @@ class AUTOMATED_CLASS():
             decompress_obj = DECOMPRESS_CLASS(self._file_dir, pointer)
             decompress_obj._decompress_main()
 
+    # def _extract_and_decompress_all_assets(self):
+    #     print("Decompress All Assets")
+    #     for asset_category in ASSET_TABLE_POINTER_DICT:
+    #         self._extract_and_decompress_asset_category(asset_category)
+    
     def _extract_and_decompress_all_assets(self):
         print("Decompress All Assets")
-        for asset_category in ASSET_TABLE_POINTER_DICT:
-            self._extract_and_decompress_asset_category(asset_category)
+        self._bk_rom_obj._extract_all_asset_table_pointers()
+        for pointer in range(self._bk_rom_obj._ASSET_TABLE_START_INDEX, self._bk_rom_obj._ASSET_TABLE_END_INDEX+1, 0x8):
+            decompress_obj = DECOMPRESS_CLASS(self._file_dir, pointer)
+            decompress_obj._decompress_main()
     
     def _extract_and_decompress_all_asm(self):
         print("Decompress All ASM")
@@ -150,6 +163,16 @@ class AUTOMATED_CLASS():
         print("Compress & Insert All Assets")
         for asset_category in ASSET_TABLE_POINTER_DICT:
             self._compress_and_insert_asset_category(asset_category, skip_pointer_list)
+    
+    def _compress_and_append_all_asset_table_pointers(self):
+        print("Compress & Append All Assets")
+        skip_pointer_list=[]
+        for pointer in range(self._bk_rom_obj._ASSET_TABLE_START_INDEX, self._bk_rom_obj._ASSET_TABLE_END_INDEX+1, 0x8):
+            compress_obj = COMPRESS_CLASS(self._file_dir, pointer)
+            file_exists = compress_obj._compress_main(b"\xAA", 0x8)
+            if(not file_exists):
+                skip_pointer_list.append(pointer)
+        self._bk_rom_obj._append_all_asset_table_pointers(skip_pointer_list)
 
     def _compress_and_insert_all_asm(self):
         print("Compress & Insert All ASM")
@@ -233,8 +256,8 @@ class AUTOMATED_CLASS():
             self._model_class_creation()
             self._model_obj._bk_model(adjusted_selection)
             self._assembly_obj._replace_bk_model_with_asset(0x34E)
-        elif(preset_selection in ASSET_ID_DICT):
-            asset = ASSET_ID_DICT[preset_selection]
+        elif(preset_selection in GUI_MODELS_DICT):
+            asset = GUI_MODELS_DICT[preset_selection]
             self._assembly_obj._replace_bk_model_with_asset(asset)
         else:
             print("Replace BK Model Error: {preset_selection}")
@@ -247,8 +270,8 @@ class AUTOMATED_CLASS():
         if((adjusted_selection + ".json") in listdir(self._file_dir + self._MODELS_DIR + self._BK_TERMITE_MODEL_PRESET_DIR)):
             self._model_class_creation()
             self._model_obj._bk_model(adjusted_selection)
-        elif(preset_selection in ASSET_ID_DICT):
-            asset = ASSET_ID_DICT[preset_selection]
+        elif(preset_selection in GUI_MODELS_DICT):
+            asset = GUI_MODELS_DICT[preset_selection]
             self._assembly_obj._replace_bk_termite_model_with_asset(asset)
         else:
             print("Replace BK Termite Model Error: {preset_selection}")
@@ -261,8 +284,8 @@ class AUTOMATED_CLASS():
         if((adjusted_selection + ".json") in listdir(self._file_dir + self._MODELS_DIR + self._BK_CROCODILE_MODEL_PRESET_DIR)):
             self._model_class_creation()
             self._model_obj._bk_model(adjusted_selection)
-        elif(preset_selection in ASSET_ID_DICT):
-            asset = ASSET_ID_DICT[preset_selection]
+        elif(preset_selection in GUI_MODELS_DICT):
+            asset = GUI_MODELS_DICT[preset_selection]
             self._assembly_obj._replace_bk_crocodile_model_with_asset(asset)
         else:
             print("Replace BK Termite Model Error: {preset_selection}")
@@ -275,8 +298,8 @@ class AUTOMATED_CLASS():
         if((adjusted_selection + ".json") in listdir(self._file_dir + self._MODELS_DIR + self._BK_WALRUS_MODEL_PRESET_DIR)):
             self._model_class_creation()
             self._model_obj._bk_model(adjusted_selection)
-        elif(preset_selection in ASSET_ID_DICT):
-            asset = ASSET_ID_DICT[preset_selection]
+        elif(preset_selection in GUI_MODELS_DICT):
+            asset = GUI_MODELS_DICT[preset_selection]
             self._assembly_obj._replace_bk_walrus_model_with_asset(asset)
         else:
             print("Replace BK Termite Model Error: {preset_selection}")
@@ -289,8 +312,8 @@ class AUTOMATED_CLASS():
         if((adjusted_selection + ".json") in listdir(self._file_dir + self._MODELS_DIR + self._BK_PUMPKIN_MODEL_PRESET_DIR)):
             self._model_class_creation()
             self._model_obj._bk_model(adjusted_selection)
-        elif(preset_selection in ASSET_ID_DICT):
-            asset = ASSET_ID_DICT[preset_selection]
+        elif(preset_selection in GUI_MODELS_DICT):
+            asset = GUI_MODELS_DICT[preset_selection]
             self._assembly_obj._replace_bk_pumpkin_model_with_asset(asset)
         else:
             print("Replace BK Termite Model Error: {preset_selection}")
@@ -303,8 +326,8 @@ class AUTOMATED_CLASS():
         if((adjusted_selection + ".json") in listdir(self._file_dir + self._MODELS_DIR + self._BK_BEE_MODEL_PRESET_DIR)):
             self._model_class_creation()
             self._model_obj._bk_model(adjusted_selection)
-        elif(preset_selection in ASSET_ID_DICT):
-            asset = ASSET_ID_DICT[preset_selection]
+        elif(preset_selection in GUI_MODELS_DICT):
+            asset = GUI_MODELS_DICT[preset_selection]
             self._assembly_obj._replace_bk_bee_model_with_asset(asset)
         else:
             print("Replace BK Termite Model Error: {preset_selection}")
@@ -313,8 +336,8 @@ class AUTOMATED_CLASS():
     def _replace_bk_wishywashy_model(self, preset_selection):
         print("Replace BK Wishywashy Model")
         self._model_class_creation()
-        if(preset_selection in ASSET_ID_DICT):
-            asset = ASSET_ID_DICT[preset_selection]
+        if(preset_selection in GUI_MODELS_DICT):
+            asset = GUI_MODELS_DICT[preset_selection]
             self._assembly_obj._replace_bk_wishywashy_model_with_asset(asset)
         else:
             print("Replace BK Termite Model Error: {preset_selection}")
@@ -414,16 +437,6 @@ class AUTOMATED_CLASS():
         self._assembly_class_creation()
         self._assembly_obj._remove_hut_notes()
         
-    def _banjo_soulie(self):
-        print("Banjo Soulie")
-        self._assembly_class_creation()
-        self._assembly_obj._soulie_collision_markers()
-        self._setup_class_creation()
-        self._setup_obj._banjo_soulie_enemies()
-        self._automated_speech_class_creation()
-        self._automated_speech_obj._replace_non_furnace_fun_speech(Intro_Bottles_Speech_Dicts.BANJO_SOULIE_INTRO_BOTTLES_SPEECH_DICT)
-        self._automated_speech_obj._replace_non_furnace_fun_speech(General_Speech_Dict.BANJO_SOULIE_FIRST_DEATH_SPEECH_DICT)
-        
     def _clear_setup_files(self):
         print("Clear Setup Files")
         self._setup_class_creation()
@@ -465,12 +478,26 @@ class AUTOMATED_CLASS():
         self._assembly_class_creation()
         self._assembly_obj._boot_to_game_select()
     
+    def _set_swim_a_speed(self, swim_a_speed):
+        self._assembly_class_creation()
+        self._assembly_obj._set_swim_a_speed(swim_a_speed)
+    
+    def _set_swim_b_speed(self, swim_b_speed):
+        self._assembly_class_creation()
+        self._assembly_obj._set_swim_b_speed(swim_b_speed)
+    
+    def _set_roll_speed(self, roll_speed):
+        self._assembly_class_creation()
+        self._assembly_obj._set_roll_speed(roll_speed)
+    
     def _super_banjo(self):
         print("Super Banjo")
         self._assembly_class_creation()
         self._assembly_obj._scale_bk_talon_trot_speed(1.5)
-        self._assembly_obj._scale_banjos_swim_speed(1.5)
+        self._assembly_obj._scale_banjos_surface_swim_speed(1.5)
         self._assembly_obj._scale_banjos_walk_speed(1.5)
+        self._assembly_obj._set_swim_a_speed(450)
+        self._assembly_obj._set_swim_b_speed(900)
     
     def _faster_transformation_movement(self):
         print("Faster Transformation Movement")
@@ -718,16 +745,78 @@ class AUTOMATED_CLASS():
         self._assembly_class_creation()
         self._assembly_obj._remove_slope_slide_timer()
     
-    def _stonehenge_conga(self):
-        self._assembly_class_creation()
-        self._assembly_obj._stonehenge_conga()
-        self._setup_class_creation()
-        self._setup_obj._stonehenge_conga()
-    
     def _unlimited_cheat_codes(self):
         self._assembly_class_creation()
         self._assembly_obj._unlimited_cheat_codes()
-        self._assembly_obj._simplified_cheat_codes()
+    
+    def _modified_cheat_codes(self, jump_pad_cheat_move="Shock_Jump", fly_pad_cheat_move="Flight"):
+        self._assembly_class_creation()
+        self._assembly_obj._simplified_cheat_codes(jump_pad_cheat_move, fly_pad_cheat_move)
+    
+    def _water_level_automatically(self, level=0):
+        self._assembly_class_creation()
+        if(level == 1):
+            self._assembly_obj._water_level_one_automatically()
+        elif(level == 2):
+            self._assembly_obj._water_level_two_automatically()
+    
+    def _raise_sharkfood_island(self):
+        self._assembly_class_creation()
+        self._assembly_obj._raise_sharkfood_island()
+    
+    ####################
+    ### BANJO SOULIE ###
+    ####################
+        
+    def _banjo_soulie(self):
+        print("Banjo Soulie")
+        self._assembly_class_creation()
+        self._assembly_obj._soulie_collision_markers()
+        self._setup_class_creation()
+        self._setup_obj._banjo_soulie_enemies()
+        self._automated_speech_class_creation()
+        self._automated_speech_obj._replace_non_furnace_fun_speech(Intro_Bottles_Speech_Dicts.BANJO_SOULIE_INTRO_BOTTLES_SPEECH_DICT)
+        self._automated_speech_obj._replace_non_furnace_fun_speech(General_Speech_Dict.BANJO_SOULIE_FIRST_DEATH_SPEECH_DICT)
+    
+    def _banjo_soulie_enemy_drops(self):
+        self._assembly_class_creation()
+        self._assembly_obj._banjo_soulie_enemy_drops()
+        self._assembly_obj._increase_note_pickup_count(5)
+    
+    def _banjo_soulie_collisions(self):
+        pass
+
+    def _banjo_soulie_maps(self):
+        self._model_class_creation()
+        self._model_obj._banjo_soulie_furnace_fun_map()
+
+    def _banjo_soulie_map_assignment(self):
+        self._assembly_class_creation()
+        # Map Models
+        new_level_model_dict = {
+            # Tutorial World
+            MAP_ENUMS.SM_MAIN: {"Scale": 1.5},
+            # Bonfire
+            # Ice World
+            # Dirty World
+            # Laval World
+            # Final Boss
+        }
+        self._assembly_obj._modify_level_model_by_dict(new_level_model_dict)
+    
+    def _banjo_soulie_asm_assignment(self):
+        # Map Assembly
+        new_gc_section_info_dict = {
+            # Tutorial World
+            MAP_ENUMS.GV_SNS_ROOM: WORLD_ENUMS.SPIRAL_MOUNTAIN,
+            # Bonfire
+            MAP_ENUMS.GL_CRYPT: WORLD_ENUMS.GRUNTILDAS_LAIR,
+            # Ice World
+            # Dirty World
+            # Laval World
+            # Final Boss
+        }
+        self._assembly_obj._adjust_gc_section_info_by_level(new_gc_section_info_dict)
 
     ############################
     ### BACKGROUND FUNCTIONS ###
@@ -740,12 +829,170 @@ class AUTOMATED_CLASS():
         self._setup_class_creation()
         self._setup_obj._remove_unknown_object()
     
+    def _shorten_text(self):
+        print("Shorten Text")
+        self._automated_speech_class_creation()
+        self._automated_speech_obj._replace_non_furnace_fun_speech(SHORTEN_BOTTLES_SECRET_GAME_SPEECH_DICT)
+    
     ########################
     ### CUSTOM FUNCTIONS ###
     ########################
     # These aren't really made for the randomizer,
     # just for me to play around with,
     # but it uses the randomizer to get around the anti-tampering stuff
+    
+    def _stonehenge_conga(self):
+        self._assembly_class_creation()
+        self._assembly_obj._stonehenge_conga()
+        self._setup_class_creation()
+        self._setup_obj._stonehenge_conga()
+        
+    def _banjo_bingo(self):
+        print("Banjo Bingo")
+        self._automated_speech_class_creation()
+        BANJO_BINGO_INTRO_BOTTLES_SPEECH_DICT = {
+            "CE30": { # 5C85D8
+                0: "WELCOME TO BANJO-BINGO!",
+                12: "WHAT'S BANJO-BINGO?",
+                2: "BASE GAME, BUT NOTE DOORS ARE FREE AND THE WATER LEVEL STARTS AT TWO.",
+                14: "IS THAT IT?",
+                15: "SOUNDS LIKE FUN!",
+                4: "I CAN'T BELIEVE YOU HAVEN'T SKIPPED MY TEXT YET.",
+                17: "OH RIGHT! LET'S SKIP THIS, BANJO!",
+                6: "I'M ALMOST DONE TALKING ALREADY.",
+                8: "YOU MIGHT AS WELL LET ME FINISH.",
+            }
+        }
+        self._automated_speech_obj._replace_non_furnace_fun_speech(BANJO_BINGO_INTRO_BOTTLES_SPEECH_DICT)
+    
+    def _bottles_poc(self, sm_moves, non_sm_moves):
+        # self._assembly_class_creation()
+        # script_id_dict = self._assembly_obj._adjusted_bottles_cameras(sm_moves, non_sm_moves)
+        self._assembly_class_creation()
+        script_id_dict = self._assembly_obj._adjusted_seperated_bottles_cameras(sm_moves, non_sm_moves)
+        # self._setup_class_creation()
+        # self._setup_obj._remove_top_of_sm_bottles()
+        # self._setup_obj._remove_moveable_bottles_moves()
+        # self._setup_obj._change_camera_on_map(6, 0x5F, "9780")
+
+    def _mushroom_poc(self):
+        self._setup_class_creation()
+        self._setup_obj._mushroom_poc()
+    
+    def _static_object_poc(self):
+        self._setup_class_creation()
+        self._setup_obj._static_object_poc()
+    
+    def _remove_tutorial_vegetable_despawn(self):
+        '''Does not work'''
+        self._assembly_class_creation()
+        self._assembly_obj._remove_tutorial_vegetable_despawn()
+    
+    def _forgiving_deaths(self):
+        self._assembly_class_creation()
+        self._assembly_obj._forgiving_deaths()
+    
+    def _get_level_item_counts(self):
+        import pprint
+        pp = pprint.PrettyPrinter(indent=4)
+        spiral_mountain_setup_pointers = ["9780", "9BD8"]
+        mumbos_mountain_setup_pointers = ["9788", "97D8", "97E8"]
+        treasure_trove_cove_setup_pointers = ["97A0", "97A8", "97B0", "97C8", "9BF0"]
+        clankers_cavern_setup_pointers = ["97D0", "9880", "9888", "9890"]
+        bubblegloop_swamp_setup_pointers = ["97E0", "97F8", "9800", "99B0"]
+        freezeezy_peak_setup_pointers = ["98B0", "9980", "99B8", "9A10", "9B70"]
+        gobis_valley_setup_pointers = ["9808", "9810", "9818", "9820", "9828", "9848", "9C08"]
+        mad_monster_mansion_setup_pointers = [
+            "9850", "9858", "9860", "9898", "98A0", "98A8", "98B8",
+            "98C0", "98C8", "98D0", "98D8", "98E0", "98E8", "98F0",
+            "98F8", "9BE0"
+        ]
+        rusty_bucket_bay_setup_pointers = [
+            "9900", "9918", "9920", "9928", "9930", "9938", "9940",
+            "9948", "9950", "9958", "9960", "9968", "9970", "9BD0"
+        ]
+        click_clock_wood_hub_setup_pointers = ["9978"]
+        click_clock_wood_spring_setup_pointers = ["9990", "99C8", "9A50", "9A68", "9AA0"]
+        click_clock_wood_summer_setup_pointers = ["9998", "99D0", "9A48", "9A70", "9AA8"]
+        click_clock_wood_autumn_setup_pointers = ["99A0", "99D8", "9A58", "9A78", "9A90", "9AB0"]
+        click_clock_wood_winter_setup_pointers = ["99A8", "99E0", "9A80", "9A88", "9A98", "9AB8"]
+        click_clock_wood_pointers = [
+            "9978",
+            "9990", "99C8", "9A50", "9A68", "9AA0",
+            "9998", "99D0", "9A48", "9A70", "9AA8",
+            "99A0", "99D8", "9A58", "9A78", "9A90", "9AB0",
+            "99A8", "99E0", "9A80", "9A88", "9A98", "9AB8"
+            ]
+        gruntildas_lair_setup_pointers = [
+            "9AC0", "9AC8", "9AD0", "9AD8", "9AE0", "9AE8", "9AF0",
+            "9AF8", "9B00", "9B08", "9B18", "9B20", "9B28", "9B30",
+            "9B38", "9B40", "9B48", "9B78", "9BE8", "9BF8", "9C10"
+        ]
+        self._setup_class_creation()
+        object_name_list = [
+            "Jiggy", "Empty Honeycomb", "Mumbo Token", "Extra Life", "Honeycomb",
+            "Note", "Blue Egg", "Red Feather", "Gold Feather"]
+        object_count_dict = self._setup_obj._setup_item_counts(spiral_mountain_setup_pointers, object_name_list)
+        print("Spiral Mountain")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(mumbos_mountain_setup_pointers, object_name_list)
+        print("Mumbos Mountain")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(treasure_trove_cove_setup_pointers, object_name_list)
+        print("Treasure Trove Cove")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(clankers_cavern_setup_pointers, object_name_list)
+        print("Clankers Cavern")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(bubblegloop_swamp_setup_pointers, object_name_list)
+        print("Bubblegloop Swamp")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(freezeezy_peak_setup_pointers, object_name_list)
+        print("Freezeezy Peak")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(gobis_valley_setup_pointers, object_name_list)
+        print("Gobis Valley")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(mad_monster_mansion_setup_pointers, object_name_list)
+        print("Mad Monster Mansion")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(rusty_bucket_bay_setup_pointers, object_name_list)
+        print("Rusty Bucket Bay")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(click_clock_wood_hub_setup_pointers, object_name_list)
+        print("Click Clock Wood Hub")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(click_clock_wood_spring_setup_pointers, object_name_list)
+        print("Click Clock Wood Spring")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(click_clock_wood_summer_setup_pointers, object_name_list)
+        print("Click Clock Wood Summer")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(click_clock_wood_autumn_setup_pointers, object_name_list)
+        print("Click Clock Wood Autumn")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(click_clock_wood_winter_setup_pointers, object_name_list)
+        print("Click Clock Wood Winter")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(click_clock_wood_pointers, object_name_list)
+        print("Click Clock Wood Total")
+        pp.pprint(object_count_dict)
+        object_count_dict = self._setup_obj._setup_item_counts(gruntildas_lair_setup_pointers, object_name_list)
+        print("Gruntildas Lair")
+        pp.pprint(object_count_dict)
+
+    def _little_big_planet(self, scale=2):
+        '''Won't work without editing EVERY assembly instance of a coordinate'''
+        self._assembly_class_creation()
+        # Level Models
+        new_level_model_dict = {}
+        for map_enum in MAP_ENUMS:
+            new_level_model_dict[map_enum.value] = {"Scale": scale}
+        self._assembly_obj._modify_level_model_by_dict(new_level_model_dict)
+    
+    def _replace_sir_slush_model(self, asset_id):
+        self._assembly_class_creation()
+        self._assembly_obj._replace_sir_slush_model(asset_id)
 
     ###################
     ### BANJO TOOIE ###
@@ -798,7 +1045,8 @@ if __name__ == '__main__':
     use_seed = randint(0, 1000000)
     print(f"Seed: {use_seed}")
     automated_obj._set_seed(897442)
-    automated_obj._extract_and_decompress_asset_category("Object Model Files")
+    automated_obj._extract_and_decompress_all_assets()
+    # automated_obj._extract_and_decompress_asset_category("Object Model Files")
     # automated_obj._extract_and_decompress_asset_category("Map Setup Files")
     # automated_obj._extract_and_decompress_asset_category("Text Files")
     # automated_obj._extract_and_decompress_asset_category("Level Model Files")
@@ -811,9 +1059,9 @@ if __name__ == '__main__':
     print("DEV Options Start")
     automated_obj._skippable_cutscenes()
     automated_obj._boot_to_game_select()
-    automated_obj._set_note_door_values([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    automated_obj._set_jigsaw_puzzle_costs([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    automated_obj._set_transformation_costs([0, 0, 0, 0, 0])
+    # automated_obj._set_note_door_values([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    # automated_obj._set_jigsaw_puzzle_costs([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    # automated_obj._set_transformation_costs([0, 0, 0, 0, 0])
     # automated_obj._exit_to_witchs_lair()
     # automated_obj._super_banjo()
     # automated_obj._faster_transformation_movement()
@@ -831,11 +1079,13 @@ if __name__ == '__main__':
     # automated_obj._randomize_collisions()
     # automated_obj._replace_bk_model("Wishywashy")
     # automated_obj._replace_bk_model("Conga")
+    # automated_obj._replace_bk_model(MODEL_DEBUG_STRINGS.CONGA)
+    # automated_obj._replace_bk_model("Pxl Weezy")
     # automated_obj._replace_bk_model("Mario & Luigi")
-    automated_obj._replace_bk_model("Mario & Purple Yoshi")
+    # automated_obj._replace_bk_model("Mario & Purple Yoshi")
     # OBJECT_SKIP_POINTERS.append(0x7908)
     # automated_obj._replace_mm_model("Treasure Trove Cove")
-    # automated_obj._replace_ttc_model("Rusty Bucket Bay")
+    # automated_obj._replace_ttc_model("Freezeezy Peak")
     # LEVEL_SKIP_POINTERS.append(0x101F0)
     # LEVEL_SKIP_POINTERS.append(0x101F8)
     
@@ -860,8 +1110,43 @@ if __name__ == '__main__':
     # automated_obj._insert_decompressed_asset_file(0x7900, "Green_Yoshi_Model-Decompressed")
     # automated_obj._remove_tutorial_option()
     # automated_obj._one_round_vile()
-    # automated_obj._reassign_banjos_house_warp(0x4307) # Warp Testing
-    automated_obj._unlimited_cheat_codes()
+    # automated_obj._unlimited_cheat_codes()
+    # automated_obj._modified_cheat_codes(jump_pad_cheat_move="Wonderwing", fly_pad_cheat_move="Beak_Bomb")
+    # automated_obj._reassign_banjos_house_warp(0x7702)
+    # automated_obj._water_level_automatically(level=2)
+    # automated_obj._banjo_bingo()
+    # Non-Separated
+    # sm_moves = [ABILITY_ENUMS.CAMERA_CONTROL, ABILITY_ENUMS.DIVE, ABILITY_ENUMS.RAT_A_TAP_RAP,
+    #             ABILITY_ENUMS.BEAK_BARGE, ABILITY_ENUMS.FLAP_FLIP, ABILITY_ENUMS.CLIMB]
+    # non_sm_moves = [ABILITY_ENUMS.BEAK_BOMB, ABILITY_ENUMS.EGG_FIRING, ABILITY_ENUMS.BEAK_BUSTER,
+    #                 ABILITY_ENUMS.TALON_TROT, ABILITY_ENUMS.SHOCK_SPRING_JUMP, ABILITY_ENUMS.FLIGHT,
+    #                 ABILITY_ENUMS.WONDERWING, ABILITY_ENUMS.STILT_STRIDE, ABILITY_ENUMS.TURBO_TALON_TROT,
+    #                 ABILITY_ENUMS.OPEN_NOTE_DOORS]
+    # automated_obj._bottles_poc(sm_moves, non_sm_moves)
+    # Separated
+    # sm_moves = [ABILITY_ENUMS.CLAW_SWIPE, ABILITY_ENUMS.DIVE, ABILITY_ENUMS.RAT_A_TAP_RAP,
+    #             ABILITY_ENUMS.BEAK_BARGE, ABILITY_ENUMS.FLAP_FLIP, ABILITY_ENUMS.CLIMB]
+    # non_sm_moves = [ABILITY_ENUMS.BEAK_BOMB, ABILITY_ENUMS.EGG_FIRING, ABILITY_ENUMS.BEAK_BUSTER,
+    #                 ABILITY_ENUMS.TALON_TROT, ABILITY_ENUMS.SHOCK_SPRING_JUMP, ABILITY_ENUMS.FLIGHT,
+    #                 ABILITY_ENUMS.WONDERWING, ABILITY_ENUMS.STILT_STRIDE, ABILITY_ENUMS.TURBO_TALON_TROT,
+    #                 ABILITY_ENUMS.OPEN_NOTE_DOORS]
+    # automated_obj._bottles_poc(sm_moves, non_sm_moves)
+    # automated_obj._mushroom_poc()
+    # automated_obj._static_object_poc()
+    # automated_obj._set_swim_a_speed(450)
+    # automated_obj._set_swim_b_speed(900)
+    # automated_obj._set_roll_speed(1200)
+    # automated_obj._get_level_item_counts()
+    # automated_obj._raise_sharkfood_island()
+    # automated_obj._banjo_soulie_enemy_drops()
+    # automated_obj._banjo_soulie_maps()
+    automated_obj._replace_sir_slush_model(0x0496) # Sir Slush -> Twinkly Muncher
+    automated_obj._new_game_start_area(0x01, 0x12) # Banjos House
+    # automated_obj._new_game_start_area(0x47, 0x01) # BGS Mumbos Skull
+    # curren_warp = 0x3501
+    # print(f"Current Warp: {hex(curren_warp)}")
+    # automated_obj._reassign_banjos_house_warp(curren_warp) # Warp Testing
+    # automated_obj._forgiving_deaths()
     print("Options Complete")
 
     print("Adjusting Core Checksums Start")
@@ -870,7 +1155,8 @@ if __name__ == '__main__':
     print("Adjusting Core Checksums Complete")
 
     print("Compression & Insertion Start")
-    automated_obj._compress_and_insert_asset_category("Object Model Files", skip_pointer_list=OBJECT_SKIP_POINTERS)
+    automated_obj._compress_and_append_all_asset_table_pointers()
+    # automated_obj._compress_and_insert_asset_category("Object Model Files", skip_pointer_list=OBJECT_SKIP_POINTERS)
     # automated_obj._compress_and_insert_asset_category("Map Setup Files")
     # automated_obj._compress_and_insert_asset_category("Text Files")
     # automated_obj._compress_and_insert_asset_category("Level Model Files", skip_pointer_list=LEVEL_SKIP_POINTERS)

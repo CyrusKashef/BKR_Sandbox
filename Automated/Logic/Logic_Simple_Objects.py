@@ -1,0 +1,116 @@
+import sys
+sys.path.append(".")
+
+from Data_Files.Enums.Logic_Enums import LOGIC_ENUMS
+
+NOTE_OBJ_ID =         0x1640
+BLUE_EGG_OBJ_ID =     0x1650
+RED_FEATHER_OBJ_ID =  0x00E0
+GOLD_FEATHER_OBJ_ID = 0x15F0
+
+LOGIC_SIMPLE_OBJECTS = {
+    # WORLD KEY STRING : (
+    #   OBJECT_ID: COUNT,
+    # )
+    ### SPIRAL MOUNTAIN ###
+    LOGIC_ENUMS.SPIRAL_MOUNTAIN: {
+        NOTE_OBJ_ID: 0,
+        BLUE_EGG_OBJ_ID: 0,
+        RED_FEATHER_OBJ_ID: 0,
+        GOLD_FEATHER_OBJ_ID: 0,
+    },
+    ### MUMBOS MOUNTAIN ###
+    LOGIC_ENUMS.MUMBOS_MOUNTAIN: {
+        NOTE_OBJ_ID: 95,
+        BLUE_EGG_OBJ_ID: 35,
+        RED_FEATHER_OBJ_ID: 0,
+        GOLD_FEATHER_OBJ_ID: 0,
+    },
+    ### TREASURE TROVE COVE ###
+    LOGIC_ENUMS.TREASURE_TROVE_COVE: {
+        NOTE_OBJ_ID: 100,
+        BLUE_EGG_OBJ_ID: 51,
+        RED_FEATHER_OBJ_ID: 100,
+        GOLD_FEATHER_OBJ_ID: 0,
+    },
+    ### CLANKERS CAVERN ###
+    LOGIC_ENUMS.CLANKERS_CAVERN: {
+        NOTE_OBJ_ID: 100,
+        BLUE_EGG_OBJ_ID: 44,
+        RED_FEATHER_OBJ_ID: 21,
+        GOLD_FEATHER_OBJ_ID: 16,
+    },
+    ### BUBBLEGLOOP SWAMP ###
+    LOGIC_ENUMS.BUBBLEGLOOP_SWAMP: {
+        NOTE_OBJ_ID: 95,
+        BLUE_EGG_OBJ_ID: 50,
+        RED_FEATHER_OBJ_ID: 30,
+        GOLD_FEATHER_OBJ_ID: 10,
+    },
+    ### FREEZEEZY PEAK ###
+    LOGIC_ENUMS.FREEZEEZY_PEAK: {
+        NOTE_OBJ_ID: 100,
+        BLUE_EGG_OBJ_ID: 50,
+        RED_FEATHER_OBJ_ID: 74,
+        GOLD_FEATHER_OBJ_ID: 15,
+    },
+    ### GOBIS VALLEY ###
+    LOGIC_ENUMS.GOBIS_VALLEY: {
+        NOTE_OBJ_ID: 100,
+        BLUE_EGG_OBJ_ID: 55,
+        RED_FEATHER_OBJ_ID: 71,
+        GOLD_FEATHER_OBJ_ID: 11,
+    },
+    ### MAD MONSTER MANSION ###
+    LOGIC_ENUMS.MAD_MONSTER_MANSION: {
+        NOTE_OBJ_ID: 100,
+        BLUE_EGG_OBJ_ID: 77,
+        RED_FEATHER_OBJ_ID: 45,
+        GOLD_FEATHER_OBJ_ID: 20,
+    },
+    ### RUSTY BUCKET BAY ###
+    LOGIC_ENUMS.RUSTY_BUCKET_BAY: {
+        NOTE_OBJ_ID: 100,
+        BLUE_EGG_OBJ_ID: 90,
+        RED_FEATHER_OBJ_ID: 35,
+        GOLD_FEATHER_OBJ_ID: 15,
+    },
+    ### CLICK CLOCK WOOD ###
+    LOGIC_ENUMS.CLICK_CLOCK_WOOD_HUB: {
+        NOTE_OBJ_ID: 4,
+        BLUE_EGG_OBJ_ID: 4,
+        RED_FEATHER_OBJ_ID: 4,
+        GOLD_FEATHER_OBJ_ID: 1,
+    },
+    LOGIC_ENUMS.CLICK_CLOCK_WOOD_SPRING: {
+        NOTE_OBJ_ID: 16,
+        BLUE_EGG_OBJ_ID: 47,
+        RED_FEATHER_OBJ_ID: 16,
+        GOLD_FEATHER_OBJ_ID: 4,
+    },
+    LOGIC_ENUMS.CLICK_CLOCK_WOOD_SUMMER: {
+        NOTE_OBJ_ID: 16,
+        BLUE_EGG_OBJ_ID: 20,
+        RED_FEATHER_OBJ_ID: 48,
+        GOLD_FEATHER_OBJ_ID: 4,
+    },
+    LOGIC_ENUMS.CLICK_CLOCK_WOOD_AUTUMN: {
+        NOTE_OBJ_ID: 48,
+        BLUE_EGG_OBJ_ID: 22,
+        RED_FEATHER_OBJ_ID: 16,
+        GOLD_FEATHER_OBJ_ID: 4,
+    },
+    LOGIC_ENUMS.CLICK_CLOCK_WOOD_WINTER: {
+        NOTE_OBJ_ID: 16,
+        BLUE_EGG_OBJ_ID: 16,
+        RED_FEATHER_OBJ_ID: 16,
+        GOLD_FEATHER_OBJ_ID: 12,
+    },
+    ### GRUNTILDAS LAIR ###
+    LOGIC_ENUMS.GRUNTILDAS_LAIR: {
+        NOTE_OBJ_ID: 0,
+        BLUE_EGG_OBJ_ID: 75,
+        RED_FEATHER_OBJ_ID: 68,
+        GOLD_FEATHER_OBJ_ID: 17,
+    },
+}

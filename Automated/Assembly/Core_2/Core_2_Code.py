@@ -47,6 +47,7 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
 
     def _remove_shoes_camera_transitions(self):
         '''
+        Decomp: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/ch/mole.c#L171
         Removes the camera showing off the Wading Boots and the Turbo Trainers when learning the move
         Needs Testing
         '''
@@ -68,6 +69,26 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
     def _set_bottles_given_gold_feathers(self, gold_feather_count):
         '''Sets how many gold feathers Bottles gives you when learning wonderwing'''
         self._write_byte(0x529AB, gold_feather_count)
+
+    def _jump_pad_cheat_code_move(self, new_move):
+        '''
+        Decomp: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_43A40.c#L48
+        The jump pad actor has a function that checks the sandcastle cheat code.
+        If changed to a different move, whenever the jump pad actor is loaded,
+          the move is given to the player, even if they don't know shock jump.
+        Possibly need to put a shock jump pad in the sandcastle?
+        '''
+        self._write_byte(0x43A77, new_move)
+
+    def _fly_pad_cheat_code_move(self, new_move):
+        '''
+        Decomp: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_43A40.c#L62
+        The flight pad actor has a function that checks the sandcastle cheat code.
+        If changed to a different move, whenever the flight pad actor is loaded,
+          the move is given to the player, even if they don't know flight.
+        Possibly need to put a flight pad in the sandcastle?
+        '''
+        self._write_byte(0x43AEF, new_move)
     
     ###########################
     ### CARRYING CAPACITIES ###
@@ -510,3 +531,119 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
         self._write_byte(0x425F, 0x01)
         # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_D9B0.c#L51
         self._write_bytes(0xDA4E, 2, 0x0000)
+    
+    ######################
+    ### WATER SWITCHES ###
+    ######################
+
+    def _water_level_one_automatically(self):
+        # What Is The Water Level?
+        self._write_bytes(0x4E5BC, 4, 0x24020001)
+        self._write_bytes(0x4E5C0, 4, 0x24030001)
+        self._write_bytes(0x4E5C4, 4, 0x24020001)
+        # When Entering 640 Note Door Room,
+        # Should The Player Be Swimming Or Walking?
+        self._write_bytes(0x4F14C, 4, 0x24020001)
+        self._write_bytes(0x4F160, 4, 0x24020001)
+        self._write_bytes(0x4F170, 4, 0x24020001)
+
+    def _water_level_two_automatically(self):
+        # What Is The Water Level?
+        self._write_bytes(0x4E5B8, 4, 0x24020002)
+        self._write_bytes(0x4E5BC, 4, 0x24020002)
+        self._write_bytes(0x4E5C0, 4, 0x24030002)
+        self._write_bytes(0x4E5C4, 4, 0x24020002)
+        # When Exiting RBB,
+        # Should The Player Be Swimming Or Walking?
+        self._write_bytes(0x4F110, 4, 0x24020001)
+        self._write_bytes(0x4F120, 4, 0x24020001)
+        # When Entering 640 Note Door Room,
+        # Should The Player Be Swimming Or Walking?
+        self._write_bytes(0x4F160, 4, 0x24020001)
+        self._write_bytes(0x4F170, 4, 0x24020001)
+    
+    ###################
+    ### BANJO SPEED ###
+    ###################
+    
+    # Swim Speed A
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/bSwim.c#L239
+
+    def _set_swim_a_speed(self, swim_b_speed):
+        self._write_float_bytes(0x20AEA, swim_b_speed, 2)
+    
+    # Swim Speed B
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/bSwim.c#L196
+
+    def _set_swim_b_speed(self, swim_b_speed):
+        self._write_float_bytes(0x20942, swim_b_speed, 2)
+    
+    # Roll Speed
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/twirl.c#L32
+
+    def _set_roll_speed(self, roll_speed):
+        self._write_float_bytes(0x2FB8E, roll_speed, 2)
+    
+    ####################
+    ### FIRST PERSON ###
+    ####################
+
+    def _remove_first_person_check(self):
+        '''Does not work'''
+        # Does the BUTTON_C_UP check twice
+        self._write_bytes(0xE010, 4, 0x01C01025)
+    
+    ###################
+    ### DEATH RESET ###
+    ###################
+
+    def _forgiving_deaths(self):
+        # mapSavestate_init()
+        self._write_bytes(0x9A7C8, 4, 0x00000000)
+        # itemscore_levelReset(D_80383300.level)
+        self._write_bytes(0x9A7D0, 4, 0x00000000)
+        self._write_bytes(0x9A7D4, 4, 0x00000000)
+        self._write_bytes(0x9A7D8, 4, 0x00000000)
+        # jiggyscore_clearAllSpawned()
+        self._write_bytes(0x9A7DC, 4, 0x00000000)
+        # levelSpecificFlags_clear()
+        self._write_bytes(0x9A7E4, 4, 0x00000000)
+        # # func_803204E4()
+        # self._write_bytes(0x9A83C, 4, 0x00000000)
+        # mm_resetHuts()
+        self._write_bytes(0x9A88C, 4, 0x00000000)
+        # ttc_resetTresureHunt()
+        self._write_bytes(0x9A89C, 4, 0x00000000)
+        # mmm_resetFlowerPots()
+        self._write_bytes(0x9A8AC, 4, 0x00000000)
+    
+    ###############
+    ### MARKERS ###
+    ###############
+
+    def _increase_note_pickup_count(self, note_pickup_count):
+        # Instead increase by 1, change to increase multiple
+        # func_803463F4 -> D18F5
+        self._write_bytes(0x4AB8, 4, 0x0C0D18F5)
+        # How much do you wanna increase the note count?
+        self._write_bytes(0x4ABC, 2, 0x2405)
+        self._write_bytes(0x4ABE, 2, note_pickup_count)
+    
+    ###############
+    ### TESTING ###
+    ###############
+
+    # Environmental
+    # Decomp: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_16010.c
+    def _remove_bubblegloop_swamp_piranha_sound(self):
+        self._write_bytes(0x162F8, 4, 0x244EFFF4)
+
+    def _taking_damage_testing(self):
+        self._write_bytes(0x160B4, 2, 0xA020D212)
+
+    def _remove_bubblegloop_swamp_environmental_effects(self):
+        self._write_bytes(0x16884, 4, 0x244EFFF4)
+
+    def _super_deadly_bubblegloop_swamp_piranha_damage(self):
+        self._write_byte(0x16AEB, 0x0C)
+        self._write_bytes(0x16AF2, 2, 0x4140)

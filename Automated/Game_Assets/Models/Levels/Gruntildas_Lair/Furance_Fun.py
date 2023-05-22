@@ -38,6 +38,16 @@ class FURNACE_FUN_MODEL_CLASS(GENERIC_MODEL_CLASS):
             "Timer_Tile": 0xC860,
             "Joker_Tile": 0xD080,
         }
+        self._SIDE_TEXTURE_OFFSETS = {
+            "BK_Tile": 0x015760,
+            "Sound_Tile": 0x016360,
+            "Blank_Tile": 0x016F60,
+            "Gruntilda_Tile": 0x017B60,
+            "Skull_Tile": 0x018760,
+            "Eye_Tile": 0x019360,
+            "Timer_Tile": 0x019F60,
+            "Joker_Tile": 0x021CC0,
+        }
         # TILE NUMBERING
         # ___ ___ ___ ___ ___ ___ ___ 05E (Skull Tile)    ___ ___ ___ ___
         # 052 053 054 ___ ___ ___ 055 056 057 058 059 05A 05B 05C 05D ___
@@ -110,17 +120,20 @@ class FURNACE_FUN_MODEL_CLASS(GENERIC_MODEL_CLASS):
 
     def _remove_following_texture_placements(self, dlist_command_line, following_count=1):
         start_count = self._find_display_list_command_count(dlist_command_line)
-        remove_line_count = 0
-        for count in range(start_count + following_count, self._display_list_command_count):
-            display_list_command, display_list_command_parameters = self._get_display_list_command_info(count)
-            if(display_list_command == 0x04 or display_list_command == 0xB1):
-                remove_line_count += 1
-            else:
-                break
-        starting_index = self._display_list_setup_offset + 0x8 + (start_count + remove_line_count + following_count) * 0x8
-        index_diff = - (remove_line_count * 0x8)
-        self._change_model_file_size(starting_index, index_diff)
-        self._adjust_display_list_command_count(-remove_line_count)
+        while(start_count > 0):
+            print(start_count)
+            remove_line_count = 0
+            for count in range(start_count + following_count, self._display_list_command_count):
+                display_list_command, display_list_command_parameters = self._get_display_list_command_info(count)
+                if(display_list_command == 0x04 or display_list_command == 0xB1):
+                    remove_line_count += 1
+                else:
+                    break
+            starting_index = self._display_list_setup_offset + 0x8 + (start_count + remove_line_count + following_count) * 0x8
+            index_diff = - (remove_line_count * 0x8)
+            self._change_model_file_size(starting_index, index_diff)
+            self._adjust_display_list_command_count(-remove_line_count)
+            start_count = self._find_display_list_command_count(dlist_command_line, start_count + max(remove_line_count, 1))
     
     def _add_following_texture_placements(self, dlist_command_line, new_dlist_command_line, following_count=1):
         start_count = self._find_display_list_command_count(dlist_command_line)
@@ -151,6 +164,7 @@ class FURNACE_FUN_MODEL_CLASS(GENERIC_MODEL_CLASS):
                 self._set_vertex_xyz_coords(count, x_position, 0xFFBB, z_position)
 
 if __name__ == '__main__':
+    print("Start")
     FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test/Rando3_Test/Furnace_Fun/"
     ORIGINAL_FILE_NAME = "A795B8"
     COPY_EXT = "-Copy"
@@ -159,7 +173,8 @@ if __name__ == '__main__':
     copy(f"{FILE_DIR}{ORIGINAL_FILE_NAME}.bin", f"{FILE_DIR}{ORIGINAL_FILE_NAME}{COPY_EXT}.bin")
     furnace_fun_model_obj = FURNACE_FUN_MODEL_CLASS(FILE_DIR, f"{ORIGINAL_FILE_NAME}{COPY_EXT}")
     # furnace_fun_model_obj._lower_invisible_barriers()
-    ff_tile_dict = {}
-    for count in range(0, 0x5F):
-        ff_tile_dict[count] = choice([0, 1, 2, 3, 4, 5, 6, 8])
-    furnace_fun_model_obj._reassign_ff_tile_textures(ff_tile_dict)
+    # ff_tile_dict = {}
+    # for count in range(0, 0x5F):
+    #     ff_tile_dict[count] = choice(["BK_Tile", "Sound_Tile", 2, 3, 4, 5, 6, 8])
+    # furnace_fun_model_obj._reassign_ff_tile_textures(ff_tile_dict)
+    print("End")

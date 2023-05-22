@@ -1,16 +1,26 @@
-SPIRAL_MOUNTAIN = 0
-MUMBOS_MOUNTAIN = 10
-TREASURE_TROVE_COVE = 20
-CLANKERS_CAVERN = 30
-BUBBLEGLOOP_SWAMP = 40
-FREEZEEZY_PEAK = 50
-GOBIS_VALLEY = 60
-MAD_MONSTER_MANSION = 70
-RUSTY_BUCKET_BAY = 80
-CLICK_CLOCK_WOOD = 90
-GRUNTILDAS_LAIR = 100
+from enum import IntEnum, auto, unique
 
-CLICK_CLOCK_WOOD_SPRING = 91
-CLICK_CLOCK_WOOD_SUMMER = 92
-CLICK_CLOCK_WOOD_AUTUMN = 93
-CLICK_CLOCK_WOOD_WINTER = 94
+@unique
+class WORLD_ENUMS(IntEnum):
+    
+    @classmethod
+    def get_debug_name(self, curr_world):
+        return curr_world.name
+
+    @classmethod
+    def get_world_enum(self, curr_world):
+        return curr_world.value[0]
+    
+    MUMBOS_MOUNTAIN = 0x1
+    TREASURE_TROVE_COVE = auto()
+    CLANKERS_CAVERN = auto()
+    BUBBLEGLOOP_SWAMP = auto()
+    FREEZEEZY_PEAK = auto()
+    GRUNTILDAS_LAIR = auto()
+    GOBIS_VALLEY = auto()
+    CLICK_CLOCK_WOOD = auto()
+    RUSTY_BUCKET_BAY = auto()
+    MAD_MONSTER_MANSION = auto()
+    SPIRAL_MOUNTAIN = auto()
+    FINAL_BATTLE = auto()
+    CUTSCENE = auto()

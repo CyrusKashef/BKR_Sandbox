@@ -50,3 +50,7 @@ class SPIRAL_MOUNTAIN_CODE_CLASS(GENERIC_FILE_CLASS):
         self._write_bytes(0x3E10, 4, 0x00000000)
         self._write_bytes(0x3E14, 4, 0x00000000)
         self._write_bytes(0x3E18, 4, 0x00000000)
+    
+    def _remove_tutorial_vegetable_despawn(self):
+        '''Does not work'''
+        self._write_bytes(0x1858, 4, 0x00000000)

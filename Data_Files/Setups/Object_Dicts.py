@@ -860,6 +860,8 @@ SPRITE_OBJECT_DICT = {
     # Object Id
     0x00E0: "Red Feather",
     0x00E7: "Red Feather",
+    0x0380: "Intro Shrub",
+    0x0387: "Intro Shrub",
     0x0460: "MM Blue Flower",
     0x0465: "MM Blue Flower",
     0x0467: "MM Blue Flower",
@@ -875,6 +877,8 @@ SPRITE_OBJECT_DICT = {
     0x0554: "Icicle Stalactite",
     0x0555: "Icicle Stalactite",
     0x0556: "Icicle Stalactite",
+    0x0940: "Red Mushroom",
+    0x0970: "Blue Mushroom",
     0x0D60: "Orange (2D)",
     0x1210: "Seashell",
     0x13F0: "SM Yellow Flower",
@@ -947,18 +951,35 @@ STATIC_OBJECT_DICT = {
     0x02E4: "SM Tree",
     0x02E5: "SM Tree",
     0x02E7: "MM Tree",
-    0x0370: "CC Rings",
+    0x0370: "CC Rings/Intro Bush",
     0x0604: "Banjos Kitchen Clothes",
     0x0610: "BGS Mossy Log 1",
     0x0614: "BGS Mossy Log 2",
-    0x0630: "GV Tree",
+    0x0630: "GV Tree/Intro Tree",
     0x0640: "Cattail",
     0x0642: "Cattail",
     0x0644: "Banjos Kitchen",
-    0x0645: "Cattail (Small)",
+    0x0645: "Cattail (Small)/Intro Tree",
+    0x0647: "Intro Tree",
     0x06F2: "Machine Room Booth",
     0x0706: "Machine Room Console",
     0x0712: "GV Wading Boots Platform",
     0x0762: "Machine Room Door",
     0x07A2: "Banjos Bed",
 }
+
+if __name__ == '__main__':
+    # for (object_id, script_id) in MISC_OBJECT_DICT:
+    #     object_id_str = str(hex(object_id))[2:].upper()
+    #     while(len(object_id_str) < 4):
+    #         object_id_str = "0" + object_id_str
+    #     script_id_str = str(hex(script_id))[2:].upper()
+    #     while(len(script_id_str) < 4):
+    #         script_id_str = "0" + script_id_str
+    #     print(f"| 0x{object_id_str} | 0x{script_id_str} | {MISC_OBJECT_DICT[(object_id, script_id)]} |")
+    # for object_id in STATIC_OBJECT_DICT:
+    #     object_id_str = str(hex(object_id))[2:].upper()
+    #     while(len(object_id_str) < 4):
+    #         object_id_str = "0" + object_id_str
+    #     print(f"| 0x{object_id_str} | {STATIC_OBJECT_DICT[object_id]} |")
+    pass

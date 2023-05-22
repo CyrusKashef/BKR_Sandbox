@@ -10,7 +10,10 @@ from Data_Files.Bootloader_Assembly_Dict import BOOTLOADER_ASSEMBLY_DICT
 class BK_ROM_CLASS(GENERIC_FILE_CLASS):
     def __init__(self, file_dir, bk_rom_path):
         ### CONSTANTS ###
+        self._ASSET_TABLE_START_INDEX = 0x5E98
+        self._ASSET_TABLE_END_INDEX = 0x10CC8
         self._ASSET_TABLE_OFFSET = 0x10CD0
+        self._ROM_END_INDEX = 0x1000000
         self._EXTRACTED_FILES_DIR = "Extracted_Files/"
         self._COMPRESSED_BIN_EXTENSION = "-Compressed.bin"
         self._ASM_END = 0xFDAA10
@@ -130,6 +133,16 @@ class BK_ROM_CLASS(GENERIC_FILE_CLASS):
         index_end = self._insert_file_by_index(comp_content, index_start)
         next_pointer_index = index_end - self._ASSET_TABLE_OFFSET
         return next_pointer_index
+    
+    def _append_by_asset_pointer(self, pointer):
+        file_name = self._int_to_hex_str(pointer)
+        index_start = self._read_byte_list_to_int(pointer, 4) + self._ASSET_TABLE_OFFSET
+        with open(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}{file_name}{self._COMPRESSED_BIN_EXTENSION}", "rb+") as comp_file:
+            comp_content = comp_file.read()
+        self._mmap.resize(len(self._mmap) + len(comp_content))
+        index_end = self._insert_file_by_index(comp_content, index_start)
+        next_pointer_index = index_end - self._ASSET_TABLE_OFFSET
+        return next_pointer_index
 
     def _skip_pointer(self, pointer):
         # print(f"Skip Pointer: {self._int_to_hex_str(pointer)}")
@@ -213,6 +226,10 @@ class BK_ROM_CLASS(GENERIC_FILE_CLASS):
     def _extract_pointer_table_assets(self, pointer_start, pointer_end):
         for pointer in range(pointer_start, pointer_end+1, 0x8):
             self._extract_by_asset_pointer(pointer)
+    
+    def _extract_all_asset_table_pointers(self):
+        for pointer in range(self._ASSET_TABLE_START_INDEX, self._ASSET_TABLE_END_INDEX + 1, 8):
+            self._extract_by_asset_pointer(pointer)
 
     def _insert_pointer_table_assets(self, pointer_start, pointer_end, skip_pointer_list=[]):
         for pointer in range(pointer_start, pointer_end+1, 0x8):
@@ -220,6 +237,19 @@ class BK_ROM_CLASS(GENERIC_FILE_CLASS):
                 self._skip_pointer(pointer)
             else:
                 next_pointer_index = self._insert_by_asset_pointer(pointer)
+                if(pointer < 0x10CB0):
+                    self._adjust_asset_pointer(pointer + 0x8, next_pointer_index)
+    
+    def _append_all_asset_table_pointers(self, skip_pointer_list=[]):
+        # Set Up First Pointer
+        self._adjust_asset_pointer(self._ASSET_TABLE_START_INDEX, self._ROM_END_INDEX - self._ASSET_TABLE_OFFSET)
+        next_pointer_index = self._ROM_END_INDEX - self._ASSET_TABLE_OFFSET
+        # Iterate Through All Pointers
+        for pointer in range(self._ASSET_TABLE_START_INDEX, self._ASSET_TABLE_END_INDEX, 8):
+            if(pointer in skip_pointer_list):
+                self._skip_pointer(pointer)
+            else:
+                next_pointer_index = self._append_by_asset_pointer(pointer)
                 if(pointer < 0x10CB0):
                     self._adjust_asset_pointer(pointer + 0x8, next_pointer_index)
     
@@ -236,4 +266,4 @@ if __name__ == '__main__':
     bk_rom_obj = BK_ROM_CLASS(FILE_DIR, NEW_FILE_NAME)
     # bk_rom_obj._extract_pointer_table_assets(0x74E0, 0x9770)
     # bk_rom_obj._insert_pointer_table_assets(0x74E0, 0x9770, [])
-    bk_rom_obj._extract_by_asm_pointer()
+    # bk_rom_obj._extract_by_asm_pointer()

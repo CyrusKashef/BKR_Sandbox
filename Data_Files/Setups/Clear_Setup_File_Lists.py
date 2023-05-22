@@ -1,6 +1,4 @@
-from numpy import array
-
-CLEAR_SETUP_FILE_COMPLEX_LIST = array([
+CLEAR_SETUP_FILE_COMPLEX_LIST = [
 	"Bigbutt",
 	"Ticker",
 	"Grublin",
@@ -731,9 +729,9 @@ CLEAR_SETUP_FILE_COMPLEX_LIST = array([
 	"SM Bridge Bottles 03BD",
 	"SM Bridge Bottles 03BE",
 	"Cartoony Falling Noise Script",
-])
+]
 
-CLEAR_SETUP_FILE_SIMPLE_LIST = array([
+CLEAR_SETUP_FILE_SIMPLE_LIST = [
 	"Red Feather",
 	"MM Blue Flower",
 	"MM Orange Yellow Flower",
@@ -781,4 +779,4 @@ CLEAR_SETUP_FILE_SIMPLE_LIST = array([
 	"GV Wading Boots Platform",
 	"Machine Room Door",
 	"Banjos Bed",
-])
+]

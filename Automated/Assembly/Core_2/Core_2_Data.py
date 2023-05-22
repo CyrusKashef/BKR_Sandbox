@@ -409,10 +409,10 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         self._write_float_bytes(0x152C, speed_dict["Talon_Trot_UnkB"])
         self._write_float_bytes(0x1530, speed_dict["Talon_Trot_UnkC"])
 
-    # Banjo Swim
+    # Banjo Surface Swim
     # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/swim.c#L11
 
-    def _get_banjo_swim_speed_dict(self):
+    def _get_banjo_surface_swim_speed_dict(self):
         '''Gets the values for the BK's speed while swimming above water'''
         speed_dict = {
             "Swim_Min_Horz_Velocity": self._read_byte_list_to_float(0x17B0, 4),
@@ -422,7 +422,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         }
         return speed_dict
 
-    def _set_banjo_swim_speed_dict(self, speed_dict):
+    def _set_banjo_surface_swim_speed_dict(self, speed_dict):
         '''Sets the values for the BK's speed while swimming above water'''
         self._write_float_bytes(0x17B0, speed_dict["Swim_Min_Horz_Velocity"])
         self._write_float_bytes(0x17B4, speed_dict["Swim_Max_Horz_Velocity"])
@@ -480,15 +480,13 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # Long Legs
     # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/bLongLeg.c#L9
 
-    # Swim
-    # Possibly: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/bSwim.c#L73
-
     # Flight
-    # Possibly: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/bFly.c#L53
+    # Possibly: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/bs/bFly.c#L185
 
     ##############################
     ### LEVEL MODEL ASSIGNMENT ###
     ##############################
+    # Decomp: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/mapModel.c#L28
     # Start Index: 0x7650
     # 0x00: Map Id
     # 0x02: Side A Id
@@ -500,7 +498,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     # 0x0E: unk7
     # 0x10: unk8
     # 0x12: padding
-    # 0x14: unk9
+    # 0x14: Scale
     # Actor Intervals: 0x18
 
     def _get_level_models(self, start_index):
@@ -515,14 +513,13 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
             "Unk6": self._possible_negative(self._read_byte_list_to_int(start_index + 0xC, 2), 2),
             "Unk7": self._possible_negative(self._read_byte_list_to_int(start_index + 0xE, 2), 2),
             "Unk8": self._possible_negative(self._read_byte_list_to_int(start_index + 0x10, 2), 2),
-            "Unk9": self._read_byte_list_to_float(start_index + 0x14, 4),
+            "Scale": self._read_byte_list_to_float(start_index + 0x14, 4),
         }
         return level_models_dict
     
     def _get_all_level_models(self):
         '''
         Gets the level models for every map
-        Decomp: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/mapModel.c#L28
         '''
         level_models_dict = {}
         for level_count, start_index in enumerate(range(0x7650, 0x8250, 0x18)):
@@ -540,7 +537,7 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         self._write_bytes(start_index + 0xC, 2, self._possible_negative_to_positive(replacement_dict["Unk6"], 2))
         self._write_bytes(start_index + 0xE, 2, self._possible_negative_to_positive(replacement_dict["Unk7"], 2))
         self._write_bytes(start_index + 0x10, 2, self._possible_negative_to_positive(replacement_dict["Unk8"], 2))
-        self._write_float_bytes(start_index + 0x14, replacement_dict["Unk9"])
+        self._write_float_bytes(start_index + 0x14, replacement_dict["Scale"])
     
     def _set_all_level_models(self, replacement_dict):
         '''Sets the level models for every map'''
@@ -550,28 +547,44 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
     ################
     ### SECTIONS ###
     ################
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/gc/section.c#L19
 
     def _get_gc_section_info(self, section_num):
         # 0x8280 GC Section Min
         # 0x8680 GC Section Max
         curr_index = 0x8280 + 0x8 * section_num
-        curr_map = self._read_bytes(curr_index, 2)
-        curr_level = self._read_bytes(curr_index + 0x2, 2)
-        curr_dev_string_offset = self._read_bytes(curr_index + 0x4, 4)
+        curr_map = self._read_byte_list_to_int(curr_index, 2)
+        curr_level = self._read_byte_list_to_int(curr_index + 0x2, 2)
+        curr_dev_string_offset = self._read_byte_list_to_int(curr_index + 0x4, 4)
         return curr_map, curr_level, curr_dev_string_offset
+    
+    def _set_gc_section_info(self, section_num, map_id=None, new_level_id=None, new_dev_string_offset=None):
+        curr_index = 0x8280 + 0x8 * section_num
+        if(map_id != None):
+            self._write_bytes(curr_index, 2, map_id)
+        if(new_level_id != None):
+            self._write_bytes(curr_index + 0x2, 2, new_level_id)
+        if(new_dev_string_offset != None):
+            self._write_bytes(curr_index + 0x4, 4, new_dev_string_offset)
 
-    def _get_all_gc_section_info(self):
+    def _get_gc_section_info_dict(self):
+        gc_section_info_dict = {}
         for section_num in range(0x1, 0x9B):
             curr_map, curr_level, curr_dev_string_offset = self._get_gc_section_info(section_num)
+            gc_section_info_dict[section_num] = {
+                "Map": curr_map,
+                "Level": curr_level,
+                "Dev_String_Offset": curr_dev_string_offset,
+            }
+        return gc_section_info_dict
     
-    def _set_gc_section_info(self, section_num, map_id_list=None, new_level_id=None, new_dev_string_offset=None):
-        curr_index = 0x8280 + 0x8 * section_num
-        curr_map = self._read_bytes(curr_index, 2)
-        if((map_id_list == None) or (curr_map in map_id_list)):
-            if(new_level_id != None):
-                self._write_bytes(curr_index + 0x2, 2, new_level_id)
-            if(new_dev_string_offset != None):
-                self._write_bytes(curr_index + 0x4, 4, new_dev_string_offset)
+    def _set_gc_section_info_dict(self, gc_section_info_dict):
+        for section_num in range(0x1, 0x9B):
+            curr_map = gc_section_info_dict[section_num]["Map"]
+            curr_level = gc_section_info_dict[section_num]["Level"]
+            curr_dev_string_offset = gc_section_info_dict[section_num]["Dev_String_Offset"]
+            self._set_gc_section_info(section_num, curr_map, curr_level, curr_dev_string_offset)
+
     
     #############################
     ### WARP PAD DESTINATIONS ###
@@ -638,6 +651,40 @@ class CORE_2_DATA_CLASS(GENERIC_FILE_CLASS):
         # Default 0x69, 0x12
         self._write_bytes(0x8FD0, 2, new_map_id)
         self._write_bytes(0x8FD2, 2, new_exit_id)
+    
+    ########################################
+    ### NON SPIRAL MOUNTAIN MOVE CAMERAS ###
+    ########################################
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/ch/mole.c#L33
+
+    def _get_move_camera_dict(self):
+        move_camera_dict = {}
+        starting_index = 0x4834
+        ending_index = 0x4870
+        for count, curr_index in enumerate(range(starting_index, ending_index, 0x6)):
+            move_camera_dict[count] = {
+                "Learn_Text": self._read_byte_list_to_int(curr_index, 2),
+                "Refresher_Text": self._read_byte_list_to_int(curr_index + 0x2, 2),
+                "Camera": self._read_byte(curr_index + 0x4),
+                "Ability": self._read_byte(curr_index + 0x5),
+            }
+        return move_camera_dict
+
+    def _set_move_camera_dict(self, move_camera_dict):
+        starting_index = 0x4834
+        ending_index = 0x4870
+        for count, curr_index in enumerate(range(starting_index, ending_index, 0x6)):
+            self._write_bytes(curr_index, 2, move_camera_dict[count]["Learn_Text"])
+            self._write_bytes(curr_index + 0x2, 2, move_camera_dict[count]["Refresher_Text"])
+            self._write_byte(curr_index + 0x4, move_camera_dict[count]["Camera"])
+            self._write_byte(curr_index + 0x5, move_camera_dict[count]["Ability"])
+
+    ###################
+    ### MODEL SWAPS ###
+    ###################
+
+    def _replace_sir_slush_model(self, asset_id):
+        self._write_bytes(0x50E4, 2, asset_id)
 
 if __name__ == '__main__':
     FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test/Rando3_Test/"

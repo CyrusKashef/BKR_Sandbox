@@ -128,3 +128,17 @@ class MODEL_CLASS():
     def _reassign_gv_matching_puzzle_tiles(self, gv_mp_tile_dict):
         matching_puzzle_model_obj = MATCHING_PUZZLE_MODEL_CLASS(self._file_dir + self._EXTRACTED_FILES_DIR, "10248-Decompressed")
         matching_puzzle_model_obj._reassign_gv_mp_tile_textures(gv_mp_tile_dict)
+    
+    ####################
+    ### BANJO SOULIE ###
+    ####################
+
+    def _banjo_soulie_furnace_fun_map(self):
+        furnace_fun_model_obj = FURNACE_FUN_MODEL_CLASS(self._file_dir + self._EXTRACTED_FILES_DIR, "105D8-Decompressed")
+        furnace_fun_model_obj._lower_invisible_barriers()
+        # furnace_fun_model_obj._remove_board_textures()
+        # for texture_count in range(17, 25):
+        #     furnace_fun_model_obj._invisible_side_textures(texture_count)
+        # for texture_count in range(44, 51):
+        #     furnace_fun_model_obj._invisible_side_textures(texture_count)
+        # furnace_fun_model_obj._invisible_side_textures(64)

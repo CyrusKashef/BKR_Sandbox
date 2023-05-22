@@ -7,6 +7,7 @@ from Automated.Assembly.Core_1.Core_1_Data import CORE_1_DATA_CLASS
 from Automated.Assembly.Core_2.Core_2_Code import CORE_2_CODE_CLASS
 from Automated.Assembly.Core_2.Core_2_Data import CORE_2_DATA_CLASS
 from Automated.Assembly.Spiral_Mountain.Spiral_Mountain_Code import SPIRAL_MOUNTAIN_CODE_CLASS
+from Automated.Assembly.Spiral_Mountain.Spiral_Mountain_Data import SPIRAL_MOUNTAIN_DATA_CLASS
 from Automated.Assembly.Mumbos_Mountain.Mumbos_Mountain_Code import MUMBOS_MOUNTAIN_CODE_CLASS
 from Automated.Assembly.Treasure_Trove_Cove.Treasure_Trove_Cove_Code import TREASURE_TROVE_COVE_CODE_CLASS
 from Automated.Assembly.Treasure_Trove_Cove.Treasure_Trove_Cove_Data import TREASURE_TROVE_COVE_DATA_CLASS
@@ -24,10 +25,11 @@ from Automated.Assembly.Gruntildas_Lair.Gruntildas_Lair_Data import GRUNTILDAS_L
 from Automated.Assembly.Final_Battle.Final_Battle_Code import FINAL_BATTLE_CODE_CLASS
 from Automated.Assembly.Cutscenes.Cutscenes_Code import CUTSCENES_CODE_CLASS
 
-from Data_Files.Music_Dict import LOOPING_LEVEL_MUSIC_DICT
 from Data_Files.Marker_Dict import ENEMY_MARKER_DICT
 from Data_Files.Move_Dict import MOVE_DICT
+from Data_Files.Sandcastle_Cheat_Dict import SIMPLIFIED_CHEAT_DICT, MOVE_CHEAT_DICT
 from Data_Files.Static_Markers_Dict import BANJO_SOULIE_MARKERS
+from Data_Files.Setups.Bottles_Dict import BOTTLES_DICT, SEPARATED_BOTTLES_DICT
 
 class ASSEMBLY_CLASS():
     def __init__(self, file_dir):
@@ -52,7 +54,7 @@ class ASSEMBLY_CLASS():
         self._core_2_code = CORE_2_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}F37F90{self._DECOMPRESSED_EXTENSION}")
         self._core_2_data = CORE_2_DATA_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}F9CAE0{self._DECOMPRESSED_EXTENSION}")
         self._spiral_mountain_code = SPIRAL_MOUNTAIN_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FC4810{self._DECOMPRESSED_EXTENSION}")
-        self._spiral_mountain_data = None
+        self._spiral_mountain_data = SPIRAL_MOUNTAIN_DATA_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FC6C0F{self._DECOMPRESSED_EXTENSION}")
         self._mumbos_mountain_code = MUMBOS_MOUNTAIN_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FB24A0{self._DECOMPRESSED_EXTENSION}")
         self._mumbos_mountain_data = None
         self._treasure_trove_cove_code = TREASURE_TROVE_COVE_CODE_CLASS(file_dir, f"{self._EXTRACTED_FILES_DIR}FAE860{self._DECOMPRESSED_EXTENSION}")
@@ -128,6 +130,16 @@ class ASSEMBLY_CLASS():
         self._spiral_mountain_code._bottles_skip_tutorial_moves(move_value_list)
         self._spiral_mountain_code._check_moves_as_used(move_value_list)
         self._core_2_code._sm_bridge_completion_requirements(move_value_list)
+    
+    def _jump_pad_cheat_code_move(self, new_move):
+        if(new_move in ["Jumps", "Attacks"]):
+            raise SystemError(f"Cannot Make These Into Sandcastle Cheats: {new_move}")
+        self._core_2_code._jump_pad_cheat_code_move(MOVE_DICT[new_move][0])
+
+    def _fly_pad_cheat_code_move(self, new_move):
+        if(new_move in ["Jumps", "Attacks"]):
+            raise SystemError(f"Cannot Make These Into Sandcastle Cheats: {new_move}")
+        self._core_2_code._fly_pad_cheat_code_move(MOVE_DICT[new_move][0])
     
     def _remove_known_anti_tampering(self):
         self._core_1_code._disable_anti_tamper()
@@ -322,6 +334,23 @@ class ASSEMBLY_CLASS():
         self._core_2_data._set_actor_list(start_index=0x33B0, actor_id=0x51, count=note_count3, unk10=0x3E800000,
                                           unk14=0x42FA0000, unk18=0x41C80000, unk1C=0x44354000,
                                           unk20=0x42FA0000, unk24=0x42FA0000, unk28=0x41C80000)
+    
+    def _banjo_soulie_enemy_drops(self):
+        # 1 Note (Counts As 5)
+        self._core_2_data._set_actor_list(start_index=0x3348, actor_id=0x0051, count=0x01, unk10=0x46500000,
+                                          unk14=0x00000000, unk18=0x00000000, unk1C=0x443B8000,
+                                          unk20=0x437A0000, unk24=0x00000000, unk28=0x00000000)
+        # 3 Blue Eggs
+        self._core_2_data._set_actor_list(start_index=0x337C, actor_id=0x0052, count=0x03, unk10=0x3E800000,
+                                          unk14=0x42FA0000, unk18=0x41C80000, unk1C=0x44354000,
+                                          unk20=0x42FA0000, unk24=0x42FA0000, unk28=0x41C80000)
+        # 1 Gold Feather
+        self._core_2_data._set_actor_list(start_index=0x33B0, actor_id=0x0370, count=0x01, unk10=0x46500000,
+                                          unk14=0x00000000, unk18=0x00000000, unk1C=0x443B8000,
+                                          unk20=0x437A0000, unk24=0x00000000, unk28=0x00000000)
+    
+    def _increase_note_pickup_count(self, note_pickup_count):
+        self._core_2_code._increase_note_pickup_count(note_pickup_count)
 
     def _exit_to_witchs_lair(self):
         self._core_2_code._exit_to_witchs_lair()
@@ -427,12 +456,12 @@ class ASSEMBLY_CLASS():
             speed_dict[item] = max(min(int(speed_dict[item] * scaling), 0x7F0FFFFF), 0x00000001)
         self._core_2_data._set_bk_talon_trot_speed_dict(speed_dict)
     
-    def _scale_banjos_swim_speed(self, scaling):
+    def _scale_banjos_surface_swim_speed(self, scaling):
         # Limiting it to positive numbers
-        speed_dict = self._core_2_data._get_banjo_swim_speed_dict()
+        speed_dict = self._core_2_data._get_banjo_surface_swim_speed_dict()
         for item in ["Swim_Min_Horz_Velocity", "Swim_Max_Horz_Velocity"]:
             speed_dict[item] = max(min(int(speed_dict[item] * scaling), 0x7F0FFFFF), 0x00000001)
-        self._core_2_data._set_banjo_swim_speed_dict(speed_dict)
+        self._core_2_data._set_banjo_surface_swim_speed_dict(speed_dict)
     
     def _scale_banjos_walk_speed(self, scaling):
         # Limiting it to positive numbers
@@ -454,6 +483,15 @@ class ASSEMBLY_CLASS():
         for parameter in parameter_list:
             level_models_dict[first_level_count][parameter] = level_models_dict[second_level_count][parameter]
         self._core_2_data._set_all_level_models(level_models_dict)
+    
+    def _modify_level_model_by_dict(self, new_level_model_dict):
+        curr_level_model_dict = self._core_2_data._get_all_level_models()
+        for level_count in curr_level_model_dict:
+            curr_map = curr_level_model_dict[level_count]["Map"]
+            if(curr_map in new_level_model_dict):
+                for parameter in new_level_model_dict[curr_map]:
+                    curr_level_model_dict[level_count][parameter] = new_level_model_dict[curr_map][parameter]
+        self._core_2_data._set_all_level_models(curr_level_model_dict)
     
     def _snacker_everywhere(self):
         self._core_2_code._snacker_remove_ttc_boundaries()
@@ -530,39 +568,129 @@ class ASSEMBLY_CLASS():
     def _unlimited_cheat_codes(self):
         self._treasure_trove_cove_code._unlimited_cheat_codes()
     
-    def _simplified_cheat_codes(self):
+    def _simplified_cheat_codes(self, jump_pad_cheat_move="Shock_Jump", fly_pad_cheat_move="Flight"):
         self._treasure_trove_cove_data._obtain_sandcastle_cheats()
-        SIMPLIFIED_CHEAT_DICT = {
-            # Double Items
-            1: "BLUE", 2: "RED", 3: "GOLD",
-            # Bottles Bonus
-            4: "BONUSONE", 5: "BONUSTWO", 6: "BONUSTHREE", 7: "BONUSFOUR",
-            8: "BONUSFIVE", 9: "BIGBONUS", 10: "WISHY", 11: "NOBONUS",
-            # SNS
-            15: "NABNUTSTABLE", 16: "CAPTAINSCABIN", 17: "BATHROOM",
-            18: "DESERTDOOR", 19: "SHARKFOOD", 20: "CELLAR", 21: "ICEKEY",
-            # Note Doors
-            22: "NOTEDOORTWO", 23: "NOTEDOORTHREE", 24: "NOTEDOORFOUR",
-            25: "NOTEDOORFIVE", 26: "NOTEDOORSIX", 27: "NOTEDOORSEVEN",
-            # Complete Puzzles
-            28: "CCPUZZLE", 29: "BGSPUZZLE", 30: "FPPUZZLE", 31: "GVPUZZLE",
-            32: "MMMPUZZLE", 33: "RBBPUZZLE", 34: "CCWPUZZLE",
-            # Infinite Items
-            35: "LIVES", 36: "FIRING", 37: "FLIGHT", 38: "WONDERWING",
-            64: "AIR",
-            # Level Early
-            41: "CCEARLY", 46: "BGSEARLY", 49: "GVEARLY", 53: "FPEARLY",
-            54: "MMMEARLY", 58: "RBBEARLY", 61: "CCWEARLY",
-            # Gruntilda's Lair
-            39: "PIPESONE", 40: "PIPESTWO", 42: "BGSGRATE", 43: "CCWPODIUM",
-            44: "HAT", 45: "ICEBLOCK", 47: "WALLS", 50: "WEBS",
-            51: "EYE", 55: "GATE", 56: "COFFIN", 57: "WATERONE",
-            59: "RBBGRILLE", 60: "MMMGRILLE",
-            # Moves
-            48: "JUMPPAD", 52: "FLYPAD",
-            # Misc
-            62: "ENERGY", 63: "MUMBO",
-        }
         for cheat_num in SIMPLIFIED_CHEAT_DICT:
             self._treasure_trove_cove_data._edit_sandcastle_cheat(cheat_num, SIMPLIFIED_CHEAT_DICT[cheat_num])
+        self._treasure_trove_cove_data._edit_sandcastle_cheat(48, MOVE_CHEAT_DICT[jump_pad_cheat_move])
+        self._core_2_code._jump_pad_cheat_code_move(new_move=MOVE_DICT[jump_pad_cheat_move][0])
+        self._treasure_trove_cove_data._edit_sandcastle_cheat(52, MOVE_CHEAT_DICT[fly_pad_cheat_move])
+        self._core_2_code._fly_pad_cheat_code_move(new_move=MOVE_DICT[fly_pad_cheat_move][0])
         self._treasure_trove_cove_data._set_sandcastle_cheats()
+    
+    def _water_level_one_automatically(self):
+        self._core_2_code._water_level_one_automatically()
+
+    def _water_level_two_automatically(self):
+        self._core_2_code._water_level_two_automatically()
+    
+    def _adjusted_bottles_cameras(self, sm_moves, non_sm_moves):
+        script_id_dict = {}
+        script_id = 0x010C
+        # Spiral Mountain Moves
+        move_camera_dict = self._spiral_mountain_data._get_move_camera_dict()
+        for count in move_camera_dict:
+            move_camera_dict[count]["Learn_Text"] = BOTTLES_DICT[sm_moves[count]]["Learn_Text"]
+            move_camera_dict[count]["Refresher_Text"] = BOTTLES_DICT[sm_moves[count]]["Refresher_Text"]
+            move_camera_dict[count]["Camera"] = BOTTLES_DICT[sm_moves[count]]["New_Camera"]
+            move_camera_dict[count]["Ability"] = sm_moves[count]
+            script_id_dict[sm_moves[count]] = script_id
+            script_id += 0x80
+        self._spiral_mountain_data._set_move_camera_dict(move_camera_dict)
+        script_id += 0x80
+        # Non-Spiral Mountain Moves
+        move_camera_dict = self._core_2_data._get_move_camera_dict()
+        for count in move_camera_dict:
+            move_camera_dict[count]["Learn_Text"] = BOTTLES_DICT[non_sm_moves[count]]["Learn_Text"]
+            move_camera_dict[count]["Refresher_Text"] = BOTTLES_DICT[non_sm_moves[count]]["Refresher_Text"]
+            move_camera_dict[count]["Camera"] = BOTTLES_DICT[non_sm_moves[count]]["New_Camera"]
+            move_camera_dict[count]["Ability"] = non_sm_moves[count]
+            script_id_dict[non_sm_moves[count]] = script_id
+            script_id += 0x80
+        self._core_2_data._set_move_camera_dict(move_camera_dict)
+        return script_id_dict
+    
+    def _adjusted_seperated_bottles_cameras(self, sm_moves, non_sm_moves):
+        script_id_dict = {}
+        script_id = 0x010C
+        # Spiral Mountain Moves
+        move_camera_dict = self._spiral_mountain_data._get_move_camera_dict()
+        for count in move_camera_dict:
+            move_camera_dict[count]["Learn_Text"] = SEPARATED_BOTTLES_DICT[sm_moves[count]]["Learn_Text"]
+            move_camera_dict[count]["Refresher_Text"] = SEPARATED_BOTTLES_DICT[sm_moves[count]]["Refresher_Text"]
+            # move_camera_dict[count]["Camera"] = SEPARATED_BOTTLES_DICT[sm_moves[count]]["New_Camera"]
+            move_camera_dict[count]["Camera"] = SEPARATED_BOTTLES_DICT[sm_moves[count]]["Old_Camera"]
+            move_camera_dict[count]["Ability"] = sm_moves[count]
+            script_id_dict[sm_moves[count]] = script_id
+            script_id += 0x80
+        self._spiral_mountain_data._set_move_camera_dict(move_camera_dict)
+        script_id += 0x80
+        # Non-Spiral Mountain Moves
+        move_camera_dict = self._core_2_data._get_move_camera_dict()
+        for count in move_camera_dict:
+            move_camera_dict[count]["Learn_Text"] = SEPARATED_BOTTLES_DICT[non_sm_moves[count]]["Learn_Text"]
+            move_camera_dict[count]["Refresher_Text"] = SEPARATED_BOTTLES_DICT[non_sm_moves[count]]["Refresher_Text"]
+            # move_camera_dict[count]["Camera"] = SEPARATED_BOTTLES_DICT[non_sm_moves[count]]["New_Camera"]
+            move_camera_dict[count]["Camera"] = SEPARATED_BOTTLES_DICT[non_sm_moves[count]]["Old_Camera"]
+            move_camera_dict[count]["Ability"] = non_sm_moves[count]
+            script_id_dict[non_sm_moves[count]] = script_id
+            script_id += 0x80
+        self._core_2_data._set_move_camera_dict(move_camera_dict)
+        return script_id_dict
+    
+    def _set_swim_a_speed(self, swim_a_speed):
+        self._core_2_code._set_swim_a_speed(swim_a_speed)
+    
+    def _set_swim_b_speed(self, swim_b_speed):
+        self._core_2_code._set_swim_b_speed(swim_b_speed)
+    
+    def _set_roll_speed(self, roll_speed):
+        self._core_2_code._set_roll_speed(roll_speed)
+    
+    def _raise_sharkfood_island(self):
+        self._treasure_trove_cove_code._raise_sharkfood_island()
+    
+    def _remove_tutorial_vegetable_despawn(self):
+        '''Does not work'''
+        self._spiral_mountain_code._remove_tutorial_vegetable_despawn()
+    
+    def _forgiving_deaths(self):
+        '''Does not work'''
+        self._core_2_code._forgiving_deaths()
+    
+    def _adjust_gc_section_info_by_level(self, new_gc_section_info_dict):
+        curr_gc_section_info_dict = self._core_2_data._get_gc_section_info_dict()
+        for section_num in curr_gc_section_info_dict:
+            curr_level = curr_gc_section_info_dict[section_num]["Map"]
+            if(curr_level in new_gc_section_info_dict):
+                curr_gc_section_info_dict[section_num]["Level"] = new_gc_section_info_dict[curr_level]
+        self._core_2_data._set_gc_section_info_dict(curr_gc_section_info_dict)
+    
+    def _replace_sir_slush_model(self, asset_id, marker_data_dict=None):
+        self._core_2_data._replace_sir_slush_model(asset_id)
+        if(marker_data_dict == None):
+            marker_data_dict = {
+                0xD8F2: { # Sir Slush (Body)
+                    0x02: [0, 0, 0, 0, 0, 3],
+                    0x04: [9, 0, 2, 0, 0, 0],
+                    0x06: [9, 0, 2, 0, 0, 0],
+                    0x08: [5, 0, 0, 1, 0, 0],
+                    0x0A: [0, 2, 2, 0, 1, 0],
+                    0x0C: [0, 2, 2, 0, 1, 0],
+                    0x0E: [0, 0, 0, 0, 0, 0],
+                    0x10: [0, 0, 0, 0, 0, 0],
+                    0x12: [0, 0, 0, 0, 1, 0],
+                    0x14: [9, 0, 2, 0, 0, 0],
+                    0x16: [0, 0, 0, 0, 0, 0],
+                    0x18: [5, 0, 0, 1, 0, 0],
+                }
+            }
+        for index_start in marker_data_dict:
+            for collision_index in marker_data_dict[index_start]:
+                self._core_2_data._set_collision_parameter(index_start + collision_index,
+                                                            marker_data_dict[index_start][collision_index][0],
+                                                            marker_data_dict[index_start][collision_index][1],
+                                                            marker_data_dict[index_start][collision_index][2],
+                                                            marker_data_dict[index_start][collision_index][3],
+                                                            marker_data_dict[index_start][collision_index][4],
+                                                            marker_data_dict[index_start][collision_index][5])

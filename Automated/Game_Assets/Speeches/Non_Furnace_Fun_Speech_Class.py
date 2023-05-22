@@ -156,11 +156,12 @@ class NON_FURNACE_FUN_SPEECH_CLASS(GENERIC_SPEECH_CLASS):
             curr_index += 0x2 + length_val
 
 if __name__ == '__main__':
-    # FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test/Rando3_Test/Speeches/"
-    FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test2/"
-    FILE_NAME = "5CDB50"
+    ORIGINAL_FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test2/"
+    NEW_FILE_DIR = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/test/Rando3_Test/Speeches/"
+    FILE_NAME = "5C85D8"
     from shutil import copy
-    copy(FILE_DIR + FILE_NAME + ".bin", FILE_DIR + FILE_NAME + "-Test.bin")
-    speech_obj = NON_FURNACE_FUN_SPEECH_CLASS(FILE_DIR, FILE_NAME + "-Test")
-    speech_obj._print_speech_dict()
-    # speech_obj._recontruct_speech_file()
+    copy(ORIGINAL_FILE_DIR + FILE_NAME + ".bin", NEW_FILE_DIR + FILE_NAME + "-Test.bin")
+    speech_obj = NON_FURNACE_FUN_SPEECH_CLASS(NEW_FILE_DIR, FILE_NAME + "-Test")
+    # speech_obj._print_speech_dict()
+    speech_obj._replace_section(section=0, new_sprite=None, new_line="SHOW ME WHERE YOU PISS FROM!")
+    speech_obj._recontruct_speech_file()

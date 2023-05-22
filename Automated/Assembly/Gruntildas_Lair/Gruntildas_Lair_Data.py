@@ -214,3 +214,36 @@ class GRUNTILDAS_LAIR_DATA_CLASS(GENERIC_FILE_CLASS):
             curr_index = 0x1920 + count * 0x4
             self._write_bytes(curr_index, 2, picture_question_dict[count]["Map"])
             self._write_bytes(curr_index, 2, picture_question_dict[count]["Camera"])
+    
+    #################
+    ### CAULDRONS ###
+    #################
+    # Decomp: https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/lair/ch/cauldron.c#L46
+
+    def _get_cauldron_dict(self):
+        cauldron_dict = {}
+        starting_index = 0x970
+        ending_index = 0x9C0
+        for count, curr_index in enumerate(range(starting_index, ending_index, 0x8)):
+            cauldron_dict[count] = {
+                "Map": self._read_byte(curr_index),
+                "Unk1": self._read_byte(curr_index + 0x1),
+                "Entry_Point": self._read_byte(curr_index + 0x2),
+                "Unk3": self._read_byte(curr_index + 0x3),
+                "Unk4": self._read_byte(curr_index + 0x4),
+                "Unk5": self._read_byte(curr_index + 0x5),
+                "Unk6": self._read_bytes(curr_index + 0x6, 2),
+            }
+        return cauldron_dict
+
+    def _set_cauldron_dict(self, cauldron_dict):
+        starting_index = 0x970
+        ending_index = 0x9C0
+        for count, curr_index in enumerate(range(starting_index, ending_index, 0x8)):
+            self._write_byte(curr_index, cauldron_dict[count]["Map"])
+            self._write_byte(curr_index, cauldron_dict[count]["Unk1"])
+            self._write_byte(curr_index, cauldron_dict[count]["Entry_Point"])
+            self._write_byte(curr_index, cauldron_dict[count]["Unk3"])
+            self._write_byte(curr_index, cauldron_dict[count]["Unk4"])
+            self._write_byte(curr_index, cauldron_dict[count]["Unk5"])
+            self._write_bytes(curr_index, 2, cauldron_dict[count]["Unk6"])

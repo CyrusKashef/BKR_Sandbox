@@ -285,13 +285,16 @@ class GENERIC_MODEL_CLASS(GENERIC_FILE_CLASS):
         # Maybe put it into a dictionary or something, idk
         return display_list_command, display_list_command_parameters
     
-    def _find_display_list_command_count(self, dlist_command_line):
-        for count in range(self._display_list_command_count):
+    def _find_display_list_command_count(self, dlist_command_line, start_count=0):
+        if(start_count > self._display_list_command_count):
+            return -1
+        for count in range(start_count, self._display_list_command_count):
             display_list_command_index_start = self._display_list_setup_offset + 0x8 + count * 0x8
             curr_dlist_command_line = self._read_byte_list_to_int(display_list_command_index_start, 8)
             if(curr_dlist_command_line == dlist_command_line):
                 return count
-        raise Exception(f"Could Not Find DList Command: {hex(dlist_command_line)}")
+        # raise Exception(f"Could Not Find DList Command: {hex(dlist_command_line)}")
+        return -1
     
     def _insert_display_list_command(self, count, dlist_command):
         display_list_command_index_start = self._display_list_setup_offset + 0x8 + count * 0x8

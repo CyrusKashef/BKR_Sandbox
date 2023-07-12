@@ -345,3 +345,9 @@ class SETUP_CLASS():
             object_count_dict = setup_obj._object_count(object_name_list, object_count_dict)
             setup_obj._create_setup_file(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
         return object_count_dict
+    
+    def _setup_item_xyz_positions(self, setup_pointer, setup_name, object_name_list):
+        setup_obj = GENERIC_SETUP_FILE(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{setup_pointer}-Decompressed")
+        setup_obj._get_setup_file_info()
+        setup_obj._object_xyz_positions(setup_pointer, setup_name, object_name_list)
+        setup_obj._create_setup_file(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{setup_pointer}-Decompressed")

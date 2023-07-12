@@ -43,6 +43,8 @@ from Data_Files.Enums.Ability_Enums import ABILITY_ENUMS
 
 from Data_Files.Speeches.General_Speech_Dict import SHORTEN_BOTTLES_SECRET_GAME_SPEECH_DICT
 
+from Data_Files.Setups.Map_Setup_Pointer_Dict import MAP_SETUP_POINTER_DICT
+
 class AUTOMATED_CLASS():
     def __init__(self, file_dir, original_rom_path, new_rom_path):
         ### CONSTANTS ###
@@ -981,6 +983,22 @@ class AUTOMATED_CLASS():
         print("Gruntildas Lair")
         pp.pprint(object_count_dict)
 
+    def _print_map_object_positions(self):
+        self._setup_class_creation()
+        object_name_list = [
+            "Jiggy", "Empty Honeycomb", "Mumbo Token", "Extra Life", "Honeycomb",
+            "Note", "Blue Egg", "Red Feather", "Gold Feather",
+            "Orange", "Blubber's Gold",
+            "FP Blue Present (Collectable)", "FP Green Present (Collectable)", "FP Red Present (Collectable)",
+            "Bottles Mound (Beak Bomb)", "Bottles Mound (Eggs)", "Bottles Mound (Beak Buster)", "Bottles Mound (Talon Trot)",
+            "Bottles Mound (Shock Spring Jump)", "Bottles Mound (Flight)", "Bottles Mound (Wonderwing)", "Bottles Mound (Stilt Stride)",
+            "Bottles Mound (Turbo Talon Trot)", "Bottles Mound (Note Door)", "Bottles Mound (Camera)", "Bottles Mound (Swim)",
+            "Bottles Mound (Attack)", "Bottles Mound (Beak Barge)", "Bottles Mound (Jump)", "Bottles Mound (Climb)",
+            "Yellow Jinjo", "Orange Jinjo", "Blue Jinjo", "Pink Jinjo", "Green Jinjo",
+            "CCW Acorn", "CCW Caterpillar"]
+        for setup_pointer in MAP_SETUP_POINTER_DICT:
+            self._setup_obj._setup_item_xyz_positions(setup_pointer, MAP_SETUP_POINTER_DICT[setup_pointer], object_name_list)
+
     def _little_big_planet(self, scale=2):
         '''Won't work without editing EVERY assembly instance of a coordinate'''
         self._assembly_class_creation()
@@ -1140,13 +1158,14 @@ if __name__ == '__main__':
     # automated_obj._raise_sharkfood_island()
     # automated_obj._banjo_soulie_enemy_drops()
     # automated_obj._banjo_soulie_maps()
-    automated_obj._replace_sir_slush_model(0x0496) # Sir Slush -> Twinkly Muncher
-    automated_obj._new_game_start_area(0x01, 0x12) # Banjos House
+    # automated_obj._replace_sir_slush_model(0x0496) # Sir Slush -> Twinkly Muncher
+    # automated_obj._new_game_start_area(0x01, 0x12) # Banjos House
     # automated_obj._new_game_start_area(0x47, 0x01) # BGS Mumbos Skull
     # curren_warp = 0x3501
     # print(f"Current Warp: {hex(curren_warp)}")
     # automated_obj._reassign_banjos_house_warp(curren_warp) # Warp Testing
     # automated_obj._forgiving_deaths()
+    automated_obj._print_map_object_positions()
     print("Options Complete")
 
     print("Adjusting Core Checksums Start")

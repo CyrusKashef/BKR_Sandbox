@@ -1232,6 +1232,38 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
                         object_count_dict[object_name] += 1
         return object_count_dict
 
+    def _object_xyz_positions(self, setup_pointer, setup_name, object_name_list):
+        file_dir = "C:/Users/Cyrus/Desktop/N64/ROMs/GEDecompressor_Files/Object_XYZ_Positions/"
+        with open(f"{file_dir}{setup_pointer}-{setup_name}.txt", "w+") as f:
+            for voxel_num in self._voxel_dict:
+                for curr_item in self._voxel_dict[voxel_num][OBJECT_0x14_LIST]:
+                    object_name = None
+                    if("Object_ID" in curr_item and "Script_ID" in curr_item):
+                        object_tuple = (curr_item["Object_ID"], curr_item["Script_ID"])
+                        if(object_tuple in ACTOR_OBJECT_DICT):
+                            if(ACTOR_OBJECT_DICT[object_tuple] in object_name_list):
+                                object_name = ACTOR_OBJECT_DICT[object_tuple]
+                        elif(object_tuple in TIMED_OBJECT_DICT):
+                            if(TIMED_OBJECT_DICT[object_tuple] in object_name_list):
+                                object_name = TIMED_OBJECT_DICT[object_tuple]
+                        elif(object_tuple in MISC_OBJECT_DICT):
+                            if(MISC_OBJECT_DICT[object_tuple] in object_name_list):
+                                object_name = MISC_OBJECT_DICT[object_tuple]
+                        if(object_name):
+                            f.write(f"    ({curr_item['X_Position']}, {curr_item['Y_Position']}, {curr_item['Z_Position']}): [ # {object_name}\n    ],\n")
+                for curr_item in self._voxel_dict[voxel_num][OBJECT_0x0C_LIST]:
+                    object_name = None
+                    object_id = curr_item["Object_ID"]
+                    if("Object_ID" in curr_item):
+                        if(object_id in SPRITE_OBJECT_DICT):
+                            if(SPRITE_OBJECT_DICT[object_id] in object_name_list):
+                                object_name = SPRITE_OBJECT_DICT[object_id]
+                        elif(object_id in STATIC_OBJECT_DICT):
+                            if(STATIC_OBJECT_DICT[object_id] in object_name_list):
+                                object_name = STATIC_OBJECT_DICT[object_id]
+                        if(object_name):
+                            f.write(f"    ({curr_item['X_Position']}, {curr_item['Y_Position']}, {curr_item['Z_Position']}): [ # {object_name}\n    ],\n")
+
 #############################################
 ################## TESTING ##################
 #############################################

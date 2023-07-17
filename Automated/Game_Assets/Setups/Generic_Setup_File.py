@@ -19,7 +19,7 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         self._file_name = file_name
         self._voxel_dict = {}
         self._camera_dict = {}
-        self._unknown_dict = {}
+        self._lighting_dict = {}
         self._neg_x_voxel_count = None
         self._neg_y_voxel_count = None
         self._neg_z_voxel_count = None
@@ -240,19 +240,19 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
             curr_index = self._get_camera_info(curr_index)
         return curr_index + 2
 
-    ### UNKNOWN SECTION
+    ### LIGHTING SECTION
 
-    def _still_in_unknown_section(self, curr_index):
+    def _still_in_lighting_section(self, curr_index):
         return self._read_byte(curr_index) == 0x01
 
-    def _get_all_unknown_section_info(self, curr_index):
+    def _get_all_lighting_section_info(self, curr_index):
         '''
         PyDoc
         '''
-        unknown_count = 0
-        while(self._still_in_unknown_section(curr_index)):
-            self._get_unknown_section_info(unknown_count, curr_index)
-            unknown_count += 1
+        lighting_count = 0
+        while(self._still_in_lighting_section(curr_index)):
+            self._get_lighting_section_info(lighting_count, curr_index)
+            lighting_count += 1
             curr_index += 0x24
         return curr_index
 
@@ -263,7 +263,7 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         voxel_count = self._get_header_info()
         curr_index = self._get_all_voxel_info(voxel_count)
         curr_index = self._get_all_camera_info(curr_index)
-        curr_index = self._get_all_unknown_section_info(curr_index)
+        curr_index = self._get_all_lighting_section_info(curr_index)
         self._mmap.close()
     
     ############################
@@ -574,24 +574,24 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
             "Camera_End": self._read_byte(index_start + 0xA),
         }
 
-    ########################
-    ### GET UNKNOWN INFO ###
-    ########################
+    #########################
+    ### GET LIGHTING INFO ###
+    #########################
 
-    def _get_unknown_section_info(self, unknown_num, index_start):
-        self._unknown_dict[unknown_num] = {
+    def _get_lighting_section_info(self, lighting_num, index_start):
+        self._lighting_dict[lighting_num] = {
             "Section1": self._read_byte(index_start),
             "Section2": self._read_byte(index_start + 0x01),
-                "Section2_Unk1": self._read_byte_list_to_float(index_start + 0x02, 4),
-                "Section2_Unk2": self._read_byte_list_to_float(index_start + 0x06, 4),
-                "Section2_Unk3": self._read_byte_list_to_float(index_start + 0x0A, 4),
+                "X_Position": self._read_byte_list_to_float(index_start + 0x02, 4),
+                "Y_Position": self._read_byte_list_to_float(index_start + 0x06, 4),
+                "Z_Position": self._read_byte_list_to_float(index_start + 0x0A, 4),
             "Section3": self._read_byte(index_start + 0x0E),
                 "Section3_Unk1": self._read_byte_list_to_float(index_start + 0x0F, 4),
                 "Section3_Unk2": self._read_byte_list_to_float(index_start + 0x13, 4),
             "Section4": self._read_byte(index_start + 0x17),
-                "Section4_Unk1": self._possible_negative(self._read_byte_list_to_int(index_start + 0x18, 4), 4),
-                "Section4_Unk2": self._possible_negative(self._read_byte_list_to_int(index_start + 0x1C, 4), 4),
-                "Section4_Unk3": self._possible_negative(self._read_byte_list_to_int(index_start + 0x20, 4), 4),
+                "Red": self._possible_negative(self._read_byte_list_to_int(index_start + 0x18, 4), 4),
+                "Green": self._possible_negative(self._read_byte_list_to_int(index_start + 0x1C, 4), 4),
+                "Blue": self._possible_negative(self._read_byte_list_to_int(index_start + 0x20, 4), 4),
         }
     
     #######################
@@ -662,13 +662,13 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         for camera_id in sorted(self._camera_dict):
             self._set_camera_info(self._camera_dict[camera_id])
 
-    def _set_unknown_section(self):
+    def _set_lighting_section(self):
         '''
         PyDoc
         '''
         self._new_file.write(b"\x00\x04")
-        for unknown_num in sorted(self._unknown_dict):
-            self._set_unknown_section_info(self._unknown_dict[unknown_num])
+        for lighting_num in sorted(self._lighting_dict):
+            self._set_lighting_section_info(self._lighting_dict[lighting_num])
         self._new_file.write(b"\x00\x00")
 
     def _create_setup_file(self, file_dir, file_name):
@@ -679,7 +679,7 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
             voxel_count = self._set_header()
             self._set_voxel_section(voxel_count)
             self._set_camera_section()
-            self._set_unknown_section()
+            self._set_lighting_section()
     
     ############################
     ### SET OBJECT 0x14 INFO ###
@@ -964,23 +964,23 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
             print("Unknown Camera Type?")
             raise SystemError("Unknown Camera Type?")
 
-    ########################
-    ### SET UNKNOWN INFO ###
-    ########################
+    #########################
+    ### SET LIGHTING INFO ###
+    #########################
 
-    def _set_unknown_section_info(self, unknown_object):
-        self._new_file.write(self._possible_negative_to_bytes(unknown_object["Section1"], 1))
-        self._new_file.write(self._possible_negative_to_bytes(unknown_object["Section2"], 1))
-        self._new_file.write(self._float_to_byte_hex(unknown_object["Section2_Unk1"]))
-        self._new_file.write(self._float_to_byte_hex(unknown_object["Section2_Unk2"]))
-        self._new_file.write(self._float_to_byte_hex(unknown_object["Section2_Unk3"]))
-        self._new_file.write(self._possible_negative_to_bytes(unknown_object["Section3"], 1))
-        self._new_file.write(self._float_to_byte_hex(unknown_object["Section3_Unk1"]))
-        self._new_file.write(self._float_to_byte_hex(unknown_object["Section3_Unk2"]))
-        self._new_file.write(self._possible_negative_to_bytes(unknown_object["Section4"], 1))
-        self._new_file.write(self._possible_negative_to_bytes(unknown_object["Section4_Unk1"], 4))
-        self._new_file.write(self._possible_negative_to_bytes(unknown_object["Section4_Unk2"], 4))
-        self._new_file.write(self._possible_negative_to_bytes(unknown_object["Section4_Unk3"], 4))
+    def _set_lighting_section_info(self, lighting_object):
+        self._new_file.write(self._possible_negative_to_bytes(lighting_object["Section1"], 1))
+        self._new_file.write(self._possible_negative_to_bytes(lighting_object["Section2"], 1))
+        self._new_file.write(self._float_to_byte_hex(lighting_object["X_Position"]))
+        self._new_file.write(self._float_to_byte_hex(lighting_object["Y_Position"]))
+        self._new_file.write(self._float_to_byte_hex(lighting_object["Z_Position"]))
+        self._new_file.write(self._possible_negative_to_bytes(lighting_object["Section3"], 1))
+        self._new_file.write(self._float_to_byte_hex(lighting_object["Section3_Unk1"]))
+        self._new_file.write(self._float_to_byte_hex(lighting_object["Section3_Unk2"]))
+        self._new_file.write(self._possible_negative_to_bytes(lighting_object["Section4"], 1))
+        self._new_file.write(self._possible_negative_to_bytes(lighting_object["Red"], 4))
+        self._new_file.write(self._possible_negative_to_bytes(lighting_object["Green"], 4))
+        self._new_file.write(self._possible_negative_to_bytes(lighting_object["Blue"], 4))
     
     #############################
     ### MANIULATION FUNCTIONS ###
@@ -1080,6 +1080,9 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         if(camera_id not in self._camera_dict):
             raise SystemError(f"Camera Doesn't Exists: {camera_id}")
         del self._camera_dict[camera_id]
+    
+    def _remove_lighting_dict(self):
+        self._lighting_dict = {}
 
     ### MODIFY
     
@@ -1164,6 +1167,28 @@ class GENERIC_SETUP_FILE(GENERIC_FILE_CLASS):
         self._camera_dict[new_camera_id] = self._camera_dict[old_camera_id]
         self._camera_dict[new_camera_id]["Camera_Id"] = new_camera_id
         del self._camera_dict[old_camera_id]
+
+    def _adjust_all_lighting_colors(self, lighting_num, red=None, green=None, blue=None):
+        if(red is not None):
+            self._lighting_dict[lighting_num]["Red"] = red
+        if(green is not None):
+            self._lighting_dict[lighting_num]["Green"] = green
+        if(blue is not None):
+            self._lighting_dict[lighting_num]["Blue"] = blue
+
+    def _adjust_lighting_position(self, lighting_num, x_pos=None, y_pos=None, z_pos=None):
+        if(x_pos is not None):
+            self._lighting_dict[lighting_num]["X_Position"] = x_pos
+        if(y_pos is not None):
+            self._lighting_dict[lighting_num]["Y_Position"] = y_pos
+        if(z_pos is not None):
+            self._lighting_dict[lighting_num]["Z_Position"] = z_pos
+    
+    def _adjust_lighting_unknown(self, lighting_num, unk1=None, unk2=None):
+        if(unk1 is not None):
+            self._lighting_dict[lighting_num]["Section3_Unk1"] = unk1
+        if(unk2 is not None):
+            self._lighting_dict[lighting_num]["Section3_Unk2"] = unk2
 
     ### ADD
 

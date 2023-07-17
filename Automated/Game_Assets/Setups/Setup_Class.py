@@ -351,3 +351,29 @@ class SETUP_CLASS():
         setup_obj._get_setup_file_info()
         setup_obj._object_xyz_positions(setup_pointer, setup_name, object_name_list)
         setup_obj._create_setup_file(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{setup_pointer}-Decompressed")
+    
+    def _remove_unknown_dict(self):
+        for pointer in MAP_SETUP_POINTER_DICT:
+            # print(f"Map: {pointer} - {MAP_SETUP_POINTER_DICT[pointer]}")
+            setup_obj = GENERIC_SETUP_FILE(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
+            setup_obj._get_setup_file_info()
+            setup_obj._remove_unknown_dict()
+            setup_obj._create_setup_file(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
+    
+    def _adjust_lighting_colors(self, pointer, lighting_num, red=None, green=None, blue=None):
+        setup_obj = GENERIC_SETUP_FILE(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
+        setup_obj._get_setup_file_info()
+        setup_obj._adjust_all_lighting_colors(lighting_num, red, green, blue)
+        setup_obj._create_setup_file(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
+    
+    def _adjust_lighting_position(self, pointer, lighting_num, x_pos=None, y_pos=None, z_pos=None):
+        setup_obj = GENERIC_SETUP_FILE(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
+        setup_obj._get_setup_file_info()
+        setup_obj._adjust_lighting_position(lighting_num, x_pos, y_pos, z_pos)
+        setup_obj._create_setup_file(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
+    
+    def _adjust_lighting_unknown(self, pointer, lighting_num, unk1=None, unk2=None):
+        setup_obj = GENERIC_SETUP_FILE(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")
+        setup_obj._get_setup_file_info()
+        setup_obj._adjust_lighting_unknown(lighting_num, unk1, unk2)
+        setup_obj._create_setup_file(f"{self._file_dir}{self._EXTRACTED_FILES_DIR}", f"{pointer}-Decompressed")

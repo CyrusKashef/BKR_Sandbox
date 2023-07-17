@@ -1011,6 +1011,22 @@ class AUTOMATED_CLASS():
     def _replace_sir_slush_model(self, asset_id):
         self._assembly_class_creation()
         self._assembly_obj._replace_sir_slush_model(asset_id)
+    
+    def _remove_unknown_dict(self):
+        self._setup_class_creation()
+        self._setup_obj._remove_unknown_dict()
+    
+    def _adjust_lighting_colors(self, pointer, lighting_num, red=None, green=None, blue=None):
+        self._setup_class_creation()
+        self._setup_obj._adjust_lighting_colors(pointer, lighting_num, red, green, blue)
+    
+    def _adjust_lighting_position(self, pointer, lighting_num, x_pos=None, y_pos=None, z_pos=None):
+        self._setup_class_creation()
+        self._setup_obj._adjust_lighting_position(pointer, lighting_num, x_pos, y_pos, z_pos)
+    
+    def _adjust_lighting_unknown(self, pointer, lighting_num, unk1=None, unk2=None):
+        self._setup_class_creation()
+        self._setup_obj._adjust_lighting_unknown(pointer, lighting_num, unk1, unk2)
 
     ###################
     ### BANJO TOOIE ###
@@ -1161,11 +1177,19 @@ if __name__ == '__main__':
     # automated_obj._replace_sir_slush_model(0x0496) # Sir Slush -> Twinkly Muncher
     # automated_obj._new_game_start_area(0x01, 0x12) # Banjos House
     # automated_obj._new_game_start_area(0x47, 0x01) # BGS Mumbos Skull
-    # curren_warp = 0x3501
+    curr_warp_enum = WARP_ENUMS.CC_CLANKER_BELLY_TO_CC_CLANKER_WONDERWING
+    curr_map = WARP_ENUMS.get_map_enum(curr_warp_enum)
+    curr_exit = WARP_ENUMS.get_exit_enum(curr_warp_enum)
+    curren_warp = curr_map * 0x100 + curr_exit
     # print(f"Current Warp: {hex(curren_warp)}")
-    # automated_obj._reassign_banjos_house_warp(curren_warp) # Warp Testing
+    automated_obj._reassign_banjos_house_warp(curren_warp) # Warp Testing
     # automated_obj._forgiving_deaths()
-    automated_obj._print_map_object_positions()
+    # automated_obj._print_map_object_positions()
+    # automated_obj._remove_unknown_dict()
+    automated_obj._adjust_lighting_colors("9890", 0, 0, 255, 0)
+    automated_obj._adjust_lighting_position("9890", 0, x_pos=None, y_pos=None, z_pos=-800)
+    automated_obj._adjust_lighting_unknown("9890", 0, unk1=0, unk2=1000) # 465.75 / 1048.25
+    automated_obj._adjust_lighting_unknown("9890", 1, unk1=0, unk2=1000) # 434.0 / 1179.875
     print("Options Complete")
 
     print("Adjusting Core Checksums Start")

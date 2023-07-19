@@ -556,8 +556,8 @@ class ASSEMBLY_CLASS():
                 tumblar_tile_dict[puzzle_count]["Tile_Value"] = mm_t_tile_dict[tile_count]
         self._mad_monster_mansion_data._set_tumblar_tile_dict(tumblar_tile_dict)
     
-    def _reassign_banjos_house_warp(self, warp_id):
-        self._core_2_code._reassign_banjos_house_warp(warp_id)
+    def _reassign_sm_main_to_sm_banjos_house_warp(self, map_id, exit_id):
+        self._core_2_code._reassign_sm_main_to_sm_banjos_house_warp(map_id, exit_id)
     
     def _new_game_start_area(self, map_id, entry_id):
         self._core_2_code._new_game_start_area(map_id, entry_id)

@@ -495,14 +495,1647 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
     #############
     ### WARPS ###
     #############
+    # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_956B0.c
+    # https://hack64.net/wiki/doku.php?id=banjo_kazooie:enums#map_exit_indices
 
-    def _reassign_banjos_house_warp(self, warp_id):
+    def _convert_warp_id(self, map_id, exit_id):
+        warp_id = map_id * 0x100 + exit_id
+        return warp_id
+
+    def _reassign_sm_main_to_sm_banjos_house_warp(self, map_id, exit_id):
         '''
         Replaces going into Banjo's house warp with a new warp
+        0x8c01
         '''
-        # https://gitlab.com/banjo.decomp/banjo-kazooie/-/blob/master/src/core2/code_956B0.c
-        # https://hack64.net/wiki/doku.php?id=banjo_kazooie:enums#map_exit_indices
+        warp_id = self._convert_warp_id(map_id, exit_id)
         self._write_bytes(0x986D6, 2, warp_id)
+
+    def _reassign_sm_main_to_gl_mm_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6912
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9871E, 2, warp_id)
+        # Lair Cutscene If Statement
+        self._write_bytes(0x98BAE, 2, warp_id)
+
+    def _reassign_sm_banjos_house_to_sm_main_warp(self, map_id, exit_id):
+        '''
+        0x112
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x986FA, 2, warp_id)
+
+    def _reassign_gl_mm_entrance_to_sm_main_warp(self, map_id, exit_id):
+        '''
+        0x113
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98742, 2, warp_id)
+
+    def _reassign_gl_mm_entrance_to_mm_main_warp(self, map_id, exit_id):
+        '''
+        0x205
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96E8A, 2, warp_id)
+
+    def _reassign_gl_mm_entrance_to_gl_ttc_cc_puzzles_warp(self, map_id, exit_id):
+        '''
+        0x6a01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97FC6, 2, warp_id)
+
+    def _reassign_gl_ttc_cc_puzzles_to_gl_mm_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6901
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97EEE, 2, warp_id)
+
+    def _reassign_gl_ttc_cc_puzzles_to_gl_ccw_puzzle_warp(self, map_id, exit_id):
+        '''
+        0x6b01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98032, 2, warp_id)
+
+    def _reassign_gl_ccw_puzzle_to_gl_ttc_cc_puzzles_warp(self, map_id, exit_id):
+        '''
+        0x6a02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9800E, 2, warp_id)
+
+    def _reassign_gl_ccw_puzzle_to_gl_ttc_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6d01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x980C2, 2, warp_id)
+
+    def _reassign_gl_ccw_puzzle_to_gl_pipe_room_warp(self, map_id, exit_id):
+        '''
+        0x6c01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9807A, 2, warp_id)
+
+    def _reassign_gl_ccw_puzzle_to_gl_cc_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7001
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9810A, 2, warp_id)
+
+    def _reassign_gl_ccw_puzzle_to_gl_grunty_statue_warp(self, map_id, exit_id):
+        '''
+        0x7102
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x981E2, 2, warp_id)
+
+    def _reassign_gl_pipe_room_to_gl_ccw_puzzle_warp(self, map_id, exit_id):
+        '''
+        0x6b02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98056, 2, warp_id)
+
+    def _reassign_gl_ttc_entrance_to_gl_ccw_puzzle_warp(self, map_id, exit_id):
+        '''
+        0x6b03
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9809E, 2, warp_id)
+
+    def _reassign_gl_ttc_entrance_to_ttc_main_warp(self, map_id, exit_id):
+        '''
+        0x704
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x965D2, 2, warp_id)
+        self._write_bytes(0x978E2, 2, warp_id)
+
+    def _reassign_gl_cc_entrance_to_gl_ccw_puzzle_warp(self, map_id, exit_id):
+        '''
+        0x6b04
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x980E6, 2, warp_id)
+
+    def _reassign_gl_cc_entrance_to_cc_main_warp(self, map_id, exit_id):
+        '''
+        0xb05
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97906, 2, warp_id)
+
+    def _reassign_gl_grunty_statue_to_gl_ccw_puzzle_warp(self, map_id, exit_id):
+        '''
+        0x6b05
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x981BE, 2, warp_id)
+
+    def _reassign_gl_grunty_statue_to_gl_bgs_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7201
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x982BA, 2, warp_id)
+
+    def _reassign_gl_grunty_statue_to_gl_gv_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6e01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97ECA, 2, warp_id)
+
+    def _reassign_gl_bgs_entrance_to_bgs_main_warp(self, map_id, exit_id):
+        '''
+        0xd02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9792A, 2, warp_id)
+
+    def _reassign_gl_bgs_entrance_to_gl_grunty_statue_warp(self, map_id, exit_id):
+        '''
+        0x7103
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98296, 2, warp_id)
+
+    def _reassign_gl_gv_entrance_to_gl_grunty_statue_note_door_warp(self, map_id, exit_id):
+        '''
+        0x7101
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97FEA, 2, warp_id)
+
+    def _reassign_gl_gv_entrance_to_gl_grunty_statue_witch_switch_warp(self, map_id, exit_id):
+        '''
+        0x7104
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98BFE, 2, warp_id)
+
+    def _reassign_gl_gv_entrance_to_gl_fp_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6f01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97F12, 2, warp_id)
+
+    def _reassign_gl_gv_entrance_to_gv_main_warp(self, map_id, exit_id):
+        '''
+        0x1208
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9794E, 2, warp_id)
+
+    def _reassign_gl_fp_entrance_to_fp_main_warp(self, map_id, exit_id):
+        '''
+        0x2701
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98152, 2, warp_id)
+
+    def _reassign_gl_fp_entrance_to_gl_gv_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6e02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97F36, 2, warp_id)
+
+    def _reassign_gl_fp_entrance_to_gl_gv_puzzle_warp(self, map_id, exit_id):
+        '''
+        0x7402
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9824E, 2, warp_id)
+
+    def _reassign_gl_fp_entrance_to_gl_water_three_switch_warp(self, map_id, exit_id):
+        '''
+        0x7601
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x983BA, 2, warp_id)
+
+    def _reassign_gl_gv_puzzle_to_gl_fp_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6f05
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98272, 2, warp_id)
+
+    def _reassign_gl_gv_puzzle_to_gl_mmm_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7501
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9822A, 2, warp_id)
+
+    def _reassign_gl_mmm_entrance_to_gl_gv_puzzle_warp(self, map_id, exit_id):
+        '''
+        0x7401
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98206, 2, warp_id)
+
+    def _reassign_gl_mmm_entrance_to_gl_crypt_warp(self, map_id, exit_id):
+        '''
+        0x7a01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x982F2, 2, warp_id)
+
+    def _reassign_gl_mmm_entrance_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b14
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97972, 2, warp_id)
+
+    def _reassign_gl_crypt_to_gl_mmm_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7503
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9832A, 2, warp_id)
+
+    def _reassign_gl_water_three_switch_to_gl_fp_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6f02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x985B6, 2, warp_id)
+
+    def _reassign_gl_water_three_switch_to_gl_rbb_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7701
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9844A, 2, warp_id)
+
+    def _reassign_gl_water_three_switch_to_gl_ccw_entrance_note_door_warp(self, map_id, exit_id):
+        '''
+        0x7901
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9846E, 2, warp_id)
+
+    def _reassign_gl_water_three_switch_to_gl_ccw_entrance_token_warp(self, map_id, exit_id):
+        '''
+        0x7902
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98492, 2, warp_id)
+
+    def _reassign_gl_rbb_entrance_to_gl_water_three_switch_warp(self, map_id, exit_id):
+        '''
+        0x7604
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98426, 2, warp_id)
+
+    def _reassign_gl_rbb_entrance_to_gl_mmm_puzzle_warp(self, map_id, exit_id):
+        '''
+        0x7801
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98646, 2, warp_id)
+
+    def _reassign_gl_rbb_entrance_to_gl_rbb_puzzle_warp(self, map_id, exit_id):
+        '''
+        0x7802
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9866A, 2, warp_id)
+
+    def _reassign_gl_rbb_entrance_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3110
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97996, 2, warp_id)
+
+    def _reassign_gl_mmm_puzzle_to_gl_rbb_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7704
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98622, 2, warp_id)
+
+    def _reassign_gl_rbb_puzzle_to_gl_rbb_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7703
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x985FE, 2, warp_id)
+
+    def _reassign_gl_ccw_entrance_to_gl_water_three_switch_note_door_warp(self, map_id, exit_id):
+        '''
+        0x7603
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98402, 2, warp_id)
+
+    def _reassign_gl_ccw_entrance_to_gl_water_three_switch_token_warp(self, map_id, exit_id):
+        '''
+        0x7602
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x983DE, 2, warp_id)
+
+    def _reassign_gl_ccw_entrance_to_gl_path_to_ff_warp(self, map_id, exit_id):
+        '''
+        0x8001
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x986B2, 2, warp_id)
+
+    def _reassign_gl_ccw_entrance_to_ccw_main_warp(self, map_id, exit_id):
+        '''
+        0x4007
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x988FA, 2, warp_id)
+
+    def _reassign_gl_path_to_ff_to_gl_ccw_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7903
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9868E, 2, warp_id)
+
+    def _reassign_gl_ff_to_gl_door_of_grunty_warp(self, map_id, exit_id):
+        '''
+        0x9305
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98AEE, 2, warp_id)
+
+    def _reassign_gl_door_of_grunty_to_gl_ff_warp(self, map_id, exit_id):
+        '''
+        0x8e05
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98B12, 2, warp_id)
+
+    def _reassign_gl_door_of_grunty_to_final_battle_warp(self, map_id, exit_id):
+        '''
+        0x9001
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98B72, 2, warp_id)
+
+    def _reassign_mm_main_to_gl_mm_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6902
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97F7E, 2, warp_id)
+
+    def _reassign_mm_main_to_mm_mumbos_skull_warp(self, map_id, exit_id):
+        '''
+        0xe01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9619E, 2, warp_id)
+
+    def _reassign_mm_main_to_mm_lower_tickers_warp(self, map_id, exit_id):
+        '''
+        0xc02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x961E6, 2, warp_id)
+
+    def _reassign_mm_main_to_mm_upper_tickers_warp(self, map_id, exit_id):
+        '''
+        0xc01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9622E, 2, warp_id)
+
+    def _reassign_mm_mumbos_skull_to_mm_main_warp(self, map_id, exit_id):
+        '''
+        0x201
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x961C2, 2, warp_id)
+
+    def _reassign_mm_lower_tickers_to_mm_main_warp(self, map_id, exit_id):
+        '''
+        0x202
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9620A, 2, warp_id)
+
+    def _reassign_mm_upper_tickers_to_mm_main_warp(self, map_id, exit_id):
+        '''
+        0x203
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96252, 2, warp_id)
+
+    def _reassign_ttc_main_to_gl_ttc_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6d04
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x988B2, 2, warp_id)
+
+    def _reassign_ttc_main_to_ttc_sandcastle_warp(self, map_id, exit_id):
+        '''
+        0xa01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x964D6, 2, warp_id)
+
+    def _reassign_ttc_main_to_ttc_nipper_warp(self, map_id, exit_id):
+        '''
+        0x601
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96DD6, 2, warp_id)
+
+    def _reassign_ttc_main_to_ttc_salty_hippo_side_warp(self, map_id, exit_id):
+        '''
+        0x506
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96566, 2, warp_id)
+
+    def _reassign_ttc_main_to_ttc_salty_hippo_top_warp(self, map_id, exit_id):
+        '''
+        0x505
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96542, 2, warp_id)
+
+    def _reassign_ttc_alcove_lower_to_ttc_alcove_upper_warp(self, map_id, exit_id):
+        '''
+        0x70e
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9651E, 2, warp_id)
+
+    def _reassign_ttc_alcove_upper_to_ttc_alcove_lower_warp(self, map_id, exit_id):
+        '''
+        0x70f
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x964FA, 2, warp_id)
+
+    def _reassign_ttc_lighthouse_lower_to_ttc_lighthouse_upper_warp(self, map_id, exit_id):
+        '''
+        0x708
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9658A, 2, warp_id)
+        self._write_bytes(0x96662, 2, warp_id)
+
+    # def _reassign_ttc_lighthouse_upper_to_ttc_lighthouse_lower_warp(self, map_id, exit_id):
+    #     '''
+    #     0x70c # I can't find this? But it works in game...
+    #     '''
+    #     warp_id = self._convert_warp_id(map_id, exit_id)
+    #     self._write_bytes(0x00000, 2, warp_id)
+
+    def _reassign_ttc_sandcastle_to_ttc_main_warp(self, map_id, exit_id):
+        '''
+        0x703
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x965AE, 2, warp_id)
+
+    def _reassign_ttc_nipper_to_ttc_main_warp(self, map_id, exit_id):
+        '''
+        0x70a
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x979BA, 2, warp_id)
+
+    def _reassign_ttc_salty_hippo_side_to_ttc_main_warp(self, map_id, exit_id):
+        '''
+        0x707
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9663E, 2, warp_id)
+
+    def _reassign_ttc_salty_hippo_top_to_ttc_main_warp(self, map_id, exit_id):
+        '''
+        0x706
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9661A, 2, warp_id)
+
+    def _reassign_ttc_sharkfood_island_to_ttc_main_warp(self, map_id, exit_id):
+        '''
+        0x780
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98A82, 2, warp_id)
+
+    def _reassign_cc_main_to_gl_cc_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7002
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9812E, 2, warp_id)
+
+    def _reassign_cc_clanker_wonderwing_to_cc_clanker_belly_warp(self, map_id, exit_id):
+        '''
+        0x2203
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96DFA, 2, warp_id)
+
+    def _reassign_cc_clanker_blowhole_to_cc_clanker_mouth_warp(self, map_id, exit_id):
+        '''
+        0x2202
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96E42, 2, warp_id)
+
+    def _reassign_cc_clanker_blowhole_to_cc_clanker_belly_warp(self, map_id, exit_id):
+        '''
+        0x2201
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96E1E, 2, warp_id)
+
+    def _reassign_cc_clanker_belly_to_cc_clanker_wonderwing_warp(self, map_id, exit_id):
+        '''
+        0x2301
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96E66, 2, warp_id)
+
+    def _reassign_bgs_main_to_gl_bgs_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7202
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98396, 2, warp_id)
+
+    def _reassign_bgs_main_to_bgs_mumbos_skull_warp(self, map_id, exit_id):
+        '''
+        0x4701
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x978BE, 2, warp_id)
+
+    def _reassign_bgs_main_to_bgs_tanktup_warp(self, map_id, exit_id):
+        '''
+        0x1101
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96446, 2, warp_id)
+        self._write_bytes(0x96DA2, 2, warp_id)
+
+    def _reassign_bgs_mumbos_skull_to_bgs_main_warp(self, map_id, exit_id):
+        '''
+        0xd06
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9789A, 2, warp_id)
+
+    def _reassign_bgs_tanktup_to_bgs_main_warp(self, map_id, exit_id):
+        '''
+        0xd03
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9646A, 2, warp_id)
+
+    def _reassign_bgs_main_to_bgs_vile_left_warp(self, map_id, exit_id):
+        '''
+        Issue: Conflicts with BGS Vile Right Warp
+        0x1004
+        '''
+        self._write_bytes(0x96D26, 2, map_id)
+        self._write_bytes(0x96D6E, 2, exit_id)
+
+    def _reassign_bgs_main_to_bgs_vile_right_warp(self, map_id, exit_id):
+        '''
+        Issue: Conflicts with BGS Vile Left Warp
+        0x1003
+        '''
+        self._write_bytes(0x96D26, 2, map_id)
+        self._write_bytes(0x96D4A, 2, exit_id)
+
+    def _reassign_bgs_vile_left_to_bgs_main_warp(self, map_id, exit_id):
+        '''
+        0xd05
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x964B2, 2, warp_id)
+
+    def _reassign_bgs_vile_right_to_bgs_main_warp(self, map_id, exit_id):
+        '''
+        0xd04
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9648E, 2, warp_id)
+
+    def _reassign_fp_main_to_gl_fp_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6f06
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9891E, 2, warp_id)
+
+    def _reassign_fp_main_to_fp_igloo_warp(self, map_id, exit_id):
+        '''
+        0x4101
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97E16, 2, warp_id)
+
+    def _reassign_fp_main_to_fp_tree_warp(self, map_id, exit_id):
+        '''
+        0x5301
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97E3A, 2, warp_id)
+
+    def _reassign_fp_main_to_fp_mumbos_skull_warp(self, map_id, exit_id):
+        '''
+        0x4801
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97DF2, 2, warp_id)
+
+    def _reassign_fp_main_to_fp_wozzas_cave_warp(self, map_id, exit_id):
+        '''
+        0x7f01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98372, 2, warp_id)
+
+    def _reassign_fp_igloo_to_fp_main_warp(self, map_id, exit_id):
+        '''
+        0x2708
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97E82, 2, warp_id)
+
+    def _reassign_fp_tree_to_fp_main_warp(self, map_id, exit_id):
+        '''
+        0x2709
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97EA6, 2, warp_id)
+
+    def _reassign_fp_mumbos_skull_to_fp_main_warp(self, map_id, exit_id):
+        '''
+        0x2707
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97E5E, 2, warp_id)
+
+    def _reassign_fp_wozzas_cave_to_fp_main_warp(self, map_id, exit_id):
+        '''
+        0x2706
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9834E, 2, warp_id)
+
+    def _reassign_gv_main_to_gl_gv_entrance_warp(self, map_id, exit_id):
+        '''
+        0x6e03
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97F5A, 2, warp_id)
+
+    def _reassign_gv_main_to_gv_jinxy_warp(self, map_id, exit_id):
+        '''
+        0x1a02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96EAE, 2, warp_id)
+
+    def _reassign_gv_main_to_gv_rubee_warp(self, map_id, exit_id):
+        '''
+        0x1607
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x962DA, 2, warp_id)
+
+    def _reassign_gv_main_to_gv_water_pyramid_upper_warp(self, map_id, exit_id):
+        '''
+        0x1502
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96352, 2, warp_id)
+
+    def _reassign_gv_main_to_gv_water_pyramid_lower_warp(self, map_id, exit_id):
+        '''
+        0x1506
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9629A, 2, warp_id)
+
+    def _reassign_gv_main_to_gv_matching_pyramid_warp(self, map_id, exit_id):
+        '''
+        0x1301
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96312, 2, warp_id)
+
+    def _reassign_gv_main_to_king_sandybutt_warp(self, map_id, exit_id):
+        '''
+        0x1401
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96392, 2, warp_id)
+
+    def _reassign_gv_main_to_gv_sns_room_warp(self, map_id, exit_id):
+        '''
+        0x9205
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98AA6, 2, warp_id)
+
+    def _reassign_gv_jinxy_to_gv_main_warp(self, map_id, exit_id):
+        '''
+        0x1202
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96ED2, 2, warp_id)
+
+    def _reassign_gv_rubee_to_gv_main_warp(self, map_id, exit_id):
+        '''
+        0x1206
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96422, 2, warp_id)
+
+    def _reassign_gv_water_pyramid_lower_to_gv_main_warp(self, map_id, exit_id):
+        '''
+        0x1205
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x963FE, 2, warp_id)
+        # self._write_bytes(0x98AA6, 2, warp_id)
+
+    def _reassign_gv_matching_pyramid_to_gv_main_warp(self, map_id, exit_id):
+        '''
+        0x1203
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x963B6, 2, warp_id)
+
+    def _reassign_gv_king_sandybutt_front_to_gv_main_warp(self, map_id, exit_id):
+        '''
+        0x1204
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x963DA, 2, warp_id)
+
+    def _reassign_gv_king_sandybutt_back_to_gv_main_warp(self, map_id, exit_id):
+        '''
+        0x1207
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97876, 2, warp_id)
+
+    def _reassign_gv_sns_room_to_gv_main_warp(self, map_id, exit_id):
+        '''
+        0x120a
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98ACA, 2, warp_id)
+
+    def _reassign_mmm_main_to_gl_mmm_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7502
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9888E, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_napper_front_warp(self, map_id, exit_id):
+        '''
+        0x2601
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x966F2, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_napper_chimney_warp(self, map_id, exit_id):
+        '''
+        0x2602
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96716, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_egg_room_warp(self, map_id, exit_id):
+        '''
+        0x2801
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x967CA, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_red_feather_room_warp(self, map_id, exit_id):
+        '''
+        0x2a01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x967A6, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_honeycomb_room_warp(self, map_id, exit_id):
+        '''
+        0x2e01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96812, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_loggo_room_warp(self, map_id, exit_id):
+        '''
+        0x2c01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9685A, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_bedroom_warp(self, map_id, exit_id):
+        '''
+        0x2d01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96836, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_note_room_warp(self, map_id, exit_id):
+        '''
+        0x2901
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x967EE, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_church_warp(self, map_id, exit_id):
+        '''
+        0x1c01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96BB2, 2, map_id)
+        self._write_bytes(0x96BBA, 2, exit_id)
+
+    def _reassign_mmm_main_to_mmm_secret_room_warp(self, map_id, exit_id):
+        '''
+        0x2b01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96B06, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_cellar_warp(self, map_id, exit_id):
+        '''
+        0x1d01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96782, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_well_top_warp(self, map_id, exit_id):
+        '''
+        0x2501
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9673A, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_mumbos_skull_warp(self, map_id, exit_id):
+        '''
+        0x3001
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96BE6, 2, warp_id)
+        self._write_bytes(0x96C0A, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_tumblar_warp(self, map_id, exit_id):
+        '''
+        0x2401
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9675E, 2, warp_id)
+
+    def _reassign_mmm_church_lower_to_mmm_church_upper_warp(self, map_id, exit_id):
+        '''
+        0x1b10
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96A9A, 2, warp_id)
+
+    def _reassign_mmm_church_upper_to_mmm_church_lower_warp(self, map_id, exit_id):
+        '''
+        0x1b11
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96ABE, 2, warp_id)
+
+    def _reassign_mmm_napper_front_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9687E, 2, warp_id)
+
+    def _reassign_mmm_egg_room_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b0b
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x969E6, 2, warp_id)
+
+    def _reassign_mmm_red_feather_room_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b0a
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x969C2, 2, warp_id)
+
+    def _reassign_mmm_honeycomb_room_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b0d
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96A2E, 2, warp_id)
+
+    def _reassign_mmm_loggo_room_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b0c
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96A0A, 2, warp_id)
+
+    def _reassign_mmm_bedroom_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b0e
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96A52, 2, warp_id)
+
+    def _reassign_mmm_note_room_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b0f
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96A76, 2, warp_id)
+
+    def _reassign_mmm_church_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b05
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9690E, 2, warp_id)
+
+    def _reassign_mmm_secret_room_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b06
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96932, 2, warp_id)
+
+    def _reassign_mmm_cellar_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b09
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9699E, 2, warp_id)
+
+    def _reassign_mmm_well_top_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b03
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x968C6, 2, warp_id)
+
+    def _reassign_mmm_mumbos_skull_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b12
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96AE2, 2, warp_id)
+
+    def _reassign_mmm_tumblar_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b04
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x968EA, 2, warp_id)
+
+    def _reassign_mmm_main_to_mmm_gutter_top_warp(self, map_id, exit_id):
+        '''
+        0x2f01
+        '''
+        self._write_bytes(0x96C62, 2, map_id)
+        self._write_bytes(0x96C66, 2, exit_id)
+
+    def _reassign_mmm_main_to_mmm_gutter_bottom_warp(self, map_id, exit_id):
+        '''
+        0x2f02
+        '''
+        self._write_bytes(0x96C46, 2, map_id * 0x100)
+        self._write_bytes(0x96CEA, 2, exit_id)
+
+    def _reassign_mmm_main_to_mmm_well_bottom_warp(self, map_id, exit_id):
+        '''
+        0x2504
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x987C2, 2, warp_id)
+
+    def _reassign_mmm_loggo_room_to_mmm_inside_loggo_warp(self, map_id, exit_id):
+        '''
+        0x8d04
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9886A, 2, warp_id)
+
+    def _reassign_mmm_gutter_bottom_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b08
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9697A, 2, warp_id)
+
+    def _reassign_mmm_well_bottom_to_mmm_main_warp(self, map_id, exit_id):
+        '''
+        0x1b13
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x987FA, 2, warp_id)
+
+    def _reassign_mmm_inside_loggo_to_mmm_loggo_room_warp(self, map_id, exit_id):
+        '''
+        0x2c04
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98832, 2, warp_id)
+
+    def _reassign_rbb_main_to_gl_rbb_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7702
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x985DA, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_big_fish_warehouse_top_warp(self, map_id, exit_id):
+        '''
+        0x3502
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96FF2, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_big_fish_warehouse_bottom_warp(self, map_id, exit_id):
+        '''
+        0x3501
+        '''
+        self._write_bytes(0x97336, 2, map_id)
+        self._write_bytes(0x9733E, 2, exit_id)
+
+    def _reassign_rbb_main_to_rbb_boat_room_warp(self, map_id, exit_id):
+        '''
+        0x3601
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97016, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_boom_box_container_warp(self, map_id, exit_id):
+        '''
+        0x3801
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97082, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_seaman_grublin_container_warp(self, map_id, exit_id):
+        '''
+        0x3e01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9705E, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_chompa_container_warp(self, map_id, exit_id):
+        '''
+        0x3701
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9703A, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_kitchen_pipe_warp(self, map_id, exit_id):
+        '''
+        0x3c01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96F86, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_boom_box_pipe_warp(self, map_id, exit_id):
+        '''
+        0x3b01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96FCE, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_engine_room_pipe_warp(self, map_id, exit_id):
+        '''
+        0x3404
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96F3E, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_engine_room_main_warp(self, map_id, exit_id):
+        '''
+        0x3401
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96F62, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_control_room_window_warp(self, map_id, exit_id):
+        '''
+        0x3d01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96FAA, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_captains_room_window_warp(self, map_id, exit_id):
+        '''
+        0x3f01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96EF6, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_cabin_window_warp(self, map_id, exit_id):
+        '''
+        0x3901
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x96F1A, 2, warp_id)
+
+    def _reassign_rbb_main_to_rbb_boss_boom_box_warp(self, map_id, exit_id):
+        '''
+        0x3a01
+        '''
+        self._write_bytes(0x9725A, 2, map_id)
+        self._write_bytes(0x97256, 2, exit_id)
+
+    def _reassign_rbb_main_to_rbb_anchor_warp(self, map_id, exit_id):
+        '''
+        0x8b04
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9878A, 2, warp_id)
+
+    def _reassign_rbb_big_fish_warehouse_bottom_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x310d
+        '''
+        self._write_bytes(0x9735E, 2, map_id)
+        self._write_bytes(0x97366, 2, exit_id)
+
+    def _reassign_rbb_boat_room_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3108
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x971A2, 2, warp_id)
+
+    def _reassign_rbb_boom_box_container_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x310b
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9720E, 2, warp_id)
+
+    def _reassign_rbb_seaman_grublin_container_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x310a
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x971EA, 2, warp_id)
+
+    def _reassign_rbb_chompa_container_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3109
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x971C6, 2, warp_id)
+
+    def _reassign_rbb_kitchen_pipe_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3104
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97112, 2, warp_id)
+
+    def _reassign_rbb_boom_box_pipe_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3106
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9715A, 2, warp_id)
+
+    def _reassign_rbb_engine_room_pipe_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3103
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x970EE, 2, warp_id)
+
+    def _reassign_rbb_engine_room_main_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3107
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9717E, 2, warp_id)
+
+    def _reassign_rbb_control_room_window_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3105
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97136, 2, warp_id)
+
+    def _reassign_rbb_captains_room_window_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3101
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x970A6, 2, warp_id)
+
+    def _reassign_rbb_cabin_window_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3102
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x970CA, 2, warp_id)
+
+    def _reassign_rbb_boss_boom_box_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x310c
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97232, 2, warp_id)
+
+    def _reassign_rbb_anchor_to_rbb_main_warp(self, map_id, exit_id):
+        '''
+        0x3113
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98766, 2, warp_id)
+
+    def _reassign_ccw_main_to_gl_ccw_entrance_warp(self, map_id, exit_id):
+        '''
+        0x7906
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x988D6, 2, warp_id)
+
+    def _reassign_ccw_main_to_ccw_spring_main_warp(self, map_id, exit_id):
+        '''
+        0x4301
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9780A, 2, warp_id)
+
+    def _reassign_ccw_main_to_ccw_summer_main_warp(self, map_id, exit_id):
+        '''
+        0x4401
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9782E, 2, warp_id)
+
+    def _reassign_ccw_main_to_ccw_autumn_main_warp(self, map_id, exit_id):
+        '''
+        0x4501
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97852, 2, warp_id)
+
+    def _reassign_ccw_main_to_ccw_winter_main_warp(self, map_id, exit_id):
+        '''
+        0x4601
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x977E6, 2, warp_id)
+
+    def _reassign_ccw_spring_main_to_ccw_main_warp(self, map_id, exit_id):
+        '''
+        0x4002
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9777A, 2, warp_id)
+
+    def _reassign_ccw_spring_main_to_ccw_spring_mumbos_skull_warp(self, map_id, exit_id):
+        '''
+        0x4a01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x979DE, 2, warp_id)
+
+    def _reassign_ccw_spring_main_to_ccw_spring_nabnut_door_warp(self, map_id, exit_id):
+        '''
+        0x5e01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97C1E, 2, warp_id)
+
+    def _reassign_ccw_spring_main_to_ccw_spring_nabnut_window_warp(self, map_id, exit_id):
+        '''
+        0x5e02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98942, 2, warp_id)
+
+    def _reassign_ccw_spring_main_to_ccw_spring_whipcracks_warp(self, map_id, exit_id):
+        '''
+        0x6501
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97AFE, 2, warp_id)
+
+    def _reassign_ccw_spring_mumbos_skull_to_ccw_spring_main_warp(self, map_id, exit_id):
+        '''
+        0x4309
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97A6E, 2, warp_id)
+
+    def _reassign_ccw_spring_nabnut_door_to_ccw_spring_main_warp(self, map_id, exit_id):
+        '''
+        0x4307
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97C8A, 2, warp_id)
+
+    def _reassign_ccw_spring_nabnut_window_to_ccw_spring_main_warp(self, map_id, exit_id):
+        '''
+        0x4304
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x989D2, 2, warp_id)
+
+    def _reassign_ccw_spring_whipcracks_to_ccw_spring_main_warp(self, map_id, exit_id):
+        '''
+        0x4308
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97B8E, 2, warp_id)
+
+    def _reassign_ccw_spring_main_to_ccw_spring_zubba_warp(self, map_id, exit_id):
+        '''
+        0x5b01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9857E, 2, warp_id)
+
+    def _reassign_ccw_spring_zubba_to_ccw_spring_main_warp(self, map_id, exit_id):
+        '''
+        0x4306
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x984FE, 2, warp_id)
+
+    def _reassign_ccw_summer_main_to_ccw_main_warp(self, map_id, exit_id):
+        '''
+        0x4003
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9779E, 2, warp_id)
+
+    def _reassign_ccw_summer_main_to_ccw_summer_mumbos_skull_warp(self, map_id, exit_id):
+        '''
+        0x4b01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97A02, 2, warp_id)
+
+    def _reassign_ccw_summer_main_to_ccw_summer_zubba_warp(self, map_id, exit_id):
+        '''
+        0x5a02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x984B6, 2, warp_id)
+
+    def _reassign_ccw_summer_main_to_ccw_summer_nabnut_door_warp(self, map_id, exit_id):
+        '''
+        0x5f01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97C42, 2, warp_id)
+
+    def _reassign_ccw_summer_main_to_ccw_summer_nabnut_window_warp(self, map_id, exit_id):
+        '''
+        0x5f02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98966, 2, warp_id)
+
+    def _reassign_ccw_summer_main_to_ccw_summer_whipcracks_warp(self, map_id, exit_id):
+        '''
+        0x6601
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97B22, 2, warp_id)
+
+    def _reassign_ccw_summer_mumbos_skull_to_ccw_summer_main_warp(self, map_id, exit_id):
+        '''
+        0x4409
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97A92, 2, warp_id)
+
+    def _reassign_ccw_summer_zubba_to_ccw_summer_main_warp(self, map_id, exit_id):
+        '''
+        0x4406
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98522, 2, warp_id)
+
+    def _reassign_ccw_summer_nabnut_door_to_ccw_summer_main_warp(self, map_id, exit_id):
+        '''
+        0x4407
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97CAE, 2, warp_id)
+
+    def _reassign_ccw_summer_nabnut_window_to_ccw_summer_main_warp(self, map_id, exit_id):
+        '''
+        0x4404
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x989F6, 2, warp_id)
+
+    def _reassign_ccw_summer_whipcracks_to_ccw_summer_main_warp(self, map_id, exit_id):
+        '''
+        0x4408
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97BB2, 2, warp_id)
+
+    def _reassign_ccw_autumn_main_to_ccw_main_warp(self, map_id, exit_id):
+        '''
+        0x4004
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x977C2, 2, warp_id)
+
+    def _reassign_ccw_autumn_main_to_ccw_autumn_mumbos_skull_warp(self, map_id, exit_id):
+        '''
+        0x4c01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97A26, 2, warp_id)
+
+    def _reassign_ccw_autumn_main_to_ccw_autumn_zubba_warp(self, map_id, exit_id):
+        '''
+        0x5c02
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x984DA, 2, warp_id)
+
+    def _reassign_ccw_autumn_main_to_ccw_autumn_nabnut_door_warp(self, map_id, exit_id):
+        '''
+        0x6001
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97C66, 2, warp_id)
+
+    def _reassign_ccw_autumn_main_to_ccw_autumn_nabnut_window_warp(self, map_id, exit_id):
+        '''
+        0x6002
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x9898A, 2, warp_id)
+
+    def _reassign_ccw_autumn_main_to_ccw_autumn_flooded_attic_warp(self, map_id, exit_id):
+        '''
+        0x6301
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97D3E, 2, warp_id)
+
+    def _reassign_ccw_autumn_main_to_ccw_autumn_whipcracks_warp(self, map_id, exit_id):
+        '''
+        0x6701
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97B46, 2, warp_id)
+
+    def _reassign_ccw_autumn_mumbos_skull_to_ccw_autumn_main_warp(self, map_id, exit_id):
+        '''
+        0x4509
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97AB6, 2, warp_id)
+
+    def _reassign_ccw_autumn_zubba_to_ccw_autumn_main_warp(self, map_id, exit_id):
+        '''
+        0x4505
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98546, 2, warp_id)
+
+    def _reassign_ccw_autumn_nabnut_door_to_ccw_autumn_main_warp(self, map_id, exit_id):
+        '''
+        0x4507
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97CD2, 2, warp_id)
+
+    def _reassign_ccw_autumn_nabnut_window_to_ccw_autumn_main_warp(self, map_id, exit_id):
+        '''
+        0x4504
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98A1A, 2, warp_id)
+
+    def _reassign_ccw_autumn_flooded_attic_to_ccw_autumn_main_warp(self, map_id, exit_id):
+        '''
+        0x4506
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97DAA, 2, warp_id)
+
+    def _reassign_ccw_autumn_whipcracks_to_ccw_autumn_main_warp(self, map_id, exit_id):
+        '''
+        0x4508
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97BD6, 2, warp_id)
+
+    def _reassign_ccw_winter_main_to_ccw_main_warp(self, map_id, exit_id):
+        '''
+        0x4001
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97756, 2, warp_id)
+
+    def _reassign_ccw_winter_main_to_ccw_winter_mumbos_skull_warp(self, map_id, exit_id):
+        '''
+        0x4d01
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97A4A, 2, warp_id)
+
+    def _reassign_ccw_winter_main_to_ccw_winter_nabnut_window_warp(self, map_id, exit_id):
+        '''
+        0x6102
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x989AE, 2, warp_id)
+
+    def _reassign_ccw_winter_main_to_ccw_winter_acorn_storage_warp(self, map_id, exit_id):
+        '''
+        0x6201
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x00000, 2, warp_id)
+
+    def _reassign_ccw_winter_main_to_ccw_winter_flooded_attic_warp(self, map_id, exit_id):
+        '''
+        0x6401
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97D1A, 2, warp_id)
+
+    def _reassign_ccw_winter_main_to_ccw_winter_whipcracks_warp(self, map_id, exit_id):
+        '''
+        0x6801
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97B6A, 2, warp_id)
+
+    def _reassign_ccw_winter_mumbos_skull_to_ccw_winter_main_warp(self, map_id, exit_id):
+        '''
+        0x4609
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97ADA, 2, warp_id)
+
+    def _reassign_ccw_winter_nabnut_window_to_ccw_winter_main_warp(self, map_id, exit_id):
+        '''
+        0x4604
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x98A3E, 2, warp_id)
+
+    def _reassign_ccw_winter_acorn_storage_to_ccw_winter_main_warp(self, map_id, exit_id):
+        '''
+        0x4606
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97D86, 2, warp_id)
+
+    def _reassign_ccw_winter_flooded_attic_to_ccw_winter_main_warp(self, map_id, exit_id):
+        '''
+        0x4605
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97DCE, 2, warp_id)
+
+    def _reassign_ccw_winter_whipcracks_to_ccw_winter_main_warp(self, map_id, exit_id):
+        '''
+        0x4608
+        '''
+        warp_id = self._convert_warp_id(map_id, exit_id)
+        self._write_bytes(0x97BFA, 2, warp_id)
     
     ##############
     ### TIMERS ###

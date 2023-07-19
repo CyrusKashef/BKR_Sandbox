@@ -52,3 +52,10 @@ class TREASURE_TROVE_COVE_CODE_CLASS(GENERIC_FILE_CLASS):
         Solution: Make it always y=700.0f.
         '''
         self._write_float_bytes(0x2A7A, 700, 2)
+
+    def _reassign_ttc_main_to_ttc_sharkfood_island_warp(self, map_id, exit_id):
+        '''
+        0x8f01
+        '''
+        self._write_bytes(0x2B46, 2, map_id)
+        self._write_bytes(0x2B66, 2, exit_id)

@@ -398,10 +398,10 @@ class AUTOMATED_CLASS():
         self._assembly_class_creation()
         self._assembly_obj._starting_lives(starting_life_count)
     
-    def _starting_health(self, start_health_val):
+    def _starting_health(self, start_health_val, default_cap=True):
         print("Starting Health")
         self._assembly_class_creation()
-        self._assembly_obj._starting_max_health(start_health_val)
+        self._assembly_obj._starting_max_health(start_health_val, default_cap)
     
     def _empty_honeycombs_for_extra_health(self, eh_val):
         print("Empty Honeycombs For Extra Health")
@@ -1107,7 +1107,7 @@ if __name__ == '__main__':
     # automated_obj._mm_fix_honeycomb_flags()
     # automated_obj._mmm_anyones_empty_honeycomb()
     # automated_obj._snacker_everywhere()
-    # automated_obj._starting_health(2)
+    automated_obj._starting_health(8, default_cap=False)
     # automated_obj._empty_honeycombs_for_extra_health(3)
     # automated_obj._starting_inventory_counts(69)
     # automated_obj._randomize_collisions()
@@ -1264,7 +1264,7 @@ if __name__ == '__main__':
 
 #     print("Testing Options Start")
 #     automated_obj._starting_lives("Infinite")
-#     automated_obj._starting_health(2)
+    # automated_obj._starting_health(2)
 #     automated_obj._empty_honeycombs_for_extra_health(4)
 #     automated_obj._replace_bk_model("Kazo & Banjooie")
 #     # automated_obj._ambience()

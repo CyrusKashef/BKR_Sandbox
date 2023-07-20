@@ -142,14 +142,28 @@ class CORE_2_CODE_CLASS(GENERIC_FILE_CLASS):
     ### HEALTH & LIVES ###
     ######################
 
-    def _starting_max_health(self, start_health_val):
+    # def _starting_max_health(self, start_health_val):
+    #     '''Modifies the player's starting health total'''
+    #     # D_80385F30[ITEM_14_HEALTH] = D_80385F30[ITEM_15_HEALTH_TOTAL] = start_health_val;
+    #     self._write_byte(0xBF517, start_health_val)
+    #     # D_80385F30[ITEM_15_HEALTH_TOTAL] =  start_health_val + MIN(8 - start_health_val, (honeycombscore_get_total() / eh_val));
+    #     self._write_byte(0xC096B, 9 - start_health_val) # Adjusts MIN function itself
+    #     self._write_byte(0xC097B, 8 - start_health_val) # Adjusts parameter within MIN function
+    #     self._write_byte(0xC097F, start_health_val)
+
+    def _starting_max_health(self, start_health_val, default_cap=True):
         '''Modifies the player's starting health total'''
         # D_80385F30[ITEM_14_HEALTH] = D_80385F30[ITEM_15_HEALTH_TOTAL] = start_health_val;
         self._write_byte(0xBF517, start_health_val)
         # D_80385F30[ITEM_15_HEALTH_TOTAL] =  start_health_val + MIN(8 - start_health_val, (honeycombscore_get_total() / eh_val));
-        self._write_byte(0xC096B, 9 - start_health_val) # Adjusts MIN function itself
-        self._write_byte(0xC097B, 8 - start_health_val) # Adjusts parameter within MIN function
+        self._write_byte(0xC096B, 17 - start_health_val) # Adjusts MIN function itself
+        self._write_byte(0xC097B, 16 - start_health_val) # Adjusts parameter within MIN function
         self._write_byte(0xC097F, start_health_val)
+        if(not default_cap):
+            # sp34 = ((fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH))? 2 : 1);
+            self._write_byte(0xBF14F, 2) # Changes 1 to a 2
+            # D_80385F30[ITEM_15_HEALTH_TOTAL] = 8;
+            self._write_byte(0xC099F, 16)
     
     def _remove_game_select_health_display(self, start_health_val):
         '''

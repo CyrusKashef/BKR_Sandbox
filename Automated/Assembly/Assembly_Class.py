@@ -260,8 +260,8 @@ class ASSEMBLY_CLASS():
         for map_count in range(0x83):
             self._core_2_data._set_music(map_count, new_music1, new_music2, new_music3)
     
-    def _starting_max_health(self, start_val):
-        self._core_2_code._starting_max_health(start_val)
+    def _starting_max_health(self, start_val, default_cap=True):
+        self._core_2_code._starting_max_health(start_val, default_cap)
         self._core_2_code._remove_game_select_health_display(start_val)
     
     def _empty_honeycombs_for_extra_health(self, eh_val):
